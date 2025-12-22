@@ -3,11 +3,12 @@
     border-radius: 16px;
     padding: 20px;
     border: 1px solid var(--border-color);
-    transition: all 0.2s ease;
+    transition: transform 0.3s var(--ease-spring), box-shadow 0.3s var(--ease-spring);
 }
 
 .review-card:hover {
-    box-shadow: 0 4px 20px var(--shadow-color);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 26px rgba(0,0,0,0.08);
 }
 
 .review-header {
@@ -83,12 +84,10 @@
     border-radius: 12px;
     object-fit: cover;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.25s var(--ease-smooth), box-shadow 0.25s var(--ease-smooth);
 }
 
-.review-photo:hover {
-    transform: scale(1.1);
-}
+.review-photo:hover { transform: scale(1.08); box-shadow: 0 6px 18px rgba(0,0,0,0.08); }
 
 .review-footer {
     display: flex;
@@ -110,4 +109,8 @@
     background: var(--accent-primary);
     color: white;
     border-color: var(--accent-primary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .review-card, .review-photo, .helpful-btn { transition: none !important; animation: none !important; }
 }

@@ -1,6 +1,7 @@
 @using MyPetVenues.Services
 @inject NavigationManager Navigation
 @inject IThemeService ThemeService
+@inject IJSRuntime JS
 @implements IDisposable
 
 <a class="skip-link" href="#main-content">Skip to content</a>
@@ -54,10 +55,17 @@
     private void NavigateBooking() => Navigate("/booking");
     private void NavigateProfile() => Navigate("/profile");
 
-    private void Navigate(string path)
+    private async void Navigate(string path)
     {
         _isMobileMenuOpen = false;
-        Navigation.NavigateTo(path);
+        try
+        {
+            await JS.InvokeVoidAsync("navigateWithTransition", path);
+        }
+        catch
+        {
+            Navigation.NavigateTo(path);
+        }
     }
 
     private bool IsActive(string path)

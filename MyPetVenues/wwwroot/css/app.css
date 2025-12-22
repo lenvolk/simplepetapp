@@ -383,6 +383,28 @@ input, select, textarea {
     animation: float 3s ease-in-out infinite;
 }
 
+/* Animation tokens + reduced-motion guards */
+:root { --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1); --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1); --stagger-step: 50ms; }
+
+.hover-lift { transition: transform var(--transition-base), box-shadow var(--transition-base); }
+.hover-lift:hover { transform: translateY(-4px); box-shadow: 0 12px 32px rgba(0,0,0,0.12); }
+.pressable:active { transform: scale(0.98); }
+
+@media (prefers-reduced-motion: reduce) {
+    .hover-lift, .pressable, .animate-fade-in, .animate-pulse, .animate-float { transition: none !important; animation: none !important; }
+}
+
+/* View Transitions and container query helpers */
+@supports (view-transition-name: demo) {
+    :root { view-transition-name: app-root; }
+    ::view-transition-old(app-root), ::view-transition-new(app-root) {
+        animation-duration: 0.35s;
+        animation-timing-function: var(--ease-smooth);
+    }
+}
+
+.container-card { container-type: inline-size; }
+
 /* ========================================
    Scrollbar Styling
    ======================================== */

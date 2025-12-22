@@ -8,6 +8,15 @@
     <base href="/" />
     <link rel="stylesheet" href="css/app.css" />
     <link href="MyPetVenues.styles.css" rel="stylesheet" />
+    <script>
+        if ('startViewTransition' in document) {
+            window.navigateWithTransition = (url) => document.startViewTransition(() => location.href = url);
+        }
+        window.focusSearch = () => {
+            const el = document.getElementById('global-search');
+            if (el) { el.focus(); el.select(); }
+        };
+    </script>
 </head>
 
 <body>

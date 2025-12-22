@@ -4,6 +4,7 @@
     padding: 24px;
     box-shadow: 0 4px 20px var(--shadow-color);
     border: 1px solid var(--border-color);
+    container-type: inline-size;
 }
 
 .search-box {
@@ -114,16 +115,8 @@
     box-shadow: 0 4px 20px var(--accent-glow);
 }
 
-@media (max-width: 768px) {
-    .filter-row {
-        flex-direction: column;
-    }
-    
-    .filter-group {
-        width: 100%;
-    }
-    
-    .search-btn {
-        width: 100%;
-    }
+@container (max-width: 520px) {
+    .filter-row { flex-direction: column; }
+    .filter-group { width: 100%; }
+    .search-btn { width: 100%; }
 }
