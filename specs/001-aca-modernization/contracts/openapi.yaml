@@ -1,0 +1,392 @@
+openapi: 3.0.3
+info:
+  title: MyPetVenues API
+  version: 0.1.0
+  description: |
+    Server-side API used by the Blazor WebAssembly UI when deployed to Azure Container Apps.
+    All endpoints require Microsoft Entra ID authentication.
+servers:
+  - url: https://{host}
+    variables:
+      host:
+        default: example.contoso.com
+
+security:
+  - bearerAuth: []
+
+tags:
+  - name: Venues
+  - name: Reviews
+  - name: Bookings
+  - name: Me
+
+paths:
+  /api/venues:
+    get:
+      tags: [Venues]
+      summary: List venues
+      parameters:
+        - in: query
+          name: city
+          schema: { type: string }
+          required: false
+        - in: query
+          name: type
+          schema: { type: string }
+          required: false
+        - in: query
+          name: isFeatured
+          schema: { type: boolean }
+          required: false
+      responses:
+        '200':
+          description: Venue list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Venue' }
+    post:
+      tags: [Venues]
+      summary: Create venue
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VenueCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Venue' }
+
+  /api/venues/{venueId}:
+    get:
+      tags: [Venues]
+      summary: Get venue by id
+      parameters:
+        - in: path
+          name: venueId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Venue
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Venue' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/venues/{venueId}/reviews:
+    get:
+      tags: [Reviews]
+      summary: List reviews for a venue
+      parameters:
+        - in: path
+          name: venueId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Review list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Review' }
+    post:
+      tags: [Reviews]
+      summary: Create review for a venue
+      parameters:
+        - in: path
+          name: venueId
+          required: true
+          schema: { type: string }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ReviewCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Review' }
+
+  /api/bookings:
+    get:
+      tags: [Bookings]
+      summary: List bookings for current user
+      responses:
+        '200':
+          description: Booking list
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Booking' }
+    post:
+      tags: [Bookings]
+      summary: Create booking for current user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/BookingCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Booking' }
+
+  /api/bookings/{bookingId}:
+    get:
+      tags: [Bookings]
+      summary: Get booking by id (current user)
+      parameters:
+        - in: path
+          name: bookingId
+          required: true
+          schema: { type: string }
+      responses:
+        '200':
+          description: Booking
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Booking' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    delete:
+      tags: [Bookings]
+      summary: Cancel booking (current user)
+      parameters:
+        - in: path
+          name: bookingId
+          required: true
+          schema: { type: string }
+      responses:
+        '204':
+          description: Cancelled
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /api/me:
+    get:
+      tags: [Me]
+      summary: Get current user profile
+      responses:
+        '200':
+          description: User profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserProfile' }
+
+  /api/me/profile:
+    patch:
+      tags: [Me]
+      summary: Update current user profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/UserProfileUpdateRequest' }
+      responses:
+        '200':
+          description: Updated profile
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/UserProfile' }
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  responses:
+    NotFound:
+      description: Not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/Error' }
+
+  schemas:
+    Error:
+      type: object
+      additionalProperties: false
+      required: [code, message]
+      properties:
+        code: { type: string }
+        message: { type: string }
+
+    Venue:
+      type: object
+      additionalProperties: false
+      required: [id, name, city, type]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        description: { type: string }
+        address: { type: string }
+        city: { type: string }
+        phone: { type: string }
+        email: { type: string }
+        website: { type: string }
+        imageUrl: { type: string }
+        type: { type: string }
+        acceptedPets:
+          type: array
+          items: { type: string }
+        amenities:
+          type: array
+          items: { type: string }
+        petPolicy: { type: string }
+        hours: { type: string }
+        rating: { type: number, format: double }
+        reviewCount: { type: integer, format: int32 }
+        isFeatured: { type: boolean }
+        latitude: { type: number, format: double }
+        longitude: { type: number, format: double }
+        pricePerHour: { type: number, format: double }
+        createdAt: { type: string, format: date-time }
+        updatedAt: { type: string, format: date-time }
+
+    VenueCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [name, city, type]
+      properties:
+        name: { type: string }
+        description: { type: string }
+        address: { type: string }
+        city: { type: string }
+        type: { type: string }
+        imageUrl: { type: string }
+        acceptedPets:
+          type: array
+          items: { type: string }
+        amenities:
+          type: array
+          items: { type: string }
+
+    Review:
+      type: object
+      additionalProperties: false
+      required: [id, venueId, userId, rating, datePosted]
+      properties:
+        id: { type: string }
+        venueId: { type: string }
+        userId: { type: string }
+        userName: { type: string }
+        userAvatar: { type: string }
+        petName: { type: string }
+        petType: { type: string }
+        rating: { type: integer, format: int32 }
+        comment: { type: string }
+        datePosted: { type: string, format: date-time }
+        photos:
+          type: array
+          items: { type: string }
+        helpfulCount: { type: integer, format: int32 }
+
+    ReviewCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [rating]
+      properties:
+        rating: { type: integer, format: int32, minimum: 1, maximum: 5 }
+        comment: { type: string }
+        petName: { type: string }
+        petType: { type: string }
+        photos:
+          type: array
+          items: { type: string }
+
+    Booking:
+      type: object
+      additionalProperties: false
+      required: [id, userId, venueId, bookingDate, startTime, endTime, status]
+      properties:
+        id: { type: string }
+        userId: { type: string }
+        venueId: { type: string }
+        venueName: { type: string }
+        venueImage: { type: string }
+        bookingDate: { type: string, format: date }
+        startTime: { type: string }
+        endTime: { type: string }
+        numberOfPets: { type: integer, format: int32 }
+        petNames:
+          type: array
+          items: { type: string }
+        specialRequests: { type: string }
+        status: { type: string }
+        totalPrice: { type: number, format: double }
+        createdAt: { type: string, format: date-time }
+
+    BookingCreateRequest:
+      type: object
+      additionalProperties: false
+      required: [venueId, bookingDate, startTime, endTime]
+      properties:
+        venueId: { type: string }
+        bookingDate: { type: string, format: date }
+        startTime: { type: string }
+        endTime: { type: string }
+        numberOfPets: { type: integer, format: int32 }
+        petNames:
+          type: array
+          items: { type: string }
+        specialRequests: { type: string }
+
+    UserProfile:
+      type: object
+      additionalProperties: false
+      required: [id, name, email]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        email: { type: string }
+        avatar: { type: string }
+        bio: { type: string }
+        location: { type: string }
+        joinedDate: { type: string, format: date-time }
+        pets:
+          type: array
+          items: { $ref: '#/components/schemas/Pet' }
+        favoriteVenueIds:
+          type: array
+          items: { type: string }
+
+    UserProfileUpdateRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        avatar: { type: string }
+        bio: { type: string }
+        location: { type: string }
+        pets:
+          type: array
+          items: { $ref: '#/components/schemas/Pet' }
+        favoriteVenueIds:
+          type: array
+          items: { type: string }
+
+    Pet:
+      type: object
+      additionalProperties: false
+      required: [id, name, type]
+      properties:
+        id: { type: string }
+        name: { type: string }
+        type: { type: string }
+        breed: { type: string }
+        age: { type: integer, format: int32 }
+        imageUrl: { type: string }

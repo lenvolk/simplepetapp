@@ -1,50 +1,49 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+
+# Simkplepetapp Constitution
+
+
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Azure Container Apps First
+All production workloads MUST be hosted in Azure Container Apps, following Microsoft Learn's Well-Architected Framework for reliability, security, performance, and cost optimization. Use infrastructure-as-code for deployments and enable autoscaling, observability, and health probes.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Managed Identity Everywhere
+All app-to-Azure resource access MUST use managed identities (prefer user-assigned for shared or pre-provisioned access, system-assigned for resource-coupled access). No credentials or secrets are permitted in code or configuration. Follow least privilege and audit all permissions.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. MCP Server & Coding Agent Integration
+All automation, deployment, and agentic workflows MUST use the Azure MCP server and its tools. Coding agents MUST check and apply Microsoft Learn best practices for every Azure resource and operation.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Secure by Default
+Enforce HTTPS, disable public ingress unless required, and use network isolation (VNet injection) for all container environments. Enable authentication for all endpoints and use Azure Policy to audit compliance.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Observability & Operational Excellence
+Diagnostics, logging, and metrics MUST be enabled for all environments. Use Azure Monitor, Application Insights, and log streaming. All deployments MUST be automated and repeatable. Tag resources consistently for cost and operations.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+## Additional Constraints
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+- All deployments MUST use infrastructure-as-code (Bicep, ARM, or Terraform) and be stored in version control.
+- All code and infrastructure changes MUST be reviewed for compliance with the above principles.
+- No secrets or credentials may be stored in source control or configuration files.
+- All environments (dev, staging, prod) MUST use separate managed identities and resource groups.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+
+## Development Workflow & Quality Gates
+
+- All PRs and deployments MUST pass a constitution check for compliance with core principles.
+- All new features or infrastructure changes MUST document their Azure resource usage and managed identity configuration.
+- All agentic automation (Copilot, MCP, etc.) MUST invoke Microsoft Learn best practices for every Azure resource and operation.
+- All deployments MUST be tested in a staging environment before production.
+
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+- This constitution supersedes all other workflow or architectural practices.
+- Amendments require documentation, approval, and a migration plan.
+- All PRs and reviews MUST verify compliance with the constitution.
+- Use Microsoft Learn and Azure Well-Architected Framework as runtime guidance.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+
+**Version**: 1.1.0 | **Ratified**: 2025-12-22 | **Last Amended**: 2025-12-22
+
