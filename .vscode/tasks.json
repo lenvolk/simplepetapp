@@ -1,0 +1,43 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "build (MyPetVenues)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "build",
+        "MyPetVenues/MyPetVenues.csproj"
+      ],
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "group": "build"
+    },
+    {
+      "label": "run (MyPetVenues)",
+      "type": "shell",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "MyPetVenues/MyPetVenues.csproj"
+      ],
+      "isBackground": true,
+      "problemMatcher": [
+        {
+          "pattern": [
+            {
+              "regexp": ".*"
+            }
+          ],
+          "background": {
+            "activeOnStart": true,
+            "beginsPattern": "Building\\.\\.\\.|watch : Started|Using launch settings",
+            "endsPattern": "Now listening on:"
+          }
+        }
+      ]
+    }
+  ]
+}

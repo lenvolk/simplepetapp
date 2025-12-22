@@ -1,0 +1,21 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "MyPetVenues: Run (Play button)",
+      "type": "pwa-msedge",
+      "request": "launch",
+      "preLaunchTask": "run (MyPetVenues)",
+      "url": "http://localhost:5039",
+      "webRoot": "${workspaceFolder}/MyPetVenues/wwwroot"
+    },
+    {
+      "name": "MyPetVenues: Debug (Blazor WASM)",
+      "type": "blazorwasm",
+      "request": "launch",
+      "preLaunchTask": "run (MyPetVenues)",
+      "url": "http://localhost:5039",
+      "cwd": "${workspaceFolder}/MyPetVenues"
+    }
+  ]
+}

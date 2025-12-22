@@ -56,7 +56,7 @@
                     </div>
                 </div>
             </div>
-            <button class="btn btn-outline edit-profile-btn" @onclick="() => _isEditing = true">
+            <button class="btn btn-outline edit-profile-btn" @onclick="OpenEditProfile">
                 ✏️ Edit Profile
             </button>
         </section>
@@ -85,7 +85,7 @@
                     <section class="pets-section">
                         <div class="section-header-row">
                             <h2>My Furry Family 🐾</h2>
-                            <button class="btn btn-primary">➕ Add Pet</button>
+                            <button class="btn btn-primary" @onclick="OpenAddPet">➕ Add Pet</button>
                         </div>
                         <div class="pets-grid">
                             @foreach (var pet in _user.Pets)
@@ -101,8 +101,8 @@
                                         <PetBadge Type="@pet.Type" />
                                     </div>
                                     <div class="pet-actions">
-                                        <button class="action-btn" title="Edit">✏️</button>
-                                        <button class="action-btn" title="Delete">🗑️</button>
+                                        <button class="action-btn" title="Edit" @onclick="() => OpenEditPet(pet)" @onclick:stopPropagation>✏️</button>
+                                        <button class="action-btn" title="Delete" @onclick="() => DeletePet(pet)" @onclick:stopPropagation>🗑️</button>
                                     </div>
                                 </div>
                             }
@@ -252,6 +252,81 @@
                     break;
             }
         </div>
+        
+        @* Edit Profile Modal *@
+        @if (_isEditing)
+        {
+            <div class="modal-overlay" @onclick="CloseEditProfile">
+                <div class="modal-content" @onclick:stopPropagation>
+                    <div class="modal-header">
+                        <h2>✏️ Edit Profile</h2>
+                        <button class="modal-close" @onclick="CloseEditProfile">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label>Name</label>
+                            <input type="text" @bind="_editName" placeholder="Your name" />
+                        </div>
+                        <div class="form-group">
+                            <label>Location</label>
+                            <input type="text" @bind="_editLocation" placeholder="City, State" />
+                        </div>
+                        <div class="form-group">
+                            <label>Bio</label>
+                            <textarea @bind="_editBio" rows="3" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="CloseEditProfile">Cancel</button>
+                        <button class="btn btn-primary" @onclick="SaveProfile">💾 Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        }
+        
+        @* Add/Edit Pet Modal *@
+        @if (_isAddingPet)
+        {
+            <div class="modal-overlay" @onclick="CloseAddPet">
+                <div class="modal-content" @onclick:stopPropagation>
+                    <div class="modal-header">
+                        <h2>@(_isEditingPet ? "✏️ Edit Pet" : "➕ Add New Pet")</h2>
+                        <button class="modal-close" @onclick="CloseAddPet">✕</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="pet-preview">
+                            <img src="@_editingPet.ImageUrl" alt="Pet preview" />
+                        </div>
+                        <div class="form-group">
+                            <label>Pet Name</label>
+                            <input type="text" @bind="_editingPet.Name" placeholder="e.g., Buddy" />
+                        </div>
+                        <div class="form-group">
+                            <label>Pet Type</label>
+                            <select value="@_editingPet.Type" @onchange="OnPetTypeChanged">
+                                <option value="@PetType.Dog">🐕 Dog</option>
+                                <option value="@PetType.Cat">🐱 Cat</option>
+                                <option value="@PetType.Bird">🐦 Bird</option>
+                                <option value="@PetType.Rabbit">🐰 Rabbit</option>
+                                <option value="@PetType.SmallPet">🐹 Small Pet</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Breed</label>
+                            <input type="text" @bind="_editingPet.Breed" placeholder="e.g., Golden Retriever" />
+                        </div>
+                        <div class="form-group">
+                            <label>Age (years)</label>
+                            <input type="number" @bind="_editingPet.Age" min="0" max="30" />
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" @onclick="CloseAddPet">Cancel</button>
+                        <button class="btn btn-primary" @onclick="SavePet">@(_isEditingPet ? "💾 Save Changes" : "➕ Add Pet")</button>
+                    </div>
+                </div>
+            </div>
+        }
     }
 </div>
 
@@ -261,7 +336,18 @@
     private List<Models.Booking>? _bookings;
     private bool _isLoading = true;
     private bool _isEditing = false;
+    private bool _isAddingPet = false;
+    private bool _isEditingPet = false;
     private string _activeTab = "pets";
+    
+    // Edit profile form fields
+    private string _editName = "";
+    private string _editLocation = "";
+    private string _editBio = "";
+    
+    // Add/Edit pet form fields
+    private Pet _editingPet = new();
+    private int _nextPetId = 100;
 
     private void SetTabPets() => _activeTab = "pets";
     private void SetTabFavorites() => _activeTab = "favorites";
@@ -319,6 +405,117 @@
         if (_user is not null)
         {
             _bookings = await BookingService.GetUserBookingsAsync(_user.Id);
+        }
+    }
+    
+    // Edit Profile Methods
+    private void OpenEditProfile()
+    {
+        if (_user is null) return;
+        _editName = _user.Name;
+        _editLocation = _user.Location;
+        _editBio = _user.Bio;
+        _isEditing = true;
+    }
+    
+    private void CloseEditProfile()
+    {
+        _isEditing = false;
+    }
+    
+    private async Task SaveProfile()
+    {
+        if (_user is null) return;
+        _user.Name = _editName;
+        _user.Location = _editLocation;
+        _user.Bio = _editBio;
+        await UserService.UpdateUserAsync(_user);
+        _isEditing = false;
+    }
+    
+    // Add/Edit Pet Methods
+    private void OpenAddPet()
+    {
+        _editingPet = new Pet
+        {
+            Id = _nextPetId++,
+            Type = PetType.Dog,
+            ImageUrl = "images/pets/dog1.png"
+        };
+        _isEditingPet = false;
+        _isAddingPet = true;
+    }
+    
+    private void OpenEditPet(Pet pet)
+    {
+        _editingPet = new Pet
+        {
+            Id = pet.Id,
+            Name = pet.Name,
+            Type = pet.Type,
+            Breed = pet.Breed,
+            Age = pet.Age,
+            ImageUrl = pet.ImageUrl
+        };
+        _isEditingPet = true;
+        _isAddingPet = true;
+    }
+    
+    private void CloseAddPet()
+    {
+        _isAddingPet = false;
+        _isEditingPet = false;
+    }
+    
+    private async Task SavePet()
+    {
+        if (_user is null) return;
+        
+        if (_isEditingPet)
+        {
+            var existingPet = _user.Pets.FirstOrDefault(p => p.Id == _editingPet.Id);
+            if (existingPet is not null)
+            {
+                existingPet.Name = _editingPet.Name;
+                existingPet.Type = _editingPet.Type;
+                existingPet.Breed = _editingPet.Breed;
+                existingPet.Age = _editingPet.Age;
+                existingPet.ImageUrl = _editingPet.ImageUrl;
+            }
+        }
+        else
+        {
+            _user.Pets.Add(_editingPet);
+        }
+        
+        await UserService.UpdateUserAsync(_user);
+        _isAddingPet = false;
+        _isEditingPet = false;
+    }
+    
+    private async Task DeletePet(Pet pet)
+    {
+        if (_user is null) return;
+        _user.Pets.Remove(pet);
+        await UserService.UpdateUserAsync(_user);
+    }
+    
+    private string GetPetImageForType(PetType type) => type switch
+    {
+        PetType.Dog => "images/pets/dog1.png",
+        PetType.Cat => "images/pets/cat1.jpg",
+        PetType.Bird => "images/pets/bird.jpg",
+        PetType.Rabbit => "images/pets/bunny.jpg",
+        PetType.SmallPet => "images/pets/hedgehog.jpg",
+        _ => "images/pets/dog1.png"
+    };
+    
+    private void OnPetTypeChanged(ChangeEventArgs e)
+    {
+        if (Enum.TryParse<PetType>(e.Value?.ToString(), out var petType))
+        {
+            _editingPet.Type = petType;
+            _editingPet.ImageUrl = GetPetImageForType(petType);
         }
     }
 }
