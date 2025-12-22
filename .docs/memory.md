@@ -6,6 +6,9 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets")
 ## Progress
 - [x] Created PRD (prd.md) - high-level product requirements
 
+## Dev Notes
+- Added repo-local NuGet.config to restore packages from nuget.org (fixes NU1100 "Unable to resolve" errors when no feeds are configured).
+
 ## Key Decisions
 - Named the product "PetSpots"
 - Core features: location discovery, user-submitted locations, reviews/ratings
