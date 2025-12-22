@@ -6,7 +6,7 @@
 Deliver a polished, accessible, and modernized MyPetVenues UI by introducing design tokens, accessibility fixes, loading skeletons, enhanced animations, and modern CSS features while preserving the existing pink-purple brand.
 
 ## Prerequisites
-Make sure that the user is currently on the `feature/ui-modernization` branch before beginning implementation. If not, move them to the correct branch. If the branch does not exist, create it from main.
+Make sure that the user is currently on the `feature/ui-modernization` branch before beginning implementation. If not, move them to the correct branch. If the branch does not exist, create it from the currently checked-out branch.
 
 ### Step-by-Step Instructions
 

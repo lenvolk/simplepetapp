@@ -94,7 +94,7 @@ Return a comprehensive research package covering the entire project context.
 
 ## Prerequisites
 Make sure that the use is currently on the `{kebab-case-branch-name}` branch before beginning implementation.
-If not, move them to the correct branch. If the branch does not exist, create it from main.
+If not, move them to the correct branch. If the branch does not exist, create it from the currently checked-out branch.
 
 ### Step-by-Step Instructions
 
