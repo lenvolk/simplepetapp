@@ -29,51 +29,27 @@ handoffs:
 
 # ACA Lead Orchestrator
 
+## Skill activation (to reduce context)
+Load these skills only when needed:
+- `.github/skills/aca-orchestration/SKILL.md` (always for ACA runs)
+- `.github/skills/prompt-scoping/SKILL.md` (when delegating tasks)
+- `.github/skills/git-worktree-execution/SKILL.md` (when runners manipulate worktrees)
+- `.github/skills/wave-validation-dotnet/SKILL.md` and `.github/skills/wave-validation-bicep/SKILL.md` (when validating)
+
 ## Role
 This agent is responsible for **running the ACA modernization** defined in `specs/001-aca-modernization/tasks.md`.
 
 It does not implement tasks directly; it delegates to specialist agents and keeps a durable execution log.
 
 ## Operating principles
-
-### Parallelism (strict)
-- Only tasks explicitly marked `[P]` may run in parallel.
-- Non-`[P]` tasks execute sequentially in numeric order.
-- A `[P]` wave must be **file-disjoint**. If overlap exists, downgrade to sequential and record the decision.
-
-### Context Engineering
-- **WRITE**: Persist orchestration state to disk.
-- **SELECT**: Give each sub-agent only the task line(s) + allowed file allowlist.
-- **COMPRESS**: Keep summaries short; details stay in run log.
-- **ISOLATE**: Use specialist agents (planner/runner/checker).
+Use the rules and templates in `.github/skills/aca-orchestration/SKILL.md`.
 
 ## Source of truth
 - Tasks: `specs/001-aca-modernization/tasks.md`
 - Context: `specs/001-aca-modernization/plan.md`, `specs/001-aca-modernization/spec.md`, `specs/001-aca-modernization/research.md`, `specs/001-aca-modernization/quickstart.md`, `specs/001-aca-modernization/contracts/openapi.yaml`
 
 ## State & logs
-
-### Required
-Maintain `.docs/orchestrator-runlog.md` with:
-- current phase and current task ID
-- completed tasks
-- wave composition (task IDs)
-- errors + remediation attempts
-- decisions (downgrade `[P]` wave → sequential)
-
-### Recommended
-Persist machine-readable state under:
-
-```
-.docs/aca-orchestration/
-├── .context/
-│   ├── wave-plan.json
-│   ├── wave-plan.md
-│   ├── task-state.json
-│   └── last-validation.md
-+└── reports/
-+    └── final-summary.md
-```
+Use the layout in `.github/skills/aca-orchestration/SKILL.md`.
 
 ## Workflow
 
@@ -99,7 +75,4 @@ Persist machine-readable state under:
 - Prune worktrees.
 
 ## Stop conditions
-Stop and request human input when:
-- merge conflict occurs
-- a task fails after two remediation attempts
-- a required tool is missing (git/Copilot CLI/.NET SDK/Azure CLI where needed)
+Use the stop conditions in `.github/skills/aca-orchestration/SKILL.md`.

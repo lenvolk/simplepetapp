@@ -18,6 +18,13 @@ handoffs:
 
 This agent is the **entry point** for the Azure Container Apps modernization work defined in `specs/001-aca-modernization/tasks.md`.
 
+## Skill activation (to reduce context)
+When starting orchestration, load these skill files on demand (do not inline their contents here):
+- `.github/skills/aca-orchestration/SKILL.md`
+- `.github/skills/prompt-scoping/SKILL.md` (when crafting delegated prompts)
+- `.github/skills/git-worktree-execution/SKILL.md` (when runners manipulate worktrees)
+- `.github/skills/wave-validation-dotnet/SKILL.md` and `.github/skills/wave-validation-bicep/SKILL.md` (when validating)
+
 ## Goal
 Coordinate end-to-end implementation of the ACA modernization feature with a clear execution log, strict parallelism, and reproducible validations.
 
@@ -82,55 +89,14 @@ Delegate to:
 
 The Lead Orchestrator is responsible for planning waves and delegating execution to runners.
 
-## Context Engineering principles applied
-
-### 1) WRITE
-All intermediate state is written to disk, not kept only in chat.
-
-### 2) SELECT
-Each sub-agent receives the minimum relevant context:
-- the exact task line(s)
-- the allowlist of files it may touch
-- the required validation command(s)
-
-### 3) COMPRESS
-Sub-agents return compact summaries to the Lead Orchestrator. Full details stay in the run log/context folder.
-
-### 4) ISOLATE
-Specialist agents have narrow responsibilities (planning vs execution vs validation), reducing cross-task bleed.
-
-### 5) Sequential execution by default
-Per the “actions carry implicit decisions” principle: sequential tasks remain sequential. Parallelism is opt-in via `[P]` only.
+## Context engineering
+Use the progressive-disclosure approach described in `.github/skills/aca-orchestration/SKILL.md`.
 
 ## Output / state
-
-### Run log
-Maintain `.docs/orchestrator-runlog.md` with:
-- Current phase + current task ID
-- Completed tasks
-- Wave composition (task IDs)
-- Errors + remediation attempts
-- Decisions (e.g., downgrade a `[P]` wave to sequential due to file overlap)
-
-### Context folder (recommended)
-Store orchestration state under:
-
-```
-.docs/aca-orchestration/
-├── .context/
-│   ├── wave-plan.md
-│   ├── wave-plan.json
-│   └── last-validation.md
-└── reports/
-      └── final-summary.md
-```
+See `.github/skills/aca-orchestration/SKILL.md` for required run log fields and context folder layout.
 
 ## Stop conditions
-Stop and request human input when:
-- A merge conflict occurs.
-- A task fails after two remediation attempts.
-- A required prerequisite tool is missing (git/Copilot CLI/.NET SDK/Azure CLI where needed).
-- A proposed `[P]` wave has file overlap (downgrade to sequential or ask for confirmation).
+See `.github/skills/aca-orchestration/SKILL.md`.
 
 ## Recommended models
 

@@ -9,6 +9,13 @@ tools:
 
 # Sub-agent: Sequential Task Runner (aca.sequential-runner)
 
+## Skill activation (to reduce context)
+Load these skills as needed:
+- `.github/skills/git-worktree-execution/SKILL.md`
+- `.github/skills/prompt-scoping/SKILL.md`
+- `.github/skills/wave-validation-dotnet/SKILL.md`
+- `.github/skills/wave-validation-bicep/SKILL.md` (only if task touches `.bicep`)
+
 ## Objective
 Execute a single task (non-`[P]`) from `specs/001-aca-modernization/tasks.md` in strict task-ID order.
 
@@ -18,13 +25,9 @@ Execute a single task (non-`[P]`) from `specs/001-aca-modernization/tasks.md` in
 - Create a dedicated worktree and branch for the task.
 
 ## Required behavior
-1. Create worktree `..\worktree-<TaskID>` on branch `task-<TaskID>`.
-2. Run Copilot CLI with a prompt that includes:
-   - Task ID and task text
-   - File(s) to edit
-   - Repo constraints relevant to the feature (Entra auth required; no secrets; managed identity; ACA target)
-3. Run the narrowest validation for the touched files:
-   - .NET changes: `dotnet build MyPetVenues/MyPetVenues.csproj` (or solution build if new projects added)
+1. Create a dedicated worktree/branch per `.github/skills/git-worktree-execution/SKILL.md`.
+2. Scope the implementation prompt per `.github/skills/prompt-scoping/SKILL.md`.
+3. Run the narrowest validation per the appropriate validation skill.
 4. Create a single commit: `"<TaskID> <short description>"`.
 
 ## Output

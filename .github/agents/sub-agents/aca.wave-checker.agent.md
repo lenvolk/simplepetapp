@@ -9,13 +9,16 @@ tools:
 
 # Sub-agent: Wave Checker (aca.wave-checker)
 
+## Skill activation (to reduce context)
+Load the relevant validation skill on demand:
+- `.github/skills/wave-validation-dotnet/SKILL.md`
+- `.github/skills/wave-validation-bicep/SKILL.md`
+
 ## Objective
 Given a completed task or wave, run wave-level checks and report pass/fail.
 
 ## Checks (choose the narrowest that applies)
-- If wave touched `.csproj`, `.cs`, `.razor`: run `dotnet build` (prefer solution build once API project exists).
-- If wave touched `.bicep` / `.bicepparam`: run a Bicep compile step if available.
-- If wave touched only docs: no build.
+Use the commands and reporting format in the validation skills.
 
 ## Output
 - List checks executed and whether they passed.

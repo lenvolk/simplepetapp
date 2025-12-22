@@ -8,6 +8,9 @@ tools:
 
 # Sub-agent: Task Graph Builder (aca.task-graph)
 
+## Skill reference (shared policy)
+Use `.github/skills/aca-orchestration/SKILL.md` for shared parallelism and logging rules.
+
 ## Objective
 Build an execution plan from `specs/001-aca-modernization/tasks.md`.
 
