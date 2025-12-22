@@ -10,7 +10,7 @@ dotnet run --urls "http://localhost:5050"
 =======================================================================================================================
 Ref "Structured Autonomy" https://github.com/github/awesome-copilot/blob/main/collections/structured-autonomy.md
 
-1: sa-plan -> "Refactor the UI of this application to be more clean and modern"
+1: sa-plan -> "Refactor the UI of this application to be more clean and modern #file:MyPetVenues"
 
 2: sa-generate ->  #plan.md
 
