@@ -5,7 +5,7 @@
 
 <div class="app-container @(ThemeService.IsDarkMode ? "dark-mode" : "light-mode")">
     <Header />
-    <main class="main-content">
+    <main id="main-content" class="main-content" role="main">
         @Body
     </main>
     <Footer />

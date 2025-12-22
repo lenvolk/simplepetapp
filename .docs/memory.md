@@ -72,3 +72,8 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 - ✅ Keep custom system, enhance incrementally
 - ✅ Optional: Sass/SCSS for better CSS DX
 - ✅ Optional: Custom JSInterop for Intersection Observer
+
+## Implementation Progress
+
+- [x] Implementation plan created: plans/ui-modernization/implementation.md (Step-by-step, 4-phase).
+- [ ] Implementation work: awaiting Step 1 edits and verification.

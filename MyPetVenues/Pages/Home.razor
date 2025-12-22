@@ -4,6 +4,7 @@
 @using MyPetVenues.Components
 @inject IVenueService VenueService
 @inject NavigationManager Navigation
+@inject ILoadingService LoadingService
 
 <PageTitle>MyPetVenues - Find Pet-Friendly Places 🐾</PageTitle>
 
@@ -97,27 +98,34 @@
         <h2>Featured Venues ⭐</h2>
         <p>Hand-picked favorites from our community</p>
     </div>
-    @if (_featuredVenues is null)
-    {
-        <div class="loading-state">
-            <span class="loading-emoji">🐾</span>
-            <p>Fetching amazing venues...</p>
-        </div>
-    }
-    else
-    {
-        <div class="venues-grid">
-            @foreach (var venue in _featuredVenues)
-            {
-                <VenueCard Venue="@venue" IsFeatured="true" OnClick="() => NavigateToVenue(venue.Id)" />
-            }
-        </div>
-        <div class="section-cta">
-            <button class="btn btn-secondary" @onclick="NavigateToVenues">
-                View All Venues →
-            </button>
-        </div>
-    }
+        @if (LoadingService.IsLoading("home:featured"))
+        {
+            <div class="venues-grid">
+                @foreach (var _ in Enumerable.Range(0, 6))
+                {
+                    <VenueCardSkeleton />
+                }
+            </div>
+        }
+        else if (_featuredVenues is null)
+        {
+            <div class="loading-state">
+                <span class="loading-emoji">🐾</span>
+                <p>Fetching amazing venues...</p>
+            </div>
+        }
+        else
+        {
+            <div class="venues-grid">
+                @foreach (var venue in _featuredVenues)
+                {
+                    <VenueCard Venue="@venue" IsFeatured="true" OnClick="() => NavigateToVenue(venue.Id)" />
+                }
+            </div>
+            <div class="section-cta">
+                <button class="btn btn-secondary" @onclick="NavigateToVenues">View All Venues →</button>
+            </div>
+        }
 </section>
 
 <!-- Features Section -->
@@ -290,7 +298,9 @@
 
     protected override async Task OnInitializedAsync()
     {
+        LoadingService.SetLoading("home:featured", true);
         _featuredVenues = await VenueService.GetFeaturedVenuesAsync();
+        LoadingService.SetLoading("home:featured", false);
     }
 
     private void NavigateToVenue(int venueId)

@@ -14,5 +14,6 @@ builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddSingleton<IVenueService, MockVenueService>();
 builder.Services.AddSingleton<IBookingService, MockBookingService>();
 builder.Services.AddScoped<IUserService, MockUserService>();
+builder.Services.AddSingleton<ILoadingService, LoadingService>();
 
 await builder.Build().RunAsync();

@@ -3,49 +3,28 @@
 @inject IThemeService ThemeService
 @implements IDisposable
 
-<header class="site-header">
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="site-header" role="banner" @onkeydown:document="HandleKeyDown">
     <div class="header-container">
-        <a href="/" class="logo" @onclick:preventDefault @onclick="NavigateHome">
-            <span class="logo-icon">🐾</span>
+        <a href="/" class="logo" @onclick:preventDefault @onclick="NavigateHome" aria-label="MyPetVenues home">
+            <span class="logo-icon" aria-hidden="true">🐾</span>
             <span class="logo-text">MyPetVenues</span>
         </a>
         
-        <button class="mobile-menu-btn" @onclick="ToggleMobileMenu">
-            @if (_isMobileMenuOpen)
-            {
-                <span>✕</span>
-            }
-            else
-            {
-                <span>☰</span>
-            }
+        <button class="mobile-menu-btn" type="button" aria-label="Toggle navigation menu" aria-expanded="@_isMobileMenuOpen" @onclick="ToggleMobileMenu">
+            <span aria-hidden="true">@(_isMobileMenuOpen ? "✕" : "☰")</span>
         </button>
         
-        <nav class="main-nav @(_isMobileMenuOpen ? "open" : "")">
-            <a href="/" class="nav-link @(IsActive("/") ? "active" : "")" @onclick:preventDefault @onclick="NavigateHome">
-                🏠 Home
-            </a>
-            <a href="/venues" class="nav-link @(IsActive("/venues") ? "active" : "")" @onclick:preventDefault @onclick="NavigateVenues">
-                📍 Venues
-            </a>
-            <a href="/booking" class="nav-link @(IsActive("/booking") ? "active" : "")" @onclick:preventDefault @onclick="NavigateBooking">
-                📅 Book Now
-            </a>
-            <a href="/profile" class="nav-link @(IsActive("/profile") ? "active" : "")" @onclick:preventDefault @onclick="NavigateProfile">
-                👤 Profile
-            </a>
+        <nav class="main-nav @(_isMobileMenuOpen ? "open" : string.Empty)" role="navigation" aria-label="Primary navigation">
+            <a href="/" class="nav-link @(IsActive("/") ? "active" : string.Empty)" @onclick:preventDefault @onclick="NavigateHome">🏠 Home</a>
+            <a href="/venues" class="nav-link @(IsActive("/venues") ? "active" : string.Empty)" @onclick:preventDefault @onclick="NavigateVenues">📍 Venues</a>
+            <a href="/booking" class="nav-link @(IsActive("/booking") ? "active" : string.Empty)" @onclick:preventDefault @onclick="NavigateBooking">📅 Book Now</a>
+            <a href="/profile" class="nav-link @(IsActive("/profile") ? "active" : string.Empty)" @onclick:preventDefault @onclick="NavigateProfile">👤 Profile</a>
         </nav>
         
         <div class="header-actions">
-            <button class="theme-toggle" @onclick="ToggleTheme" title="Toggle theme">
-                @if (ThemeService.IsDarkMode)
-                {
-                    <span>☀️</span>
-                }
-                else
-                {
-                    <span>🌙</span>
-                }
+            <button class="theme-toggle" type="button" aria-label="Toggle theme" @onclick="ToggleTheme">
+                <span aria-hidden="true">@(ThemeService.IsDarkMode ? "☀️" : "🌙")</span>
             </button>
         </div>
     </div>
@@ -92,6 +71,22 @@
     private void ToggleTheme()
     {
         ThemeService.ToggleTheme();
+    }
+
+    private void HandleKeyDown(KeyboardEventArgs e)
+    {
+        if (e.Key == "Escape" && _isMobileMenuOpen)
+        {
+            _isMobileMenuOpen = false;
+            StateHasChanged();
+            return;
+        }
+
+        if (e.CtrlKey && (e.Key?.Equals("k", StringComparison.OrdinalIgnoreCase) ?? false))
+        {
+            // Blazor's KeyboardEventArgs does not expose PreventDefault; use JS navigation or normal NavigateTo.
+            Navigation.NavigateTo("/venues#search");
+        }
     }
 
     public void Dispose()

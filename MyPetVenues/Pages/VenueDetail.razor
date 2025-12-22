@@ -5,14 +5,28 @@
 @inject IVenueService VenueService
 @inject IUserService UserService
 @inject NavigationManager Navigation
+@inject ILoadingService LoadingService
 
 <PageTitle>@(_venue?.Name ?? "Venue Details") - MyPetVenues 🐾</PageTitle>
 
-@if (_isLoading)
+@if (LoadingService.IsLoading("venue:detail"))
 {
-    <div class="loading-state">
-        <span class="loading-emoji">🐾</span>
-        <p>Loading venue details...</p>
+    <div class="venue-detail-page">
+        <div class="venue-hero">
+            <div class="skeleton media"></div>
+            <div class="skeleton info"></div>
+        </div>
+        <div class="venue-content-grid">
+            <div class="venue-main-content">
+                @foreach (var _ in Enumerable.Range(0, 2)) { <div class="skeleton block"></div> }
+                <div class="reviews-list">
+                    @foreach (var _ in Enumerable.Range(0, 3)) { <ReviewCardSkeleton /> }
+                </div>
+            </div>
+            <aside class="venue-sidebar">
+                @foreach (var _ in Enumerable.Range(0, 3)) { <div class="skeleton sidebar"></div> }
+            </aside>
+        </div>
     </div>
 }
 else if (_venue is null)
@@ -215,20 +229,19 @@ else
 
     private async Task LoadVenueData()
     {
-        _isLoading = true;
+        LoadingService.SetLoading("venue:detail", true);
         StateHasChanged();
 
         _venue = await VenueService.GetVenueByIdAsync(VenueId);
-        
+
         if (_venue is not null)
         {
             _reviews = await VenueService.GetVenueReviewsAsync(VenueId);
-            
             var user = await UserService.GetCurrentUserAsync();
             _isFavorite = user?.FavoriteVenueIds.Contains(VenueId) ?? false;
         }
 
-        _isLoading = false;
+        LoadingService.SetLoading("venue:detail", false);
     }
 
     private async Task ToggleFavorite()

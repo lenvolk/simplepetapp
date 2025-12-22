@@ -1,0 +1,8 @@
+.venue-card { background: var(--card-bg); border-radius: 20px; border: 1px solid var(--border-color); padding: var(--space-3); box-shadow: 0 6px 18px rgba(0,0,0,0.06); }
+.skeleton { position: relative; overflow: hidden; background: var(--tag-bg); border-radius: var(--radius-md); }
+.skeleton::after { content: ""; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.35), transparent); transform: translateX(-100%); animation: shimmer 1.4s infinite; }
+.media { height: 180px; border-radius: var(--radius-lg); margin-bottom: var(--space-3); }
+.lines { height: 16px; margin-bottom: var(--space-2); }
+.lines.short { width: 60%; }
+.chips { height: 32px; width: 80%; border-radius: var(--radius-full); }
+@keyframes shimmer { 100% { transform: translateX(100%); } }

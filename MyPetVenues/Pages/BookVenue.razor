@@ -6,6 +6,7 @@
 @inject IUserService UserService
 @inject IBookingService BookingService
 @inject NavigationManager Navigation
+@inject ILoadingService LoadingService
 
 <PageTitle>Book a Venue - MyPetVenues 🐾</PageTitle>
 
@@ -15,7 +16,7 @@
         <p>Reserve a spot at your favorite pet-friendly venue</p>
     </header>
 
-    @if (_isLoading)
+    @if (LoadingService.IsLoading("booking:page"))
     {
         <div class="loading-state">
             <span class="loading-emoji">🐾</span>
@@ -331,6 +332,7 @@
 
     protected override async Task OnInitializedAsync()
     {
+        LoadingService.SetLoading("booking:page", true);
         _venues = await VenueService.GetAllVenuesAsync();
         _user = await UserService.GetCurrentUserAsync();
         
@@ -346,7 +348,7 @@
         _bookingModel.BookingDate = DateTime.Now.AddDays(1).Date;
         _bookingModel.NumberOfPets = 1;
         
-        _isLoading = false;
+        LoadingService.SetLoading("booking:page", false);
     }
 
     private void SelectVenue(Venue venue)

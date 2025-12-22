@@ -4,6 +4,7 @@
 @using MyPetVenues.Components
 @inject IVenueService VenueService
 @inject NavigationManager Navigation
+@inject ILoadingService LoadingService
 
 <PageTitle>Explore Venues - MyPetVenues 🐾</PageTitle>
 
@@ -19,11 +20,10 @@
         SelectedPetType="@_selectedPetType"
         OnSearch="HandleSearch" />
 
-    @if (_isLoading)
+    @if (LoadingService.IsLoading("venues:list"))
     {
-        <div class="loading-state">
-            <span class="loading-emoji">🐾</span>
-            <p>Finding perfect venues for you...</p>
+        <div class="venues-grid">
+            @foreach (var _ in Enumerable.Range(0, 6)) { <VenueCardSkeleton /> }
         </div>
     }
     else if (_venues is null || !_venues.Any())
@@ -111,13 +111,13 @@
 
     private async Task LoadVenues()
     {
-        _isLoading = true;
+        LoadingService.SetLoading("venues:list", true);
         StateHasChanged();
 
         await Task.Delay(300); // Simulate network delay
         _venues = await VenueService.SearchVenuesAsync(_searchTerm, _selectedVenueType, _selectedPetType);
-        
-        _isLoading = false;
+
+        LoadingService.SetLoading("venues:list", false);
     }
 
     private async Task HandleSearch((string? SearchTerm, VenueType? VenueType, PetType? PetType) filters)

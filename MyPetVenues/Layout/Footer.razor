@@ -1,19 +1,19 @@
-<footer class="site-footer">
+<footer class="site-footer" role="contentinfo" aria-label="Site footer">
     <div class="footer-container">
         <div class="footer-main">
             <div class="footer-brand">
-                <div class="footer-logo">
-                    <span class="logo-icon">🐾</span>
+                <div class="footer-logo" aria-label="MyPetVenues logo">
+                    <span class="logo-icon" aria-hidden="true">🐾</span>
                     <span class="logo-text">MyPetVenues</span>
                 </div>
                 <p class="footer-tagline">
-                    Discover pet-friendly places for you and your furry friends! 🐕🐱
+                    Discover pet-friendly places for you and your furry friends!
                 </p>
-                <div class="social-links">
-                    <a href="#" class="social-link" title="Facebook">📘</a>
-                    <a href="#" class="social-link" title="Twitter">🐦</a>
-                    <a href="#" class="social-link" title="Instagram">📸</a>
-                    <a href="#" class="social-link" title="TikTok">🎵</a>
+                <div class="social-links" aria-label="Social links">
+                    <a href="#" class="social-link" title="Facebook" aria-label="Facebook">📘</a>
+                    <a href="#" class="social-link" title="Twitter" aria-label="Twitter">🐦</a>
+                    <a href="#" class="social-link" title="Instagram" aria-label="Instagram">📸</a>
+                    <a href="#" class="social-link" title="TikTok" aria-label="TikTok">🎵</a>
                 </div>
             </div>
             
@@ -52,17 +52,17 @@
         </div>
         
         <div class="footer-bottom">
-            <div class="footer-newsletter">
-                <span>📬 Stay updated with pet-friendly spots!</span>
+            <form class="footer-newsletter" aria-label="Newsletter signup">
+                <label for="newsletter-email">📬 Stay updated with pet-friendly spots!</label>
                 <div class="newsletter-form">
-                    <input type="email" placeholder="Enter your email" />
-                    <button>Subscribe</button>
+                    <input id="newsletter-email" name="email" type="email" placeholder="Enter your email" required aria-required="true" />
+                    <button type="submit">Subscribe</button>
                 </div>
-            </div>
+            </form>
             
             <div class="footer-copyright">
                 <p>© @DateTime.Now.Year MyPetVenues. Made with ❤️ for pet lovers everywhere.</p>
-                <p class="footer-pets">🐕 🐱 🐰 🐦 🐹</p>
+                <p class="footer-pets" aria-hidden="true">🐕 🐱 🐰 🐦 🐹</p>
             </div>
         </div>
     </div>
