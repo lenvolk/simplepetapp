@@ -4,6 +4,10 @@ VisualStudioVersion = 17.5.2.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPetVenues", "MyPetVenues\MyPetVenues.csproj", "{64F7EE28-445F-E819-0FC1-FF95AB12B2D2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPetVenues.Api", "MyPetVenues.Api\MyPetVenues.Api.csproj", "{A3B5E3C1-9B3F-4D4A-8F2E-12D3F8A7C9B1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyPetVenues.Shared", "MyPetVenues.Shared\MyPetVenues.Shared.csproj", "{B4C6F4D2-AC40-5E5B-9F3F-23E4G9B8D0C2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -14,6 +18,14 @@ Global
 		{64F7EE28-445F-E819-0FC1-FF95AB12B2D2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{64F7EE28-445F-E819-0FC1-FF95AB12B2D2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{64F7EE28-445F-E819-0FC1-FF95AB12B2D2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A3B5E3C1-9B3F-4D4A-8F2E-12D3F8A7C9B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A3B5E3C1-9B3F-4D4A-8F2E-12D3F8A7C9B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A3B5E3C1-9B3F-4D4A-8F2E-12D3F8A7C9B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A3B5E3C1-9B3F-4D4A-8F2E-12D3F8A7C9B1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4C6F4D2-AC40-5E5B-9F3F-23E4G9B8D0C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4C6F4D2-AC40-5E5B-9F3F-23E4G9B8D0C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4C6F4D2-AC40-5E5B-9F3F-23E4G9B8D0C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4C6F4D2-AC40-5E5B-9F3F-23E4G9B8D0C2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

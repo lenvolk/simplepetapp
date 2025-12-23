@@ -13,3 +13,11 @@ This folder contains Infrastructure-as-Code (IaC) and related deployment docs/sc
 
 ## Notes
 - Keep the repo secretless: prefer Microsoft Entra ID + managed identity over keys/connection strings.
+
+## Scaffold Status
+
+- `main.bicep`: present as the root deployment entrypoint (placeholder until T002).
+- `modules/`: place for reusable Bicep modules. Use subfolders per module (containerapps, networking, monitoring, cosmos).
+- `parameters/`: place for environment-specific parameter files (nonprod, prod).
+
+This scaffold was added/validated by task T001. Subsequent tasks will populate `main.bicep`, `modules/`, and `parameters/`.

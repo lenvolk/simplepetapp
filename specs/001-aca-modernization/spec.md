@@ -147,9 +147,9 @@ As a security-minded operator, I can run and operate the application without sto
 
 ## Assumptions
 
-- The app remains a single-application workload (no separate backend service is introduced in this modernization step).
+- **Server-side API introduced**: To keep secrets (managed identity credentials, Cosmos DB access) out of the browser-hosted Blazor WASM app, this modernization introduces a server-side ASP.NET Core API host (`MyPetVenues.Api`) that serves the static Blazor WASM files and provides HTTP endpoints for data access. The Blazor WASM UI calls this API over HTTP, authenticated via Microsoft Entra ID tokens.
 - The modernization includes implementing real persistence (replacing demo-only, in-memory/mock data behavior).
-- The persistent store for core data is Azure Cosmos DB (SQL API), accessed via the app's system-assigned managed identity.
+- The persistent store for core data is Azure Cosmos DB (SQL API), accessed via the app's system-assigned managed identity from the API server only.
 - The scope for environments in this feature is a single non-production deployment.
 - The non-production environment is reachable over HTTPS and is secured by Microsoft Entra ID authentication (no anonymous access).
 - Application telemetry is available in Azure Application Insights (workspace-based).
