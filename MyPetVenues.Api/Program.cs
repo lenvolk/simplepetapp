@@ -22,7 +22,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-builder.Services.AddAuthorization();
+builder.Services.AddAuthorization(options =>
+{
+    options.FallbackPolicy = options.DefaultPolicy; // Require auth by default for all endpoints
+});
 builder.Services.AddRouting();
 builder.Services.AddHealthChecks();
 
@@ -31,17 +34,17 @@ var app = builder.Build();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Serve Blazor WASM static files
+// Serve Blazor WASM static files (auth enforced via fallback policy)
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
-app.MapHealthChecks("/health");
-app.MapGet("/ready", () => Results.Ok(new { status = "ready" }));
+app.MapHealthChecks("/health").AllowAnonymous(); // Allow health checks without auth
+app.MapGet("/ready", () => Results.Ok(new { status = "ready" })).AllowAnonymous();
 
 app.MapGet("/api/ping", () => Results.Ok(new { status = "ok", time = DateTimeOffset.UtcNow }))
    .RequireAuthorization();
 
-// Fallback to index.html for Blazor routing
+// Fallback to index.html for Blazor routing (auth enforced)
 app.MapFallbackToFile("index.html");
 
 app.Run();
