@@ -24,4 +24,14 @@ builder.Services.AddHttpClient("MyPetVenues.Api", client =>
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("MyPetVenues.Api"));
 
+// Register API-backed services
+builder.Services.AddScoped<ApiVenueService>();
+builder.Services.AddScoped<ApiBookingService>();
+builder.Services.AddScoped<ApiUserService>();
+
+// Register legacy services for fallback
+builder.Services.AddScoped<VenueService>();
+builder.Services.AddScoped<BookingService>();
+builder.Services.AddScoped<UserService>();
+
 await builder.Build().RunAsync();
