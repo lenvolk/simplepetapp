@@ -15,6 +15,15 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.DefaultAccessTokenScopes.Add("api://YOUR_API_CLIENT_ID/access_as_user");
 });
 
+// Configure HttpClient for API calls with token
+builder.Services.AddHttpClient("MyPetVenues.Api", client =>
+{
+    client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress);
+})
+.AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+
+builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("MyPetVenues.Api"));
+
 // Register services
 builder.Services.AddScoped<VenueService>();
 builder.Services.AddScoped<BookingService>();
