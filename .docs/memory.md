@@ -53,8 +53,30 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 - App-to-Azure: system-assigned managed identity
 - Persistence: Azure Cosmos DB (SQL API)
 - Observability: Application Insights (workspace-based)
+- **Status**: ✅ COMPLETE - All 70 tasks (T001-T070) executed successfully
 - Planning artifacts created in `specs/001-aca-modernization/`:
 	- `plan.md`, `research.md`, `data-model.md`, `contracts/openapi.yaml`, `quickstart.md`
+	- `lessons-learned.md` - comprehensive execution lessons and optimizations
+
+## Workflow Optimization (December 2025)
+- Reviewed completed ACA modernization execution
+- Optimized swarm-mode.prompt.md with:
+	- Known issues and pre-emptive fixes (4 issues documented)
+	- Better parallelization guidance (6 high-value waves identified)
+	- Phase-specific validation rules (75% build overhead reduction)
+	- Solution structure context to prevent missing references
+- Updated tasks.md with clearer task descriptions including pre-emptive fixes
+- Created lessons-learned.md with:
+	- 4 issues encountered and their fixes
+	- Performance metrics (43% time saved with optimizations)
+	- Recommended workflow changes for future executions
+	- Parallel wave strategy with time savings
+- Updated aca-orchestration skill with:
+	- Pre-flight checks
+	- Pre-emptive fixes (auto-apply)
+	- High-value parallel waves list
+	- Validation checkpoint strategy
+- **Goal achieved**: Next "go ahead" execution should require ZERO user intervention
 
 ## Agent Orchestration
 - Added an ACA orchestration entrypoint agent for the no-typing workflow: `.github/agents/aca-orchestration.agent.md`

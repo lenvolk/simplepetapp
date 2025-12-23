@@ -29,6 +29,8 @@ If the user message is exactly `go ahead` (or equivalent like `go ahead.`), inte
 - Repo: `simkplepetapp` (.NET 9 Blazor WebAssembly)
 - Feature: `specs/001-aca-modernization/`
 - Target: Azure Container Apps (non-prod), Microsoft Entra ID required, Cosmos DB persistence using managed identity, workspace-based Application Insights.
+- Solution structure: 3 projects (MyPetVenues.Shared, MyPetVenues WASM, MyPetVenues.Api)
+- Critical dependency: MyPetVenues must reference MyPetVenues.Shared (not automatic)
 
 ## Roles
 - **Orchestrator (you)**: plan waves, spawn/monitor background CLI agents in isolated worktrees, run minimal wave checks, merge cleanly, and report progress.
@@ -72,6 +74,35 @@ git commit -m "Initial commit before swarm orchestration"
   - [P] tasks may run in parallel waves whenever their prerequisites are satisfied.
 4. Before executing any parallel wave, confirm tasks touch distinct files. If overlap exists, downgrade the overlapping tasks to sequential.
 
+### Parallelization opportunities (from execution analysis)
+**High-value parallel waves** (3+ tasks, distinct files, no blocking dependencies):
+- **Wave 1.1** (Phase 1, after T002): T003, T004, T005 (parameters, scripts, Docker)
+- **Wave 2.1** (Phase 2, after T012): T013, T019, T020, T021, T023 (options, error handling, health, Cosmos factory, auth helpers)
+- **Wave 2.2** (Phase 2, after T014): T015, T016 (UI auth, UI routing)
+- **Wave 3.1** (Phase 3, after T024): T025, T026 (networking, monitoring modules)
+- **Wave 4.1** (Phase 4, after T036): T037, T040, T043, T046 (all contract DTOs in Shared project)
+- **Wave 5.1** (Phase 5, after T054): T055, T058 (logging helpers, health checks)
+- **Wave 7.1** (Phase 7, any time): T066, T068, T070 (docs, smoke tests)
+
+**Medium-value waves** (2 tasks, moderate speedup):
+- Phase 2: T015+T016 (if T014 complete)
+- Phase 3: T025+T026, T032+T033
+- Phase 4: Various mapper/contract pairs after DTOs exist
+
+**Low-value parallelization** (avoid overhead):
+- Single-task "waves"
+- Tasks with shared file dependencies
+- Sequential repository implementations (share patterns)
+
+### Wave execution strategy
+1. **Identify the wave** from the list above
+2. **Verify file disjoint** (quick check of target files)
+3. **Create all worktrees** for the wave at once
+4. **Execute tasks** in parallel (separate terminal sessions or async)
+5. **Wait for all completions** before validating
+6. **Run single validation** for the entire wave (solution build preferred)
+7. **Merge sequentially** (one at a time to avoid conflicts)
+
 ## Worktree strategy
 - One worktree per task:
   - Branch: `task-<TaskID>` (e.g., `task-T003`)
@@ -92,9 +123,19 @@ When spawning a background CLI agent, include:
 - Required commit message: `<TaskID> <short description>`
 
 ## Validation rules (narrowest check)
-- If touching `.cs`, `.razor`, `.csproj`: run `dotnet build MyPetVenues/MyPetVenues.csproj` (until the API project exists; then prefer solution build).
-- If touching `.bicep` / `.bicepparam`: compile/validate if Bicep tooling is available.
-- Docs-only changes: no build.
+- **Phase 1-2 (T001-T023)**: Individual project builds suffice
+- **Phase 3+ (T024+)**: Use solution build (`dotnet build simkplepetapp.sln`) to catch cross-project issues
+- **After multi-project parallel waves**: Always run solution build
+- If touching `.cs`, `.razor`, `.csproj`:
+  - Single project changes: `dotnet build <ProjectPath>`
+  - Cross-project changes or new projects: `dotnet build simkplepetapp.sln`
+- If touching `.bicep` / `.bicepparam`: `az bicep build --file <path>` if Azure CLI available
+- Docs-only changes: no build
+- **Known validation triggers**:
+  - After T012 (shared project added): validate MyPetVenues.Shared builds
+  - After T017 (project references): validate solution builds
+  - After T050-T051 (UI service changes): validate MyPetVenues references Shared
+  - After T061 (Cosmos RBAC): validate main.bicep compiles
 
 ## Merge policy
 After a task/wave completes and validation is green:
@@ -118,6 +159,43 @@ git branch -d task-<TaskID>
 ## Error policy
 - Allow up to 2 remediation attempts in the same worktree.
 - If still failing: stop and report TaskID, error output, suspected cause, and recommended next action.
+
+## Known issues and pre-emptive fixes
+
+### Issue 1: Missing project reference (MyPetVenues → MyPetVenues.Shared)
+**When**: After T050-T051 (UI services using Shared contracts)
+**Symptom**: CS0234 errors "namespace 'Shared' does not exist"
+**Fix**: Add to MyPetVenues/MyPetVenues.csproj:
+```xml
+<ItemGroup>
+  <ProjectReference Include="..\MyPetVenues.Shared\MyPetVenues.Shared.csproj" />
+</ItemGroup>
+```
+**Pre-emptive action**: After T012 (Shared project creation), immediately add this reference to MyPetVenues.csproj
+
+### Issue 2: Legacy service registrations
+**When**: After T050 (switching to API-backed services)
+**Symptom**: CS0246 errors for VenueService, BookingService, UserService
+**Fix**: Remove from MyPetVenues/Program.cs:
+- `builder.Services.AddScoped<IVenueService, VenueService>();`
+- `builder.Services.AddScoped<IBookingService, BookingService>();`
+- `builder.Services.AddScoped<IUserService, UserService>();`
+**Pre-emptive action**: T050 should explicitly remove old registrations, not just add new ones
+
+### Issue 3: Cosmos RBAC ordering
+**When**: T061 (RBAC role assignments in Bicep)
+**Symptom**: Cannot reference cosmos module outputs for role assignment scope
+**Fix**: Move cosmos module declaration before containerapps in main.bicep
+**Pre-emptive action**: T035 should place cosmos module before containerapps module
+
+### Issue 4: Cosmos accountId output missing
+**When**: T061 (RBAC role assignments need account resource ID)
+**Symptom**: Cannot scope role assignment to Cosmos account
+**Fix**: Add to infra/modules/cosmos.bicep outputs:
+```bicep
+output accountId string = cosmosAccount.id
+```
+**Pre-emptive action**: Include accountId output in T034 (Cosmos module creation)
 
 ## Progress reporting
 After each task/wave, report:

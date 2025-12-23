@@ -41,7 +41,7 @@ description: "Task list for 001-aca-modernization implementation"
 **Purpose**: Authentication, shared contracts, and Cosmos/HTTP plumbing needed before any user story work.
 
 - [ ] T011 Create shared contracts project in `MyPetVenues.Shared/MyPetVenues.Shared.csproj`
-- [ ] T012 Add shared project to solution in `simkplepetapp.sln`
+- [ ] T012 Add shared project to solution in `simkplepetapp.sln` **AND** add project reference in `MyPetVenues/MyPetVenues.csproj` to prevent missing reference errors later
 - [ ] T013 [P] Define typed options for auth + Cosmos in `MyPetVenues.Api/Options/AuthOptions.cs` and `MyPetVenues.Api/Options/CosmosOptions.cs`
 - [ ] T014 Implement Entra JWT validation in `MyPetVenues.Api/Program.cs` (no client secrets; configure authority/audience via config)
 - [ ] T015 [P] Add MSAL auth to UI in `MyPetVenues/Program.cs` (public client only)
@@ -85,8 +85,8 @@ description: "Task list for 001-aca-modernization implementation"
 
 **Independent Test**: Create venue/review/booking + update profile; reload + redeploy; verify the data is retained.
 
-- [ ] T034 [US2] Create Cosmos account/db/containers module in `infra/modules/cosmos.bicep` (containers: `venues`, `reviews`, `bookings`, `users`; partition keys from `data-model.md`)
-- [ ] T035 [US2] Wire Cosmos module outputs (endpoint/db/container names) in `infra/main.bicep`
+- [ ] T034 [US2] Create Cosmos account/db/containers module in `infra/modules/cosmos.bicep` (containers: `venues`, `reviews`, `bookings`, `users`; partition keys from `data-model.md`; **include output accountId for RBAC**)
+- [ ] T035 [US2] Wire Cosmos module outputs (endpoint/db/container names/accountId) in `infra/main.bicep` **AND place cosmos module BEFORE containerapps module** to enable RBAC role assignments
 - [ ] T036 [US2] Add API configuration for Cosmos in `MyPetVenues.Api/appsettings.json` and bind in `MyPetVenues.Api/Program.cs`
 - [ ] T037 [P] [US2] Add venues contract types in `MyPetVenues.Shared/Contracts/Venues/` and mapping in `MyPetVenues.Api/Mappers/VenueMapper.cs`
 - [ ] T038 [US2] Implement venues data access in `MyPetVenues.Api/Data/Repositories/VenueRepository.cs`
@@ -101,7 +101,7 @@ description: "Task list for 001-aca-modernization implementation"
 - [ ] T047 [US2] Implement user profile data access in `MyPetVenues.Api/Data/Repositories/UserRepository.cs`
 - [ ] T048 [US2] Implement current-user endpoints in `MyPetVenues.Api/Endpoints/MeEndpoints.cs`
 - [ ] T049 [US2] Enforce ownership rules in endpoints using `MyPetVenues.Api/Auth/UserClaims.cs` (bookings/users per-user; venues policy documented)
-- [ ] T050 [US2] Add API-backed service implementations in `MyPetVenues/Services/` (e.g., `ApiVenueService.cs`, `ApiBookingService.cs`, `ApiUserService.cs`) and switch DI in `MyPetVenues/Program.cs`
+- [ ] T050 [US2] Add API-backed service implementations in `MyPetVenues/Services/` (e.g., `ApiVenueService.cs`, `ApiBookingService.cs`, `ApiUserService.cs`) and switch DI in `MyPetVenues/Program.cs` **by replacing old MockService registrations with new ApiService registrations** (remove VenueService, BookingService, UserService)
 - [ ] T051 [US2] Update UI pages to use API-backed services and handle auth/loading/errors in `MyPetVenues/Pages/Venues.razor`, `MyPetVenues/Pages/VenueDetail.razor`, `MyPetVenues/Pages/BookVenue.razor`, `MyPetVenues/Pages/Profile.razor`
 - [ ] T052 [US2] Add non-prod seed helper (optional) in `MyPetVenues.Api/Data/Seed/SeedData.cs` and wire behind a config flag
 
@@ -134,8 +134,8 @@ description: "Task list for 001-aca-modernization implementation"
 **Independent Test**: Deploy from clean checkout without secrets; confirm Cosmos access uses managed identity and no keys/connection strings are required.
 
 - [ ] T060 [US4] Ensure Cosmos access uses managed identity only in `MyPetVenues.Api/Data/Cosmos/CosmosClientFactory.cs` (no keys)
-- [ ] T061 [US4] Disable Cosmos local auth and avoid key outputs in `infra/modules/cosmos.bicep`
-- [ ] T062 [US4] Enable system-assigned identity and least-privilege role assignment in `infra/modules/containerapps.bicep`
+- [ ] T061 [US4] Disable Cosmos local auth, avoid key outputs in `infra/modules/cosmos.bicep`, **AND add RBAC role assignments in `infra/main.bicep`** (Cosmos Data Contributor: 00000000-0000-0000-0000-000000000002, Monitoring Metrics Publisher: 3913510d-42f4-4e42-8a64-420c390055eb)
+- [ ] T062 [US4] Enable system-assigned identity in `infra/modules/containerapps.bicep` (role assignments handled in T061)
 - [ ] T063 [US4] Add security runbook (what is/isn’t a secret) in `specs/001-aca-modernization/runbook-security.md`
 - [ ] T064 [US4] Remove/avoid any connection string settings in `MyPetVenues.Api/appsettings.json` (document required non-secret values only)
 - [ ] T065 [US4] Document “no secrets” policy in `how2.md`
