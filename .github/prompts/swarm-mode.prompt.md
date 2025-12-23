@@ -15,6 +15,12 @@ To reduce context, do not inline long instructions. Load these files on demand w
 ## Source of truth
 - The ONLY authoritative task list is `specs/001-aca-modernization/tasks.md`.
 
+## User trigger (no-typing workflow)
+If the user message is exactly `go ahead` (or equivalent like `go ahead.`), interpret it as:
+- Execute `specs/001-aca-modernization/tasks.md` starting at **T001**.
+- Follow all strict ordering + worktree + validation rules in this prompt.
+- Do **not** ask for confirmation unless a stop condition is hit (missing prerequisites, conflicts, repeated failures).
+
 ## Parallelism rule (STRICT)
 - ONLY tasks explicitly marked `[P]` may run in parallel.
 - ALL tasks without `[P]` MUST run sequentially in ascending TaskID order (T001, T002, ...), even if they look parallelizable.

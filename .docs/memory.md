@@ -57,7 +57,8 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 	- `plan.md`, `research.md`, `data-model.md`, `contracts/openapi.yaml`, `quickstart.md`
 
 ## Agent Orchestration
-- Added an ACA orchestration agent: `.github/agents/aca.orchestrator.agent.md`
+- Added an ACA orchestration entrypoint agent for the no-typing workflow: `.github/agents/aca-orchestration.agent.md`
 - Added sub-agents in `.github/agents/sub-agents/` for wave planning, parallel runs, sequential runs, and wave checks
 - Added a scratchpad log file: `.docs/orchestrator-runlog.md`
+- Updated the swarm workflow so the only required user message is `go ahead` (defaults to running `specs/001-aca-modernization/tasks.md` starting at T001)
 

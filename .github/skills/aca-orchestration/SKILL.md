@@ -5,6 +5,11 @@ description: Orchestrate specs/001-aca-modernization/tasks.md with strict orderi
 
 # ACA Orchestration (Skill)
 
+## Default invocation
+If the user message is exactly `go ahead` (or similar), treat it as:
+- Execute `specs/001-aca-modernization/tasks.md` starting at **T001**.
+- Proceed without additional confirmation, unless a stop condition is triggered.
+
 ## Core rules (non-negotiable)
 - Only tasks explicitly marked `[P]` may run in parallel.
 - All non-`[P]` tasks run sequentially in ascending task ID order.

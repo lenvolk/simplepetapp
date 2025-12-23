@@ -20,11 +20,11 @@ Deployment is defined and implemented by `specs/001-aca-modernization/tasks.md` 
 ### Run the ACA Lead Orchestrator (with swarm prompt)
 
 1. Open Copilot Chat
-2. From the custom agent dropdown, select **ACA Modernization Orchestrator**
+2. From the custom agent dropdown, select **aca-orchestration**
 3. In the chat window, add custom instructions: `#file:swarm-mode.prompt.md`
-4. Send your request:
+4. Send a single message:
 
-	`Execute specs/001-aca-modernization/tasks.md starting at T001.`
+  `go ahead`
 
 ### Deploy (once US1 tasks have produced the infra + script)
 
@@ -43,7 +43,7 @@ cd c:\Temp\GIT\simkplepetapp
 
 ```mermaid
 flowchart TD
-  A[Lead Orchestrator] --> B[swarm-mode.prompt.md]
+  A[aca-orchestration] --> B[swarm-mode.prompt.md]
   B --> C[Task Graph Builder]
   C -->|sequential| D[Sequential Runner]
   C -->|parallel P| E[Parallel Runner]
