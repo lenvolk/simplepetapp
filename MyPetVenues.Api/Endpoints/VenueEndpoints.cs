@@ -19,7 +19,7 @@ public static class VenueEndpoints
             .AllowAnonymous()
             .WithName("GetAllVenues");
 
-        group.MapGet("{id:guid}", GetVenueById)
+        group.MapGet("{id}", GetVenueById)
             .AllowAnonymous()
             .WithName("GetVenueById");
 
@@ -40,7 +40,7 @@ public static class VenueEndpoints
     }
 
     private static async Task<IResult> GetVenueById(
-        [FromRoute] Guid id,
+        [FromRoute] string id,
         [FromServices] VenueRepository repo,
         CancellationToken ct = default)
     {
@@ -63,7 +63,7 @@ public static class VenueEndpoints
             Area = request.Area,
             Amenities = request.Amenities,
             Description = request.Description,
-            Photos = request.Photos,
+            Photos = new List<string>(),
             Rating = 0,
             ReviewCount = 0
         };

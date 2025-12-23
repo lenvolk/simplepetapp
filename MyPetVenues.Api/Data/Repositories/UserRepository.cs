@@ -13,13 +13,13 @@ public class UserRepository
         _container = factory.GetContainer("users");
     }
 
-    public async Task<UserProfile?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<UserProfile?> GetByIdAsync(string id, CancellationToken ct = default)
     {
         try
         {
             var response = await _container.ReadItemAsync<UserProfile>(
-                id.ToString(),
-                new PartitionKey(id.ToString()),
+                id,
+                new PartitionKey(id),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -32,7 +32,7 @@ public class UserRepository
 
     public async Task<UserProfile> UpsertAsync(UserProfile user, CancellationToken ct = default)
     {
-        var response = await _container.UpsertItemAsync(user, new PartitionKey(user.Id.ToString()), cancellationToken: ct);
+        var response = await _container.UpsertItemAsync(user, new PartitionKey(user.Id), cancellationToken: ct);
         return response.Resource;
     }
 }
