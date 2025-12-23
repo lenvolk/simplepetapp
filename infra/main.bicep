@@ -24,7 +24,16 @@ module networking 'modules/networking.bicep' = {
   }
 }
 
-// Deploy Container Apps (depends on monitoring and networking)
+// Deploy Cosmos (before ACA so we can assign RBAC)
+module cosmos 'modules/cosmos.bicep' = {
+  name: 'cosmosModule'
+  params: {
+    location: location
+    environment: environment
+  }
+}
+
+// Deploy Container Apps (depends on monitoring, networking, cosmos for RBAC)
 module containerapps 'modules/containerapps.bicep' = {
   name: 'containerAppsModule'
   params: {
@@ -36,12 +45,23 @@ module containerapps 'modules/containerapps.bicep' = {
   }
 }
 
-// Deploy Cosmos (placeholder for US2)
-module cosmos 'modules/cosmos.bicep' = {
-  name: 'cosmosModule'
-  params: {
-    location: location
-    environment: environment
+// Assign Cosmos Data Contributor role to Container App managed identity
+resource cosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
+  name: '${cosmos.outputs.accountName}/${guid(resourceGroup().id, containerapps.outputs.principalId, 'cosmos-data-contributor')}'
+  properties: {
+    roleDefinitionId: '/${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.DocumentDB/databaseAccounts/${cosmos.outputs.accountName}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002'
+    principalId: containerapps.outputs.principalId
+    scope: cosmos.outputs.accountId
+  }
+}
+
+// Assign Monitoring Metrics Publisher role to Container App for App Insights
+resource monitoringRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(resourceGroup().id, containerapps.outputs.principalId, 'monitoring-publisher')
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')
+    principalId: containerapps.outputs.principalId
+    principalType: 'ServicePrincipal'
   }
 }
 
