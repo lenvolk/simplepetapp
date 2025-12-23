@@ -53,3 +53,5 @@ output logWorkspaceId string = monitoring.outputs.logWorkspaceId
 output logWorkspaceName string = monitoring.outputs.logWorkspaceName
 output appInsightsConnectionString string = monitoring.outputs.appInsightsConnectionString
 output cosmosEndpoint string = cosmos.outputs.endpoint
+output cosmosAccountName string = cosmos.outputs.accountName
+output cosmosDatabaseName string = cosmos.outputs.databaseName

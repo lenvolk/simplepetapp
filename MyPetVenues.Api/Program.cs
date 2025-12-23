@@ -3,11 +3,15 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MyPetVenues.Api.Options;
+using MyPetVenues.Api.Data.Cosmos;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configure authentication
+// Configure options
 var authOptions = builder.Configuration.GetSection(AuthOptions.SectionName).Get<AuthOptions>() ?? new AuthOptions();
+var cosmosOptions = builder.Configuration.GetSection(CosmosOptions.SectionName).Get<CosmosOptions>() ?? new CosmosOptions();
+
+// Configure authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -26,6 +30,11 @@ builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = options.DefaultPolicy; // Require auth by default for all endpoints
 });
+
+// Register Cosmos client factory and repositories
+builder.Services.AddSingleton(cosmosOptions);
+builder.Services.AddSingleton<CosmosClientFactory>();
+
 builder.Services.AddRouting();
 builder.Services.AddHealthChecks();
 
