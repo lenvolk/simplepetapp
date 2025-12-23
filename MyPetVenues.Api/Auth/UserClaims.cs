@@ -4,17 +4,21 @@ namespace MyPetVenues.Api.Auth;
 
 public static class UserClaims
 {
-    public static string GetUserId(ClaimsPrincipal user)
+    public static string? GetUserId(this ClaimsPrincipal user)
     {
-        // Prefer 'oid' (object ID) claim from Entra ID, fallback to 'sub'
-        return user.FindFirstValue("oid") 
-            ?? user.FindFirstValue(ClaimTypes.NameIdentifier) 
-            ?? throw new InvalidOperationException("User ID claim not found");
+        return user.FindFirst("http://schemas.microsoft.com/identity/claims/objectidentifier")?.Value
+               ?? user.FindFirst("sub")?.Value;
     }
 
-    public static bool IsOwner(ClaimsPrincipal user, string resourceUserId)
+    public static Guid? GetUserIdAsGuid(this ClaimsPrincipal user)
     {
-        var userId = GetUserId(user);
-        return string.Equals(userId, resourceUserId, StringComparison.OrdinalIgnoreCase);
+        var userId = user.GetUserId();
+        return string.IsNullOrEmpty(userId) ? null : Guid.Parse(userId);
+    }
+
+    public static bool IsOwner(this ClaimsPrincipal user, Guid resourceOwnerId)
+    {
+        var userId = user.GetUserIdAsGuid();
+        return userId.HasValue && userId.Value == resourceOwnerId;
     }
 }
