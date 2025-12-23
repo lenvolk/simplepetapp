@@ -3,7 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "location": {
-      "value": "eastus"
+      "value": "eastus2"
+    },
+    "environment": {
+      "value": "nonprod"
+    },
+    "containerImage": {
+      "value": "simplepetappacr.azurecr.io/mypetvenues:latest"
     }
   }
 }

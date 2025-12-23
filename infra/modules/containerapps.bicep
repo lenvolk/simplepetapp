@@ -2,6 +2,7 @@ param location string
 param environment string
 param containerImage string
 param logWorkspaceId string = ''
+param logWorkspaceKey string = ''
 param vnetSubnetId string = ''
 
 targetScope = 'resourceGroup'
@@ -17,6 +18,7 @@ resource acaEnvironment 'Microsoft.App/managedEnvironments@2023-05-01' = {
       destination: 'log-analytics'
       logAnalyticsConfiguration: {
         customerId: logWorkspaceId
+        sharedKey: logWorkspaceKey
       }
     }
     vnetConfiguration: empty(vnetSubnetId) ? null : {

@@ -25,14 +25,15 @@
 
 [CmdletBinding()]
 param(
-  [string] $ResourceGroup = 'mypetvenues-nonprod-rg',
-  [string] $Location = 'eastus',
+  [string] $ResourceGroup = 'simplepetapp',
+  [string] $Location = 'eastus2',
   [string] $Image = '',
   [switch] $Build,
   [switch] $Push,
-  [string] $Registry = '',
+  [string] $Registry = 'simplepetappacr',
   [string] $SubscriptionId = '',
-  [switch] $WhatIf
+  [switch] $WhatIf,
+  [switch] $UseAcrBuild = $true
 )
 
 Set-StrictMode -Version Latest
@@ -55,24 +56,41 @@ if ($Push -and -not $Registry) {
 }
 
 if ($Build) {
-  Write-Host "Building .NET publish for API project..."
   Push-Location (Join-Path $PSScriptRoot '..')
-  try {
-    dotnet publish "MyPetVenues.Api/MyPetVenues.Api.csproj" -c Release -o ./artifacts/publish | Out-Host
-  } catch {
-    ExitWithError 'dotnet publish failed. Ensure .NET SDK is installed and the API project exists.'
+  
+  if ($UseAcrBuild -and $Registry) {
+    # Use ACR Build (no local Docker required)
+    $acrName = $Registry -replace '\.azurecr\.io$',''
+    $imageTag = if ($Image) { $Image } else { "mypetvenues:latest" }
+    
+    Write-Host "Building image using Azure Container Registry Build: $acrName/$imageTag"
+    try {
+      az acr build --registry $acrName --image $imageTag --file Dockerfile . | Out-Host
+      $Image = "$acrName.azurecr.io/$imageTag"
+    } catch {
+      ExitWithError 'ACR build failed. Ensure Azure CLI is authenticated and ACR exists.'
+    }
   }
+  else {
+    # Local Docker build
+    Write-Host "Building .NET publish for API project..."
+    try {
+      dotnet publish "MyPetVenues.Api/MyPetVenues.Api.csproj" -c Release -o ./artifacts/publish | Out-Host
+    } catch {
+      ExitWithError 'dotnet publish failed. Ensure .NET SDK is installed and the API project exists.'
+    }
 
-  if (-not (Test-Path './Dockerfile')) {
-    Write-Warning 'Dockerfile not found at repository root. Adjust the Dockerfile path in this script or add one (T006).'   
-  }
+    if (-not (Test-Path './Dockerfile')) {
+      Write-Warning 'Dockerfile not found at repository root. Adjust the Dockerfile path in this script or add one (T006).'   
+    }
 
-  $imageTag = $Image
-  Write-Host "Building Docker image: $imageTag"
-  try {
-    docker build -f Dockerfile -t $imageTag . | Out-Host
-  } catch {
-    ExitWithError 'Docker build failed. Ensure Docker is installed and running.'
+    $imageTag = $Image
+    Write-Host "Building Docker image: $imageTag"
+    try {
+      docker build -f Dockerfile -t $imageTag . | Out-Host
+    } catch {
+      ExitWithError 'Docker build failed. Ensure Docker is installed and running.'
+    }
   }
 
   Pop-Location

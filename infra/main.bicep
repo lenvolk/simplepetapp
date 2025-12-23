@@ -41,28 +41,22 @@ module containerapps 'modules/containerapps.bicep' = {
     environment: environment
     containerImage: containerImage
     logWorkspaceId: monitoring.outputs.logWorkspaceId
-    vnetSubnetId: networking.outputs.subnetId
+    logWorkspaceKey: monitoring.outputs.logWorkspaceKey
+    vnetSubnetId: '' // Skip VNet integration to avoid subnet delegation issues
   }
 }
 
-// Assign Cosmos Data Contributor role to Container App managed identity
-resource cosmosRoleAssignment 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
-  name: '${cosmos.outputs.accountName}/${guid(resourceGroup().id, containerapps.outputs.principalId, 'cosmos-data-contributor')}'
-  properties: {
-    roleDefinitionId: '/${subscription().id}/resourceGroups/${resourceGroup().name}/providers/Microsoft.DocumentDB/databaseAccounts/${cosmos.outputs.accountName}/sqlRoleDefinitions/00000000-0000-0000-0000-000000000002'
+// Assign RBAC roles (depends on Container App being created)
+module rbac 'modules/rbac.bicep' = {
+  name: 'rbacModule'
+  params: {
     principalId: containerapps.outputs.principalId
-    scope: cosmos.outputs.accountId
+    cosmosAccountName: cosmos.outputs.accountName
+    cosmosAccountId: cosmos.outputs.accountId
   }
-}
-
-// Assign Monitoring Metrics Publisher role to Container App for App Insights
-resource monitoringRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
-  name: guid(resourceGroup().id, containerapps.outputs.principalId, 'monitoring-publisher')
-  properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '3913510d-42f4-4e42-8a64-420c390055eb')
-    principalId: containerapps.outputs.principalId
-    principalType: 'ServicePrincipal'
-  }
+  dependsOn: [
+    containerapps
+  ]
 }
 
 // Outputs for deployment verification and app configuration
