@@ -3,7 +3,7 @@ name: aca-orchestration
 description: Run specs/001-aca-modernization/tasks.md with strict ordering and [P] file-disjoint parallelism. Use with #file:swarm-mode.prompt.md; user can type only 'go ahead' to start at T001.
 model: GPT-5 mini
 tools:
-  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'todo']
+  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'github/*', 'microsoftdocs/mcp/*', 'agent', 'azure-mcp/*', 'chrisdias.promptboost/promptBoost', 'digitarald.agent-memory/memory', 'ms-azuretools.vscode-apimanagement/get-available-apim-policies', 'ms-azuretools.vscode-azureresourcegroups/azureActivityLog', 'todo']
 handoffs:
   - label: Lead Orchestrator
     agent: aca.lead-orchestrator
