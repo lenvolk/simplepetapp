@@ -65,9 +65,11 @@ specs/                # Architecture Decision Records and specs
 - Structured logging with request correlation
 
 ## Documentation
-- [Deployment Runbook](specs/001-aca-modernization/runbook-deploy.md)
-- [Architecture Spec](specs/001-aca-modernization/spec.md)
-- [Quick Start Guide](specs/001-aca-modernization/quickstart.md)
+- [Architecture Spec](specs/001-aca-modernization/spec.md) - ACA deployment architecture
+- [Quick Start Guide](specs/001-aca-modernization/quickstart.md) - Local development setup
+- [Deployment Runbook](specs/001-aca-modernization/runbook-deploy.md) - Production deployment steps
+- [Lessons Learned](specs/001-aca-modernization/lessons-learned.md) - Execution insights (43% faster deployment)
+- [Orchestration Guide](.github/ORCHESTRATION-QUICKREF.md) - Agent execution reference
 
 ## License
 MIT
