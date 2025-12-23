@@ -3,10 +3,7 @@ name: aca-orchestration
 description: Run specs/001-aca-modernization/tasks.md with strict ordering and [P] file-disjoint parallelism. Use with #file:swarm-mode.prompt.md; user can type only 'go ahead' to start at T001.
 model: GPT-5 mini
 tools:
-  - list_dir
-  - read_file
-  - create_directory
-  - create_file
+  ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'agent', 'todo']
 handoffs:
   - label: Lead Orchestrator
     agent: aca.lead-orchestrator
