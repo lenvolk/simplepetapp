@@ -1,7 +1,6 @@
 ---
 name: prompt-scoping
-description: Write minimal, file-scoped prompts for Copilot/agents (SELECT/COMPRESS/ISOLATE) to reduce context usage and prevent unintended edits.
-compatibility: Designed for any agent runner that can pass a prompt and enforce file allowlists.
+description: Write minimal, file-scoped prompts for Copilot/agents (SELECT/COMPRESS/ISOLATE) to reduce context usage and prevent unintended edits. Use when creating task instructions for automated agents or parallel execution.
 ---
 
 # Prompt Scoping (Skill)

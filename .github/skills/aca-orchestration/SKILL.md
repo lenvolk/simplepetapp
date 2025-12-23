@@ -1,10 +1,6 @@
 ---
 name: aca-orchestration
-description: Orchestrate specs/001-aca-modernization/tasks.md with strict ordering (only [P] parallel), durable run logs, and wave planning/validation. Use when coordinating ACA modernization agents.
-compatibility: Designed for VS Code Copilot chatagent workflows that can read files on demand.
-metadata:
-  repo: simkplepetapp
-  area: aca-modernization
+description: Orchestrate specs/001-aca-modernization/tasks.md with strict ordering (only [P] parallel), durable run logs, and wave planning/validation. Use when coordinating ACA modernization agents or multi-task execution workflows.
 ---
 
 # ACA Orchestration (Skill)

@@ -1,9 +1,6 @@
 ---
 name: git-worktree-execution
-description: Create isolated git worktrees/branches per task, merge back safely, and clean up. Use when runners execute tasks in parallel or sequentially.
-compatibility: Requires git CLI and a shell (PowerShell on Windows supported).
-metadata:
-  platform: windows
+description: Create isolated git worktrees/branches per task, merge back safely, and clean up. Use when executing tasks in parallel or when isolating experimental changes from main branch.
 ---
 
 # Git Worktree Execution (Skill)

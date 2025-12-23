@@ -1,7 +1,6 @@
 ---
 name: wave-validation-dotnet
-description: Choose and run the narrowest .NET validation for a task/wave (build specific project first, solution later). Use after code changes.
-compatibility: Requires dotnet SDK.
+description: Choose and run the narrowest .NET validation for a task/wave (build specific project first, solution later). Use after .NET code changes or when validating C#/Blazor applications.
 ---
 
 # Wave Validation: .NET (Skill)

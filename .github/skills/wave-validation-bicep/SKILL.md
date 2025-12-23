@@ -1,7 +1,6 @@
 ---
 name: wave-validation-bicep
-description: Validate Bicep changes by compiling templates and reporting actionable errors. Use after editing .bicep/.bicepparam.
-compatibility: Requires Azure CLI with bicep or Bicep CLI.
+description: Validate Bicep changes by compiling templates and reporting actionable errors. Use after editing .bicep/.bicepparam files or when deploying Azure infrastructure as code.
 ---
 
 # Wave Validation: Bicep (Skill)
