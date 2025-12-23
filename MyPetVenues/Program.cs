@@ -24,10 +24,4 @@ builder.Services.AddHttpClient("MyPetVenues.Api", client =>
 
 builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>().CreateClient("MyPetVenues.Api"));
 
-// Register services
-builder.Services.AddScoped<VenueService>();
-builder.Services.AddScoped<BookingService>();
-builder.Services.AddScoped<UserService>();
-builder.Services.AddScoped<ThemeService>();
-
 await builder.Build().RunAsync();
