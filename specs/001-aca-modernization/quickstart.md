@@ -1,36 +1,33 @@
-# Quickstart (001-aca-modernization)
+# Quick Start: MyPetVenues on Azure Container Apps
 
-This quickstart covers local development for the existing Blazor WebAssembly app and the planned deployment shape for Azure Container Apps (ACA).
+## Local Development (API Host)
 
-## Prereqs
-- .NET SDK 9.x
-- (For Azure later) Azure CLI and access to an Azure subscription
+Run the API project locally:
 
-## Local run (current app)
-From the repo root:
-- Build: `dotnet build MyPetVenues/MyPetVenues.csproj`
-- Run: `dotnet run --project MyPetVenues/MyPetVenues.csproj`
+```powershell
+dotnet run --project MyPetVenues.Api/MyPetVenues.Api.csproj
+```
 
-Then open the displayed local URL.
+Access at `https://localhost:5001` - the API serves the Blazor WASM UI and API endpoints.
 
-## Planned local run (UI + API)
-This feature’s plan introduces a server-side API (required to use managed identity to Cosmos DB without exposing secrets to the browser). Once the API project exists:
-- Run API: `dotnet run --project <ApiProjectPath>`
-- Run UI (WASM): `dotnet run --project MyPetVenues/MyPetVenues.csproj`
+## Deploy to Azure (Non-Prod)
 
-The UI will be configured to call the API base URL (dev: localhost) and use MSAL to acquire access tokens.
+Use the deployment script:
 
-## Planned Azure deployment (ACA)
-High-level (details in plan):
-- Containerize the combined workload (either:
-  - single ASP.NET Core host that serves static WASM assets + API, or
-  - separate UI/API containers in the same Container Apps Environment).
-- Enable system-assigned managed identity on the API container.
-- Provision Cosmos DB (SQL API) and grant the API identity data-plane RBAC.
-- Enforce Microsoft Entra ID auth for all access.
-- Send logs/telemetry to Application Insights (workspace-based).
+```powershell
+./scripts/deploy-nonprod.ps1 -Build -Push -Registry "<your-acr>.azurecr.io" -Image "<your-acr>.azurecr.io/mypetvenues:nonprod" -ResourceGroup "mypetvenues-nonprod-rg"
+```
 
-## Smoke checks (non-prod)
-- UI loads and requires sign-in.
-- API returns `401` without a token and `200` with a valid token.
-- Venues list loads (Cosmos-backed) within acceptable latency.
+See `specs/001-aca-modernization/runbook-deploy.md` for details.
+
+## Configuration
+
+- **Auth**: Configure `Auth:Authority` and `Auth:Audience` in `appsettings.json`
+- **Cosmos**: Set `Cosmos:Endpoint` (managed identity used for access)
+- **App Insights**: Connection string set via environment variable from deployment
+
+## Architecture
+
+- **MyPetVenues.Api**: ASP.NET Core host serving Blazor WASM + API endpoints
+- **MyPetVenues**: Blazor WebAssembly UI (calls API over HTTP with MSAL tokens)
+- **MyPetVenues.Shared**: Shared contracts between UI and API
