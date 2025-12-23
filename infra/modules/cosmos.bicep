@@ -95,3 +95,4 @@ resource usersContainer 'Microsoft.DocumentDB/databaseAccounts/sqlDatabases/cont
 output endpoint string = cosmosAccount.properties.documentEndpoint
 output accountName string = cosmosAccount.name
 output databaseName string = database.name
+output accountId string = cosmosAccount.id
