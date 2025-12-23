@@ -13,13 +13,13 @@ public class ReviewRepository
         _container = factory.GetContainer("reviews");
     }
 
-    public async Task<Review?> GetByIdAsync(Guid id, Guid venueId, CancellationToken ct = default)
+    public async Task<Review?> GetByIdAsync(string id, string venueId, CancellationToken ct = default)
     {
         try
         {
             var response = await _container.ReadItemAsync<Review>(
-                id.ToString(),
-                new PartitionKey(venueId.ToString()),
+                id,
+                new PartitionKey(venueId),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -30,7 +30,7 @@ public class ReviewRepository
         }
     }
 
-    public async Task<IReadOnlyList<Review>> GetByVenueIdAsync(Guid venueId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Review>> GetByVenueIdAsync(string venueId, CancellationToken ct = default)
     {
         var queryDef = new QueryDefinition("SELECT * FROM c WHERE c.VenueId = @venueId ORDER BY c.CreatedAt DESC")
             .WithParameter("@venueId", venueId);
@@ -45,7 +45,7 @@ public class ReviewRepository
         return results;
     }
 
-    public async Task<IReadOnlyList<Review>> GetByUserIdAsync(Guid userId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Review>> GetByUserIdAsync(string userId, CancellationToken ct = default)
     {
         var queryDef = new QueryDefinition("SELECT * FROM c WHERE c.UserId = @userId ORDER BY c.CreatedAt DESC")
             .WithParameter("@userId", userId);
@@ -62,9 +62,9 @@ public class ReviewRepository
 
     public async Task<Review> CreateAsync(Review review, CancellationToken ct = default)
     {
-        review.Id = Guid.NewGuid();
-        review.CreatedAt = DateTimeOffset.UtcNow;
-        var response = await _container.CreateItemAsync(review, new PartitionKey(review.VenueId.ToString()), cancellationToken: ct);
+        review.Id = Guid.NewGuid().ToString();
+        review.CreatedAt = DateTime.UtcNow;
+        var response = await _container.CreateItemAsync(review, new PartitionKey(review.VenueId), cancellationToken: ct);
         return response.Resource;
     }
 
@@ -74,8 +74,8 @@ public class ReviewRepository
         {
             var response = await _container.ReplaceItemAsync(
                 review,
-                review.Id.ToString(),
-                new PartitionKey(review.VenueId.ToString()),
+                review.Id,
+                new PartitionKey(review.VenueId),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -86,13 +86,13 @@ public class ReviewRepository
         }
     }
 
-    public async Task<bool> DeleteAsync(Guid id, Guid venueId, CancellationToken ct = default)
+    public async Task<bool> DeleteAsync(string id, string venueId, CancellationToken ct = default)
     {
         try
         {
             await _container.DeleteItemAsync<Review>(
-                id.ToString(),
-                new PartitionKey(venueId.ToString()),
+                id,
+                new PartitionKey(venueId),
                 cancellationToken: ct
             );
             return true;

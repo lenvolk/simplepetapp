@@ -31,16 +31,16 @@ public static class MeEndpoints
         if (string.IsNullOrEmpty(userId))
             return Results.Unauthorized();
 
-        var profile = await repo.GetByIdAsync(Guid.Parse(userId), ct);
+        var profile = await repo.GetByIdAsync(userId, ct);
         if (profile is null)
         {
             // Create default profile on first access
             profile = new UserProfile
             {
-                Id = Guid.Parse(userId),
+                Id = userId,
                 Name = httpContext.User.Identity?.Name ?? "Unknown",
                 Email = httpContext.User.FindFirst("preferred_username")?.Value ?? "",
-                FavoriteVenues = new List<Guid>()
+                FavoriteVenues = new List<string>()
             };
             profile = await repo.UpsertAsync(profile, ct);
         }
@@ -59,15 +59,15 @@ public static class MeEndpoints
         if (string.IsNullOrEmpty(userId))
             return Results.Unauthorized();
 
-        var profile = await repo.GetByIdAsync(Guid.Parse(userId), ct);
+        var profile = await repo.GetByIdAsync(userId, ct);
         if (profile is null)
         {
             profile = new UserProfile
             {
-                Id = Guid.Parse(userId),
+                Id = userId,
                 Name = request.Name,
                 Email = httpContext.User.FindFirst("preferred_username")?.Value ?? "",
-                FavoriteVenues = request.FavoriteVenues ?? new List<Guid>()
+                FavoriteVenues = request.FavoriteVenues ?? new List<string>()
             };
         }
         else

@@ -15,13 +15,13 @@ public class VenueRepository
         _container = factory.GetContainer("venues");
     }
 
-    public async Task<Venue?> GetByIdAsync(Guid id, CancellationToken ct = default)
+    public async Task<Venue?> GetByIdAsync(string id, CancellationToken ct = default)
     {
         try
         {
             var response = await _container.ReadItemAsync<Venue>(
-                id.ToString(),
-                new PartitionKey(id.ToString()),
+                id,
+                new PartitionKey(id),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -71,8 +71,8 @@ public class VenueRepository
 
     public async Task<Venue> CreateAsync(Venue venue, CancellationToken ct = default)
     {
-        venue.Id = Guid.NewGuid();
-        var response = await _container.CreateItemAsync(venue, new PartitionKey(venue.Id.ToString()), cancellationToken: ct);
+        venue.Id = Guid.NewGuid().ToString();
+        var response = await _container.CreateItemAsync(venue, new PartitionKey(venue.Id), cancellationToken: ct);
         return response.Resource;
     }
 
@@ -82,8 +82,8 @@ public class VenueRepository
         {
             var response = await _container.ReplaceItemAsync(
                 venue,
-                venue.Id.ToString(),
-                new PartitionKey(venue.Id.ToString()),
+                venue.Id,
+                new PartitionKey(venue.Id),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -94,13 +94,13 @@ public class VenueRepository
         }
     }
 
-    public async Task<bool> DeleteAsync(Guid id, CancellationToken ct = default)
+    public async Task<bool> DeleteAsync(string id, CancellationToken ct = default)
     {
         try
         {
             await _container.DeleteItemAsync<Venue>(
-                id.ToString(),
-                new PartitionKey(id.ToString()),
+                id,
+                new PartitionKey(id),
                 cancellationToken: ct
             );
             return true;

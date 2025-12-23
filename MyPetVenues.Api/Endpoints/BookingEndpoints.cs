@@ -20,7 +20,7 @@ public static class BookingEndpoints
         group.MapPost("", CreateBooking)
             .WithName("CreateBooking");
 
-        group.MapDelete("{id:guid}", CancelBooking)
+        group.MapDelete("{id}", CancelBooking)
             .WithName("CancelBooking");
     }
 
@@ -34,7 +34,7 @@ public static class BookingEndpoints
         if (string.IsNullOrEmpty(userId))
             return Results.Unauthorized();
 
-        var bookings = await repo.GetByUserIdAsync(Guid.Parse(userId), ct);
+        var bookings = await repo.GetByUserIdAsync(userId, ct);
         var dtos = bookings.Select(BookingMapper.ToDto).ToList();
         return Results.Ok(dtos);
     }
@@ -59,7 +59,7 @@ public static class BookingEndpoints
         var booking = new Booking
         {
             VenueId = request.VenueId,
-            UserId = Guid.Parse(userId),
+            UserId = userId,
             Date = request.Date,
             Status = "Pending"
         };
@@ -71,7 +71,7 @@ public static class BookingEndpoints
     }
 
     private static async Task<IResult> CancelBooking(
-        [FromRoute] Guid id,
+        [FromRoute] string id,
         [FromServices] BookingRepository repo,
         HttpContext httpContext,
         CancellationToken ct = default)
@@ -81,15 +81,15 @@ public static class BookingEndpoints
         if (string.IsNullOrEmpty(userId))
             return Results.Unauthorized();
 
-        var booking = await repo.GetByIdAsync(id, Guid.Parse(userId), ct);
+        var booking = await repo.GetByIdAsync(id, userId, ct);
         if (booking is null)
             return Results.NotFound();
 
         // Verify ownership
-        if (booking.UserId.ToString() != userId)
+        if (booking.UserId != userId)
             return Results.Forbid();
 
-        await repo.DeleteAsync(id, Guid.Parse(userId), ct);
+        await repo.DeleteAsync(id, userId, ct);
         return Results.NoContent();
     }
 }

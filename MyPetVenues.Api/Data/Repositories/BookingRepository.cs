@@ -13,13 +13,13 @@ public class BookingRepository
         _container = factory.GetContainer("bookings");
     }
 
-    public async Task<Booking?> GetByIdAsync(Guid id, Guid userId, CancellationToken ct = default)
+    public async Task<Booking?> GetByIdAsync(string id, string userId, CancellationToken ct = default)
     {
         try
         {
             var response = await _container.ReadItemAsync<Booking>(
-                id.ToString(),
-                new PartitionKey(userId.ToString()),
+                id,
+                new PartitionKey(userId),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -30,7 +30,7 @@ public class BookingRepository
         }
     }
 
-    public async Task<IReadOnlyList<Booking>> GetByUserIdAsync(Guid userId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Booking>> GetByUserIdAsync(string userId, CancellationToken ct = default)
     {
         var queryDef = new QueryDefinition("SELECT * FROM c WHERE c.UserId = @userId ORDER BY c.Date DESC")
             .WithParameter("@userId", userId);
@@ -38,7 +38,7 @@ public class BookingRepository
         var results = new List<Booking>();
         using var iterator = _container.GetItemQueryIterator<Booking>(
             queryDef,
-            requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(userId.ToString()) }
+            requestOptions: new QueryRequestOptions { PartitionKey = new PartitionKey(userId) }
         );
         while (iterator.HasMoreResults)
         {
@@ -48,7 +48,7 @@ public class BookingRepository
         return results;
     }
 
-    public async Task<IReadOnlyList<Booking>> GetByVenueIdAsync(Guid venueId, CancellationToken ct = default)
+    public async Task<IReadOnlyList<Booking>> GetByVenueIdAsync(string venueId, CancellationToken ct = default)
     {
         var queryDef = new QueryDefinition("SELECT * FROM c WHERE c.VenueId = @venueId ORDER BY c.Date DESC")
             .WithParameter("@venueId", venueId);
@@ -65,8 +65,8 @@ public class BookingRepository
 
     public async Task<Booking> CreateAsync(Booking booking, CancellationToken ct = default)
     {
-        booking.Id = Guid.NewGuid();
-        var response = await _container.CreateItemAsync(booking, new PartitionKey(booking.UserId.ToString()), cancellationToken: ct);
+        booking.Id = Guid.NewGuid().ToString();
+        var response = await _container.CreateItemAsync(booking, new PartitionKey(booking.UserId), cancellationToken: ct);
         return response.Resource;
     }
 
@@ -76,8 +76,8 @@ public class BookingRepository
         {
             var response = await _container.ReplaceItemAsync(
                 booking,
-                booking.Id.ToString(),
-                new PartitionKey(booking.UserId.ToString()),
+                booking.Id,
+                new PartitionKey(booking.UserId),
                 cancellationToken: ct
             );
             return response.Resource;
@@ -88,13 +88,13 @@ public class BookingRepository
         }
     }
 
-    public async Task<bool> DeleteAsync(Guid id, Guid userId, CancellationToken ct = default)
+    public async Task<bool> DeleteAsync(string id, string userId, CancellationToken ct = default)
     {
         try
         {
             await _container.DeleteItemAsync<Booking>(
-                id.ToString(),
-                new PartitionKey(userId.ToString()),
+                id,
+                new PartitionKey(userId),
                 cancellationToken: ct
             );
             return true;

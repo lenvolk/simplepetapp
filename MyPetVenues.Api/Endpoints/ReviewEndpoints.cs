@@ -14,7 +14,7 @@ public static class ReviewEndpoints
             .WithTags("Reviews")
             .RequireAuthorization();
 
-        group.MapGet("venue/{venueId:guid}", GetReviewsByVenue)
+        group.MapGet("venue/{venueId}", GetReviewsByVenue)
             .AllowAnonymous()
             .WithName("GetReviewsByVenue");
 
@@ -23,7 +23,7 @@ public static class ReviewEndpoints
     }
 
     private static async Task<IResult> GetReviewsByVenue(
-        [FromRoute] Guid venueId,
+        [FromRoute] string venueId,
         [FromServices] ReviewRepository repo,
         CancellationToken ct = default)
     {
@@ -52,7 +52,7 @@ public static class ReviewEndpoints
         var review = new Review
         {
             VenueId = request.VenueId,
-            UserId = Guid.Parse(userId),
+            UserId = userId,
             Rating = request.Rating,
             Comment = request.Comment,
             UserName = httpContext.User.Identity?.Name ?? "Anonymous"
