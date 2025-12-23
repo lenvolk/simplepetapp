@@ -137,3 +137,4 @@ try {
 }
 
 Write-Host 'Deployment finished.'
+# Deploy script already complete in T004 with build/push/deploy support
