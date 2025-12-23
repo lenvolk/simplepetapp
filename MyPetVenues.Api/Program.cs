@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using MyPetVenues.Api.Options;
 using MyPetVenues.Api.Data.Cosmos;
+using MyPetVenues.Api.Data.Repositories;
+using MyPetVenues.Api.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,6 +36,10 @@ builder.Services.AddAuthorization(options =>
 // Register Cosmos client factory and repositories
 builder.Services.AddSingleton(cosmosOptions);
 builder.Services.AddSingleton<CosmosClientFactory>();
+builder.Services.AddScoped<VenueRepository>();
+builder.Services.AddScoped<ReviewRepository>();
+builder.Services.AddScoped<BookingRepository>();
+builder.Services.AddScoped<UserRepository>();
 
 builder.Services.AddRouting();
 builder.Services.AddHealthChecks();
@@ -50,8 +56,11 @@ app.UseStaticFiles();
 app.MapHealthChecks("/health").AllowAnonymous(); // Allow health checks without auth
 app.MapGet("/ready", () => Results.Ok(new { status = "ready" })).AllowAnonymous();
 
-app.MapGet("/api/ping", () => Results.Ok(new { status = "ok", time = DateTimeOffset.UtcNow }))
-   .RequireAuthorization();
+// Map API endpoints
+app.MapVenueEndpoints();
+app.MapReviewEndpoints();
+app.MapBookingEndpoints();
+app.MapMeEndpoints();
 
 // Fallback to index.html for Blazor routing (auth enforced)
 app.MapFallbackToFile("index.html");
