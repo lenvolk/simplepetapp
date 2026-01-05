@@ -1,0 +1,54 @@
+root = true
+
+[*]
+charset = utf-8
+end_of_line = crlf
+insert_final_newline = true
+indent_style = space
+indent_size = 4
+trim_trailing_whitespace = true
+
+[*.{cs,razor}]
+# Code style rules
+dotnet_style_qualification_for_field = false:suggestion
+dotnet_style_qualification_for_property = false:suggestion
+dotnet_style_qualification_for_method = false:suggestion
+dotnet_style_qualification_for_event = false:suggestion
+
+# Unused variables and parameters
+dotnet_diagnostic.CS0219.severity = error   # Unused local variable
+dotnet_diagnostic.CS0168.severity = error   # Variable is declared but never used
+dotnet_diagnostic.CS8321.severity = error   # Unused local function
+dotnet_diagnostic.CS0414.severity = warning # Field is assigned but never used
+
+# Async/await usage
+dotnet_diagnostic.CS4014.severity = error   # Task not awaited
+dotnet_diagnostic.CS1998.severity = warning # Async method lacks await
+dotnet_diagnostic.RCS1090.severity = error  # Remove call to 'ConfigureAwait'
+dotnet_diagnostic.RCS1174.severity = warning # Remove redundant async/await
+
+# General code quality
+dotnet_diagnostic.CS8618.severity = warning # Non-nullable field must contain a non-null value
+dotnet_diagnostic.CS8602.severity = warning # Dereference of a possibly null reference
+dotnet_diagnostic.CS8604.severity = warning # Possible null reference argument
+
+# C# formatting rules
+csharp_new_line_before_open_brace = all
+csharp_new_line_before_else = true
+csharp_new_line_before_catch = true
+csharp_new_line_before_finally = true
+csharp_space_around_binary_operators = before_and_after
+csharp_indent_case_contents = true
+csharp_indent_switch_labels = true
+csharp_prefer_simple_using_statement = true:suggestion
+
+# Naming conventions
+dotnet_naming_rule.interface_should_be_prefixed_with_i.severity = warning
+dotnet_naming_rule.interface_should_be_prefixed_with_i.symbols = interface
+dotnet_naming_rule.interface_should_be_prefixed_with_i.style = prefix_interface_with_i
+
+dotnet_naming_symbols.interface.applicable_kinds = interface
+dotnet_naming_symbols.interface.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
+
+dotnet_naming_style.prefix_interface_with_i.required_prefix = I
+dotnet_naming_style.prefix_interface_with_i.capitalization = pascal_case
