@@ -59,6 +59,18 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 - **Priority 3:** Container queries, View Transitions API, responsive images
 - **Priority 4:** Advanced search UX, component documentation, testing
 
+## MyPetVenues Skill (January 5, 2026)
+- **Location:** `.github/skills/mypetvenunes/`
+- **Package:** `mypetvenunes.skill` (in repo root)
+- **Status:** CREATED AND VALIDATED
+- **Contents:**
+  - `SKILL.md` - Core instructions, triggers, quick reference
+  - `references/architecture.md` - Services, DI, routes, patterns
+  - `references/components.md` - Component catalog with parameters
+  - `references/styling.md` - CSS variables, theme system
+  - `references/models.md` - Data model schemas and relationships
+- **Agents that can use:** sa-plan, sa-implement, sa-generate, beastmode-3_1, Debugger
+
 ## Files Analyzed (30 total)
 - 5 Pages + CSS (Home, Venues, VenueDetail, BookVenue, Profile)
 - 7 Components + CSS (VenueCard, ReviewCard, SearchFilters, StarRating, badges)
