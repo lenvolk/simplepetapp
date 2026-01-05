@@ -3,7 +3,7 @@ attach idea.txt to the chat and prompt: "Let's create a PRD for this idea. Keep 
 
 
 To execute: 
-cd c:\Temp\GIT\simkplepetapp\MyPetVenues
+cd C:\Temp\GIT\simplepetapp\MyPetVenues
 
 dotnet run --urls "http://localhost:5050"
 
