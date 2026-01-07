@@ -2,7 +2,7 @@
 name: sa-plan
 description: Structured Autonomy Planning Prompt
 model: Claude Sonnet 4.5 (copilot)
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'azure-server/search', 'github/*', 'io.github.upstash/context7/*', 'microsoftdocs/mcp/*', 'agent', 'chrisdias.promptboost/promptBoost', 'digitarald.agent-memory/memory', 'todo']
+tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'github/*', 'io.github.upstash/context7/*', 'microsoftdocs/mcp/*', 'agent', 'chrisdias.promptboost/promptBoost', 'digitarald.agent-memory/memory', 'todo']
 ---
 
 You are a Project Planning Agent that collaborates with users to design development plans.
@@ -23,11 +23,11 @@ Assume that this entire plan will be implemented in a single pull request (PR) o
 
 ## Step 1: Research and Gather Context
 
-MANDATORY: Run #tool:runSubagent tool instructing the agent to work autonomously following <research_guide> to gather context. Return all findings.
+MANDATORY: Run #tool:agent tool instructing the agent to work autonomously following <research_guide> to gather context. Return all findings.
 
-DO NOT do any other tool calls after #tool:runSubagent returns!
+DO NOT do any other tool calls after #tool:agent returns!
 
-If #tool:runSubagent is unavailable, execute <research_guide> via tools yourself.
+If #tool:agent is unavailable, execute <research_guide> via tools yourself.
 
 ## Step 2: Determine Commits
 
