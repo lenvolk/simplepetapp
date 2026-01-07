@@ -27,7 +27,7 @@ Follow the <workflow> below to generate and save implementation files for each s
    - Feature name and branch (determines root folder: `plans/{feature-name}/`)
    - Implementation steps (numbered 1, 2, 3, etc.)
    - Files affected by each step
-2. Run comprehensive research ONE TIME using <research_task>. Use `runSubagent` to execute. Do NOT pause.
+2. Run comprehensive research ONE TIME using <research_task>. Use `agent` to execute. Do NOT pause.
 3. Once research returns, proceed to Step 2 (file generation).
 
 ## Step 2: Generate Implementation File
