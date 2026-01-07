@@ -77,3 +77,4 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 
 - [x] Implementation plan created: plans/ui-modernization/implementation.md (Step-by-step, 4-phase).
 - [ ] Implementation work: awaiting Step 1 edits and verification.
+- [x] Created `.github/copilot-instructions.md` for AI agent guidance (January 2026)
