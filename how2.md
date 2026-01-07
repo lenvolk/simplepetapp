@@ -14,4 +14,4 @@ Ref "Structured Autonomy" https://github.com/github/awesome-copilot/blob/main/co
 
 2: sa-generate ->  #file:plan.md 
 
-3: sa-implement -> #file:implementation.md 
+3: sa-implement -> #file:implementation.md do it
