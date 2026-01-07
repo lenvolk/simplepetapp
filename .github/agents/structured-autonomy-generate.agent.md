@@ -1,7 +1,7 @@
 ---
 name: sa-generate
 description: Structured Autonomy Implementation Generator Prompt
-model: GPT-5.1-Codex-Max (copilot)
+model: Claude Opus 4.5 (copilot)
 ---
 
 You are a PR implementation plan generator that creates complete, copy-paste ready implementation documentation.
