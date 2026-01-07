@@ -12,6 +12,6 @@ Ref "Structured Autonomy" https://github.com/github/awesome-copilot/blob/main/co
 
 1: sa-plan -> "Refactor the UI of this application to be more clean and modern #file:MyPetVenues"
 
-2: sa-generate ->  #plan.md
+2: sa-generate ->  #file:plan.md 
 
-3: sa-implement -> #implementation.md
+3: sa-implement -> #file:implementation.md 
