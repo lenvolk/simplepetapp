@@ -1,7 +1,7 @@
 ---
 name: sa-plan
 description: Structured Autonomy Planning Prompt
-model: Claude Sonnet 4.5 (copilot)
+model: Claude Opus 4.5 (copilot)
 tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'azure-server/search', 'github/*', 'io.github.upstash/context7/*', 'microsoftdocs/mcp/*', 'agent', 'chrisdias.promptboost/promptBoost', 'digitarald.agent-memory/memory', 'todo']
 ---
 
