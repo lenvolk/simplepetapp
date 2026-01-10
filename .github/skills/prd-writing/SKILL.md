@@ -21,6 +21,14 @@ Ask 3-5 clarifying questions before drafting. Essential questions:
 
 **Context dumping encouraged**: user research, competitive analysis, stakeholder requirements, existing specs.
 
+**⚠️ CRITICAL**: Never skip context gathering, even when:
+- You have access to existing specs/ideas
+- The codebase is already implemented  
+- You think you understand the requirements
+- The user seems eager to get to the PRD
+
+Always ask the 3-5 clarifying questions FIRST. Existing context informs better questions, it doesn't replace them.
+
 **Readiness check**: Move to drafting when you can discuss trade-offs without needing basics explained.
 
 ### 2. Codebase Analysis
@@ -78,6 +86,13 @@ After PRD approval, offer to create GitHub issues:
 3. Use story ID as issue title prefix
 4. Include acceptance criteria in issue body
 5. Return list of created issue links
+
+## Common Mistakes to Avoid
+
+- ❌ Jumping to drafting because you found idea.txt or existing specs
+- ❌ Assuming implemented code means requirements are clear
+- ❌ Skipping user input because you think you have enough context
+- ✅ Use existing context to ask BETTER clarifying questions
 
 ## Formatting Rules
 

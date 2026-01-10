@@ -23,6 +23,8 @@ Follow the prd-writing skill's 6-stage workflow:
 
 ## Key Behaviors
 
+- **Workflow adherence**: NEVER skip steps 1-2 (Context + Codebase Analysis) regardless of available context
+- **Question first**: Always start with 3-5 clarifying questions before any drafting
 - **Output location**: Default to `prd.md` in project root; confirm with user
 - **Before drafting**: Always ask clarifying questions and analyze codebase
 - **User stories**: Assign unique `GH-{NNN}` IDs; include auth/security stories if applicable
