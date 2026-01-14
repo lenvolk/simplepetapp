@@ -24,20 +24,20 @@
         "MyPetVenues/MyPetVenues.csproj"
       ],
       "isBackground": true,
-      "problemMatcher": [
-        {
-          "pattern": [
-            {
-              "regexp": ".*"
-            }
-          ],
-          "background": {
-            "activeOnStart": true,
-            "beginsPattern": "Building\\.\\.\\.|watch : Started|Using launch settings",
-            "endsPattern": "Now listening on:"
-          }
+      "problemMatcher": {
+        "owner": "csharp",
+        "pattern": {
+          "regexp": "^.*$",
+          "file": 1,
+          "location": 2,
+          "message": 3
+        },
+        "background": {
+          "activeOnStart": true,
+          "beginsPattern": "Building\\.\\.\\.|watch : Started|Using launch settings",
+          "endsPattern": "Now listening on:"
         }
-      ]
+      }
     }
   ]
 }
