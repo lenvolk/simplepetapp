@@ -44,7 +44,7 @@
 	// }
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "dotnet restore simkplepetapp.sln",
+	"postCreateCommand": "sudo mkdir -p /home/vscode/.nuget/NuGet && sudo chown -R vscode:vscode /home/vscode/.nuget && sudo chmod -R 755 /home/vscode/.nuget && dotnet restore simkplepetapp.sln",
 
 	// Start the app on container start.
 	// Notes:
