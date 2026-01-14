@@ -27,7 +27,7 @@ copilot -v
 
 If not installed, install it by running:
 ```powershell
-npm install -g @githubnext/github-copilot-cli
+npm install -g @github/copilot
 ```
 
 Verify the installation succeeded before proceeding.
