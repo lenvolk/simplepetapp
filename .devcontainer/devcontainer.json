@@ -60,7 +60,8 @@
 				"ms-dotnettools.blazorwasm-companion",
 				"editorconfig.editorconfig",
 				"GitHub.vscode-pull-request-github",
-				"VijayNirmal.playwright-mcp-relay"
+				"VijayNirmal.playwright-mcp-relay",
+				"GitHub.copilot-chat"
 			],
 			"settings": {
 				"dotnet.defaultSolution": "simkplepetapp.sln",
