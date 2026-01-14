@@ -58,7 +58,9 @@
 			"extensions": [
 				"ms-dotnettools.csdevkit",
 				"ms-dotnettools.blazorwasm-companion",
-				"editorconfig.editorconfig"
+				"editorconfig.editorconfig",
+				"GitHub.vscode-pull-request-github",
+				"VijayNirmal.playwright-mcp-relay"
 			],
 			"settings": {
 				"dotnet.defaultSolution": "simkplepetapp.sln",
