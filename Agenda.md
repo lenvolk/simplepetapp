@@ -29,6 +29,31 @@
 
 ---
 
+## 2.5) System prompt + context window: what the agent *actually* sees (3–4 min)
+- **Mental model:** The model doesn’t “see the repo” — it sees a *compiled bundle* of instructions + selected context.
+- **Why it matters:** Small changes in higher-priority instructions (system/developer/repo) can change outcomes more than the user prompt.
+- **Where the guardrails live (in this repo):** `.github/skills/`, `.github/prompts/`, `.github/agents/`, `.github/instructions/`.
+- **Context window reality:** Not everything fits. The agent must *select* and sometimes *summarize* files/tool output, so we prefer small diffs + explicit intent.
+
+```mermaid
+flowchart TD
+  SP["System prompt<br/>(non-negotiable rules)"] --> CW
+  DI["Developer instructions<br/>(team/agent behavior)"] --> CW
+  RI["Repo instructions<br/>(.github/* constraints + playbooks)"] --> CW
+  UP["User prompt<br/>(goal + constraints)"] --> CW
+  WC["Workspace context<br/>(files, errors, tasks, env)"] --> CW
+  TO["Tool outputs<br/>(search, reads, build logs)"] --> CW
+
+  CW["Context window<br/>(limited: selected + summarized)"] --> MR["Model response<br/>plan + edits"]
+  MR --> CH["Code changes<br/>patches, new files"]
+  CH --> CR["Code review<br/>humans validate intent + tests"]
+  CR --> WC
+```
+
+*Talk track:* “This is why we store constraints in the repo and rely on code review: it’s the team’s safety net when context is incomplete, summarized, or evolving.”
+
+---
+
 ## 3) Mental alignment: why code review is the real context engine (3 min)
 - **One-liner:** Code review keeps the team’s mental model aligned by requiring clear intent, small reviewable changes, and explicit testing context.  
   *Talk track:* “PRs are where humans and AI converge—context, intent, and correctness get negotiated.”
