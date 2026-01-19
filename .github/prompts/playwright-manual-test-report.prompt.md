@@ -55,7 +55,7 @@ After each interaction:
 
 ### Step 5: Complete Testing
 1. Use `mcp_microsoft_pla_browser_close` to close the browser
-2. Generate the test report
+2. **CRITICAL:** Generate the test report in the `manual-tests/` directory (NOT in the root)
 
 ## Important Guidelines
 
@@ -65,6 +65,7 @@ After each interaction:
 - **Don't guess refs** - they change between snapshots, always get fresh ones
 - **Prefer snapshot over screenshot** for understanding page structure
 - **Take screenshots** for visual documentation in reports
+- **CRITICAL:** All test reports MUST be created in the `manual-tests/` directory
 
 ## Test Scenarios for MyPetVenues App
 
@@ -79,7 +80,11 @@ If no scenario is provided, test these common flows:
 
 ## Report Format
 
-Generate a markdown report in `manual-tests/` directory with this structure:
+⚠️ **IMPORTANT: ALL test reports MUST be created in the `manual-tests/` directory!**
+
+**Report Filename:** `manual-tests/[feature-name]-test-report.md`
+
+Generate a markdown report using this structure:
 
 ```markdown
 # Manual Test Report - [Feature/Scenario Name]
@@ -131,6 +136,14 @@ Generate a markdown report in `manual-tests/` directory with this structure:
 6. mcp_microsoft_pla_browser_click → ref: "S2E3", element: "First venue card"
 7. ... continue testing ...
 8. mcp_microsoft_pla_browser_close → end session
+9. Create report at: manual-tests/[scenario-name]-test-report.md ← REQUIRED PATH!
 ```
+
+## CRITICAL REMINDERS
+
+🚨 **Report Location:** Always create test reports in the `manual-tests/` directory
+- ✅ Correct: `manual-tests/critical-workflows-test-report.md`
+- ❌ Wrong: `ReportTesting.md` (root directory)
+- ❌ Wrong: `report.md` (root directory)
 
 Remember: Ask the user for specific scenarios if none provided. Always close the browser when testing is complete.
