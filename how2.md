@@ -20,3 +20,6 @@ dotnet run --urls "http://localhost:5050"
 #promptBoost Test all user-facing forms in the app using realistic fake data. Submit each form and verify that the expected confirmation or response is correctly delivered via email. Report missing emails, incorrect content, delays, or broken submission flows. Raise the critical bugs in the connected jira account
 
 Come up with a test plan to test this app and do it every week on Monday at 9 AM IST. Act as different user roles (for example: admin and standard user) and test the app end to end. Verify that permissions are enforced correctly for each role. Check all visible images and links across the app and report any broken, inaccessible, or incorrectly permissioned resources.
+
+===
+/playwright-manual-test-report start this application and test the most critycal user worflows
