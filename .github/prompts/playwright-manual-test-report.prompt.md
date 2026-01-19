@@ -1,7 +1,7 @@
 ---
 agent: agent
 description: "Manually test a site using Microsoft Playwright MCP and create a detailed report"
-tools: ['search/codebase', 'edit/editFiles', 'execute/runTask', 'microsoft/playwright-mcp/*']
+tools: ['search/codebase', 'edit/editFiles', 'execute/runTask', 'playwright/*']
 model: 'Claude Sonnet 4.5'
 ---
 
@@ -107,7 +107,7 @@ Generate a markdown report in `manual-tests/` directory with this structure:
 **Status:** ✅ Pass / ❌ Fail
 
 **Screenshots:**
-![Description](./screenshots/screenshot-name.png)
+(Add screenshots as needed)
 
 ## Issues Found
 - [ ] Issue 1: [Description]
