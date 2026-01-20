@@ -72,6 +72,23 @@ After each interaction:
 - **Take screenshots** for visual documentation in reports
 - **CRITICAL:** All test reports MUST be created in the `manual-tests/` directory
 
+## Coverage Goals
+
+**Target: 80%+ Feature Coverage**
+
+Ensure comprehensive manual testing coverage across:
+- ✅ **Pages**: All Blazor pages in `/Pages` directory
+- ✅ **Components**: All reusable components in `/Components` directory
+- ✅ **Services**: All service interactions (via UI)
+- ✅ **User Flows**: All critical business paths
+- ✅ **Edge Cases**: Error states, empty states, validation
+
+### Coverage Tracking Approach
+1. **Before testing**: List all features/components in the app
+2. **During testing**: Track which ones have been tested
+3. **After testing**: Calculate coverage percentage
+4. **Report**: Include coverage matrix in test report
+
 ## Test Scenarios for MyPetVenues App
 
 If no scenario is provided, test these common flows:
@@ -82,6 +99,30 @@ If no scenario is provided, test these common flows:
 5. **User Profile** - View/edit profile, see booking history
 6. **Theme Toggle** - Test dark/light mode switching
 7. **Responsive Design** - Use `mcp_microsoft_pla_browser_resize` to test mobile views
+
+### Component Coverage Checklist
+Test all components in `/Components`:
+- [ ] AmenityTag - Display and styling
+- [ ] PetBadge - All pet type variations
+- [ ] ReviewCard - Review display, ratings
+- [ ] SearchFilters - All filter combinations
+- [ ] StarRating - All rating values (1-5 stars)
+- [ ] VenueCard - Card display, click behavior
+- [ ] VenueTypeBadge - All venue type variations
+
+### Page Coverage Checklist
+Test all pages in `/Pages`:
+- [ ] Home - Hero, featured venues, navigation
+- [ ] Venues - Search, filters, venue list
+- [ ] VenueDetail - Venue info, amenities, reviews, booking CTA
+- [ ] BookVenue - Form validation, date selection, booking submission
+- [ ] Profile - User info display/edit, booking history
+
+### Service Coverage (via UI)
+- [ ] VenueService - Search, filter, get details
+- [ ] BookingService - Create booking, view bookings
+- [ ] UserService - Profile operations
+- [ ] ThemeService - Theme switching
 
 ## Report Format
 
@@ -97,6 +138,18 @@ Generate a markdown report using this structure:
 **Date:** [Date]
 **URL Tested:** [URL]
 **Browser:** Playwright Chromium
+
+## Coverage Summary
+**Overall Coverage:** [X]% ([Y] of [Z] features tested)
+
+### Coverage Matrix
+| Category | Item | Status | Notes |
+|----------|------|--------|-------|
+| Page | Home | ✅ Tested | All sections verified |
+| Page | Venues | ✅ Tested | Search and filters working |
+| Component | StarRating | ✅ Tested | All states (1-5) verified |
+| Component | VenueCard | ❌ Not Tested | Pending |
+| Service | BookingService | ✅ Tested | Via booking flow |
 
 ## Test Summary
 | Status | Scenario | Notes |
@@ -123,11 +176,22 @@ Generate a markdown report using this structure:
 - [ ] Issue 1: [Description]
 - [ ] Issue 2: [Description]
 
+## Untested Areas
+*List features/components not covered in this test session:*
+- Component: [Name] - [Reason not tested]
+- Page: [Name] - [Reason not tested]
+
 ## Accessibility Observations
 - [Observations about a11y from snapshots]
 
 ## Recommendations
 - [Improvement suggestions]
+
+## Next Steps for Coverage
+*To reach 80% coverage, prioritize testing:*
+1. [Untested critical feature]
+2. [Untested component]
+3. [Edge case scenario]
 ```
 
 ## Example Interaction Flow
