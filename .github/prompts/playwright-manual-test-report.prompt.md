@@ -30,8 +30,13 @@ You have access to the following Microsoft Playwright MCP tools:
 ## Testing Workflow
 
 ### Step 1: Start the Application (if needed)
-If the app isn't running, use `execute/runTask` to run the application task first.
-Default URL for this project: `http://localhost:5164`
+If the user provided a website URL, use that URL.
+
+If the user did **not** provide a URL, inspect the current directory/repository and attempt to start the locally available web app:
+- If the app isn't running, use `execute/runTask` to run the application task first.
+- Default URL for this project: `http://localhost:5164`
+
+If there is **no** website URL provided and there is **no** web application in the current directory/repository to start, **stop** and ask the user to clarify which application/URL should be tested.
 
 ### Step 2: Navigate and Capture Initial State
 ```
