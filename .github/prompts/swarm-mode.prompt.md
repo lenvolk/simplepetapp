@@ -27,7 +27,7 @@ copilot -v
 
 If not installed, install it by running:
 ```powershell
-npm install -g @github/copilot
+winget install GitHub.Copilot.Prerelease
 ```
 
 Verify the installation succeeded before proceeding.
