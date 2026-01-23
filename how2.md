@@ -19,3 +19,5 @@ dotnet run --urls "http://localhost:5050"
 @workspace /explain this project
 
 let's add a new get route to export and display the environment i am running on
+
+#file:devcontainer.json  what other customizations for the dev container should i have based on this project
