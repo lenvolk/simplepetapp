@@ -13,3 +13,9 @@ To execute:
 cd c:\Temp\GIT\simkplepetapp\MyPetVenues
 
 dotnet run --urls "http://localhost:5050"
+
+
+===== Dev Container GO
+@workspace /explain this project
+
+let's add a new get route to export and display the environment i am running on
