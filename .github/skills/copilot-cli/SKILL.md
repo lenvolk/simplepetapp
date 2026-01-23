@@ -7,6 +7,10 @@ description: Run GitHub Copilot CLI for autonomous coding tasks. Use when spawni
 
 GitHub Copilot CLI is a command-line AI coding assistant that can execute prompts, edit files, run commands, and commit changes autonomously.
 
+## Quick Reference
+
+For a quick cheat-sheet response with ASCII art, respond with the [template](./TEMPLATE.md) and fill in any `{placeholders}` as needed.
+
 ## Installation
 
 Verify installation:
