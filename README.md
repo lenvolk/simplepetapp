@@ -89,25 +89,49 @@ code c:\Temp\GIT\simplepetapp
 ### Step 2: Open Copilot Chat
 Press `Ctrl+Shift+I` (or click the Copilot icon)
 
-### Step 3: Load the Orchestrator Prompt
-In the chat, type:
-```
-@workspace /explain Use the prompt in .github/prompts/swarm-mode.prompt.md
-```
+### Step 3: Choose Your Demo Mode
 
-Or attach the file directly and say:
+You have **two demo options**:
+
+#### Option A: Quick Demo (4 Tasks) ⚡
+Adds features to the existing app. Great for learning the basics.
 ```
+@workspace Use .github/prompts/swarm-mode.prompt.md
 Run the tasks in .docs/demo-tasks.md
 ```
 
+#### Option B: Full Build Demo (17 Tasks) 🏗️
+**Builds the entire app from scratch!** Shows the full power of parallel agents.
+
+```powershell
+# First, clean the repository (removes app files, keeps demo infrastructure)
+.\cleanup.ps1
+
+# Then in Copilot Chat:
+@workspace Use .github/prompts/swarm-mode.prompt.md
+Build the app using .docs/implementation.md
+```
+
+> **🔄 Repeatable**: Run `.\cleanup.ps1` anytime to reset and demo again!
+
 ### Step 4: Watch the Magic! ✨
-You'll see:
-1. Orchestrator analyzes the 3 tasks
+
+**Quick Demo (Option A):**
+1. Orchestrator analyzes the 4 tasks
 2. Groups Task 1 & 2 into Wave 0 (parallel)
 3. Creates separate workspaces for each
 4. Launches 2 agents simultaneously
 5. After both finish → runs Task 3
 6. Generates final report
+
+**Full Build Demo (Option B):**
+1. Orchestrator reads 17-task implementation plan
+2. Executes Wave 0: Foundation (3 agents in parallel)
+3. Executes Wave 1: Services & Layout (3 agents in parallel)
+4. Executes Wave 2: Components (5 agents in parallel)
+5. Executes Wave 3: Pages (5 agents in parallel)
+6. Executes Wave 4: Integration (1 agent)
+7. Complete app built in ~25-35 minutes vs ~70 minutes sequential!
 
 ### Step 5: Check Results
 Look at these files when done:
@@ -140,9 +164,11 @@ flowchart LR
 | File | Location | Purpose |
 |------|----------|---------|
 | This README | `README.md` | Start here! |
+| **Cleanup Script** | `cleanup.ps1` | **Reset repo for fresh demo** |
 | Concepts | `.github/instructions/swarm-instruction.md` | Learn the theory |
 | Operations | `.github/prompts/swarm-mode.prompt.md` | How to run agents |
-| Task Plan | `.docs/demo-tasks.md` | The demo tasks |
+| **Full Build Plan** | `.docs/implementation.md` | **Build entire app (17 tasks)** |
+| Quick Demo Tasks | `.docs/demo-tasks.md` | Simple 4-task demo |
 | Progress | `.docs/memory.md` | Agent updates |
 | Report | `.docs/report.md` | Final summary |
 
@@ -225,9 +251,24 @@ flowchart LR
 
 | Level | What to Do |
 |-------|------------|
-| **Beginner** | Run the 3-task demo, watch the report |
-| **Intermediate** | Modify `demo-tasks.md`, add your own tasks |
-| **Advanced** | Create multi-wave plans with complex dependencies |
+| **Beginner** | Run the quick 4-task demo, watch the report |
+| **Intermediate** | Run the full build demo (17 tasks), see app built from scratch |
+| **Advanced** | Modify `implementation.md`, create your own multi-wave plans |
+
+---
+
+## 🔄 Repeatable Demo Workflow
+
+```powershell
+# 1. Reset the repository (keeps demo infrastructure)
+.\cleanup.ps1
+
+# 2. In Copilot Chat, run the full build
+@workspace Build the app using .docs/implementation.md
+
+# 3. After demo, reset again for next audience
+.\cleanup.ps1
+```
 
 ---
 
@@ -287,15 +328,19 @@ Receive-Job -Name "agent-task1"
 
 ---
 
-## �🎉 Success Checklist
+## 🎉 Success Checklist
 
-After running the demo, you should see:
-
-- [ ] `.docs/memory.md` shows all 3 tasks completed
+**Quick Demo (4 tasks):**
+- [ ] `.docs/memory.md` shows all 4 tasks completed
 - [ ] `.docs/report.md` has timing and token metrics
 - [ ] Wave 0 tasks ran in parallel (check timestamps)
 - [ ] Wave 1 started only after Wave 0 finished
-- [ ] Time saved compared to sequential execution
+
+**Full Build Demo (17 tasks):**
+- [ ] Application builds: `dotnet build MyPetVenues/MyPetVenues.csproj`
+- [ ] All 5 waves completed in `.docs/memory.md`
+- [ ] App runs: `dotnet run --project MyPetVenues/MyPetVenues.csproj`
+- [ ] ~50% time saved vs sequential execution
 
 ---
 
