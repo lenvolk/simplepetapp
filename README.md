@@ -264,7 +264,30 @@ Receive-Job -Name "agent-task1"
 
 ---
 
-## 🎉 Success Checklist
+## � Worktrees vs Branches
+
+**Why not just use branches?**
+
+| Branch | Worktree |
+|--------|----------|
+| Just a pointer to commits | A **full separate folder** with files |
+| One branch checked out at a time | Multiple branches checked out simultaneously |
+| `git checkout` switches files in place | Each worktree has its own copy of files |
+| Agents would overwrite each other! | Agents work in **complete isolation** |
+
+**Worktree Lifecycle:**
+```
+1. CREATE    →  git worktree add ..\worktree-task1 -b task-1
+2. WORK      →  Agent edits files, commits changes
+3. MERGE     →  git merge task-1 (back to main)
+4. CLEANUP   →  Remove-Item ..\worktree-task1; git worktree prune; git branch -d task-1
+```
+
+**Think of it this way**: A branch is like a bookmark. A worktree is like making a photocopy of the entire book so two people can read different chapters at the same time.
+
+---
+
+## �🎉 Success Checklist
 
 After running the demo, you should see:
 
