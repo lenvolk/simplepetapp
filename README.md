@@ -108,8 +108,9 @@ Run the tasks in .docs/demo-tasks.md
 .\cleanup.ps1
 
 # Then in Copilot Chat:
-@workspace Use .github/prompts/swarm-mode.prompt.md
-Build the app using .docs/implementation.md
+@workspace Build the complete MyPetVenues app using .docs/implementation.md
+Execute all waves autonomously with parallel sub-agents. No user interaction needed.
+Follow .github/prompts/swarm-mode.prompt.md for orchestration.
 ```
 
 > **🔄 Repeatable**: Run `.\cleanup.ps1` anytime to reset and demo again!

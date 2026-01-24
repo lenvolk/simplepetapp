@@ -106,79 +106,35 @@ if (-not $KeepWorktrees) {
 }
 
 # ============================================================
-# STEP 2: Remove MyPetVenues application files
+# STEP 2: Remove MyPetVenues folder completely
 # ============================================================
-Write-Host "📁 Removing MyPetVenues application files..." -ForegroundColor Blue
+Write-Host "📁 Removing MyPetVenues folder completely..." -ForegroundColor Blue
 
 $myPetVenuesPath = Join-Path $RepoRoot "MyPetVenues"
 
 if (Test-Path $myPetVenuesPath) {
-    # Remove specific directories
-    $dirsToRemove = @(
-        "Pages",
-        "Components", 
-        "Layout",
-        "Models",
-        "Services",
-        "bin",
-        "obj",
-        "Properties"
-    )
-    
-    foreach ($dir in $dirsToRemove) {
-        $dirPath = Join-Path $myPetVenuesPath $dir
-        if (Test-Path $dirPath) {
-            if ($PSCmdlet.ShouldProcess($dirPath, "Remove directory")) {
-                Write-Host "  Removing: MyPetVenues/$dir/" -ForegroundColor DarkGray
-                Remove-Item -LiteralPath $dirPath -Recurse -Force
+    if ($PSCmdlet.ShouldProcess($myPetVenuesPath, "Remove entire MyPetVenues folder")) {
+        # Try multiple times in case VS Code has file locks
+        $maxAttempts = 3
+        for ($i = 1; $i -le $maxAttempts; $i++) {
+            Remove-Item -LiteralPath $myPetVenuesPath -Recurse -Force -ErrorAction SilentlyContinue
+            if (-not (Test-Path $myPetVenuesPath)) {
+                Write-Host "  ✓ Removed: MyPetVenues/ (entire folder)" -ForegroundColor Green
+                break
+            }
+            if ($i -lt $maxAttempts) {
+                Write-Host "  Retrying removal (attempt $($i+1)/$maxAttempts)..." -ForegroundColor DarkGray
+                Start-Sleep -Milliseconds 500
             }
         }
-    }
-    
-    # Remove specific files
-    $filesToRemove = @(
-        "App.razor",
-        "Program.cs",
-        "_Imports.razor"
-    )
-    
-    foreach ($file in $filesToRemove) {
-        $filePath = Join-Path $myPetVenuesPath $file
-        if (Test-Path $filePath) {
-            if ($PSCmdlet.ShouldProcess($filePath, "Remove file")) {
-                Write-Host "  Removing: MyPetVenues/$file" -ForegroundColor DarkGray
-                Remove-Item -LiteralPath $filePath -Force
-            }
+        if (Test-Path $myPetVenuesPath) {
+            Write-Host "  ⚠️  Could not fully remove - VS Code may have file locks" -ForegroundColor Yellow
+            Write-Host "  Tip: Close VS Code, run cleanup, then reopen" -ForegroundColor DarkGray
         }
     }
-    
-    # Remove wwwroot/css contents but keep the folder structure
-    $cssPath = Join-Path $myPetVenuesPath "wwwroot\css"
-    if (Test-Path $cssPath) {
-        if ($PSCmdlet.ShouldProcess($cssPath, "Clear CSS directory")) {
-            Get-ChildItem -Path $cssPath -File | ForEach-Object {
-                Write-Host "  Removing: MyPetVenues/wwwroot/css/$($_.Name)" -ForegroundColor DarkGray
-                Remove-Item -LiteralPath $_.FullName -Force
-            }
-        }
-    }
-    
-    # Remove wwwroot/index.html
-    $indexPath = Join-Path $myPetVenuesPath "wwwroot\index.html"
-    if (Test-Path $indexPath) {
-        if ($PSCmdlet.ShouldProcess($indexPath, "Remove file")) {
-            Write-Host "  Removing: MyPetVenues/wwwroot/index.html" -ForegroundColor DarkGray
-            Remove-Item -LiteralPath $indexPath -Force
-        }
-    }
-    
-    # Keep images folder intact (venues, pets images are reusable)
-    Write-Host "  ✓ Keeping: MyPetVenues/wwwroot/images/ (reusable assets)" -ForegroundColor Green
-    
-    Write-Host "  ✓ Application files removed" -ForegroundColor Green
 }
 else {
-    Write-Host "  ⚠️  MyPetVenues folder not found (already clean?)" -ForegroundColor Yellow
+    Write-Host "  ✓ MyPetVenues/ already removed" -ForegroundColor Green
 }
 
 # ============================================================
@@ -310,67 +266,6 @@ $reportContent = @"
 if ($PSCmdlet.ShouldProcess($reportPath, "Reset report.md")) {
     Set-Content -Path $reportPath -Value $reportContent -Encoding UTF8
     Write-Host "  ✓ Reset: .docs/report.md" -ForegroundColor Green
-}
-
-# ============================================================
-# STEP 6: Recreate minimal project structure
-# ============================================================
-Write-Host "📁 Creating minimal project structure..." -ForegroundColor Blue
-
-# Ensure MyPetVenues folder exists
-if (-not (Test-Path $myPetVenuesPath)) {
-    New-Item -Path $myPetVenuesPath -ItemType Directory | Out-Null
-}
-
-# Create empty folders that agents will populate
-$foldersToCreate = @(
-    "MyPetVenues\Pages",
-    "MyPetVenues\Components",
-    "MyPetVenues\Layout",
-    "MyPetVenues\Models",
-    "MyPetVenues\Services",
-    "MyPetVenues\Properties",
-    "MyPetVenues\wwwroot\css"
-)
-
-foreach ($folder in $foldersToCreate) {
-    $folderPath = Join-Path $RepoRoot $folder
-    if (-not (Test-Path $folderPath)) {
-        if ($PSCmdlet.ShouldProcess($folderPath, "Create directory")) {
-            New-Item -Path $folderPath -ItemType Directory -Force | Out-Null
-            
-            # Add .gitkeep to empty folders so git tracks them
-            $gitkeepPath = Join-Path $folderPath ".gitkeep"
-            Set-Content -Path $gitkeepPath -Value "" -NoNewline
-        }
-    }
-}
-
-Write-Host "  ✓ Folder structure created" -ForegroundColor Green
-
-# Ensure csproj exists (minimal placeholder)
-$csprojPath = Join-Path $myPetVenuesPath "MyPetVenues.csproj"
-if (-not (Test-Path $csprojPath)) {
-    $minimalCsproj = @"
-<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
-
-  <PropertyGroup>
-    <TargetFramework>net9.0</TargetFramework>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.0" PrivateAssets="all" />
-  </ItemGroup>
-
-</Project>
-"@
-    if ($PSCmdlet.ShouldProcess($csprojPath, "Create minimal csproj")) {
-        Set-Content -Path $csprojPath -Value $minimalCsproj -Encoding UTF8
-        Write-Host "  ✓ Created: MyPetVenues/MyPetVenues.csproj (minimal)" -ForegroundColor Green
-    }
 }
 
 # ============================================================
