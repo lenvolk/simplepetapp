@@ -20,6 +20,14 @@ copilot --version
 winget install GitHub.Copilot
 ```
 
+## First Run Flow
+
+1. **Login check** - If not authenticated, use `/login`
+2. **Folder trust** - Select **1 (Yes)** or **2 (Yes, remember)**
+3. **Model selection** - Default: Claude Sonnet 4.5 (1x)
+
+**Exit**: Press `Ctrl+C` twice
+
 ## Essential Commands
 
 | Mode | Command |
