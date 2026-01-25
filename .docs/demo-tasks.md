@@ -129,7 +129,7 @@ Tell the orchestrator: "Run the tasks in `.docs/demo-tasks.md`"
 
 ### Step 4: Check Results
 - Look at `.docs/memory.md` for progress log
-- Look at `.docs/report.md` for final summary
+- Look at `.docs/report.xlsx` for final summary
 
 ---
 
@@ -137,7 +137,7 @@ Tell the orchestrator: "Run the tasks in `.docs/demo-tasks.md`"
 
 1. **Watch the Terminal**: You'll see agents spawn with `Start-Job`
 2. **Check Memory Often**: `.docs/memory.md` shows real-time progress
-3. **Look at the Report**: `.docs/report.md` summarizes everything
+3. **Look at the Report**: `.docs/report.xlsx` summarizes everything
 4. **Start Small**: This 3-task demo is perfect for learning
 
 ---

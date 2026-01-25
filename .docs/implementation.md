@@ -948,7 +948,7 @@ Tasks:
    - Check for any missing references
    - Fix any compilation errors
 
-When done: Update .docs/memory.md with FINAL status, generate report.md
+When done: Update .docs/memory.md with FINAL status, generate report.xlsx
 ```
 
 ---
@@ -1013,7 +1013,7 @@ Before marking complete:
 - [ ] Theme toggle works (light/dark)
 - [ ] Navigation between pages works
 - [ ] `.docs/memory.md` shows all tasks complete
-- [ ] `.docs/report.md` generated with metrics
+- [ ] `.docs/report.xlsx` generated with metrics
 
 ---
 

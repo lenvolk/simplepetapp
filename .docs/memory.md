@@ -23,12 +23,13 @@ The application has been cleaned. Use the orchestrator with .docs/implementation
 - Demo Tasks (simple): .docs/demo-tasks.md
 - Swarm Instructions: .github/instructions/swarm-instruction.md
 - Orchestrator Prompt: .github/prompts/swarm-mode.prompt.md
+- **Execution Report: .docs/report.xlsx** (Excel workbook with sheets: Summary, Tasks, Waves, Agents, Timeline)
 
 ---
 
 ## Agent Progress Log
 
-> Agents update this section when working on tasks
+> Agents update this section when working on tasks. Detailed metrics (timing, tokens, context window) are tracked in `.docs/report.xlsx`.
 
 (Waiting for orchestrator to start...)
 

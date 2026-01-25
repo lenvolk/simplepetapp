@@ -70,7 +70,7 @@ flowchart TB
     
     subgraph FINISH ["✅ RESULTS"]
         L[Check memory.md]
-        M[Check report.md]
+        M[Check report.xlsx]
         N[See Changed Files]
     end
     
@@ -143,7 +143,7 @@ Build the complete MyPetVenues app using parallel sub-agents.
 ### Step 5: Check Results
 Look at these files when done:
 - `.docs/memory.md` - Progress log from each agent
-- `.docs/report.md` - Final summary with metrics
+- `.docs/report.xlsx` - Final summary with metrics
 
 ---
 
@@ -162,7 +162,7 @@ flowchart LR
     
     subgraph CHECK ["✅ Check (Results Here)"]
         D["memory.md<br/>Progress Log"]
-        E["report.md<br/>Final Report"]
+        E["report.xlsx<br/>Final Report"]
     end
     
     A --> B --> C --> D --> E
@@ -179,7 +179,7 @@ flowchart LR
 | **Full Build Plan** | `.docs/implementation.md` | Build entire app (17 tasks) |
 | Quick Demo Tasks | `.docs/demo-tasks.md` | Simple 4-task demo |
 | Progress | `.docs/memory.md` | Agent updates |
-| Report | `.docs/report.md` | Final summary |
+| Report | `.docs/report.xlsx` | Final summary |
 
 ---
 
@@ -410,7 +410,7 @@ Get-Job | Where-Object { $_.State -eq "Completed" } | Remove-Job
 
 **Quick Demo (4 tasks):**
 - [ ] `.docs/memory.md` shows all 4 tasks completed
-- [ ] `.docs/report.md` has timing and token metrics
+- [ ] `.docs/report.xlsx` has timing and token metrics
 - [ ] Wave 0 tasks ran in parallel (check timestamps)
 - [ ] Wave 1 started only after Wave 0 finished
 

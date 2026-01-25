@@ -32,7 +32,7 @@ applyTo: "**"
                               ▼
                     ┌─────────────────┐
                     │  📊 Final Report│
-                    │ .docs/report.md │
+                    │ .docs/report.xlsx │
                     └─────────────────┘
 ```
 
@@ -141,7 +141,7 @@ Update `.docs/memory.md` as waves complete:
 ```
 
 ### Step 8: Generate Report
-Create final summary in `.docs/report.md`
+Create final summary in `.docs/report.xlsx`
 
 ## ⚠️ IMPORTANT: Do NOT Use runSubagent
 
@@ -206,7 +206,7 @@ Want to try it? Here's a simple 3-task demo you can run:
 1. **Create a plan file** (`.docs/demo-tasks.md`)
 2. **Run the orchestrator** with `swarm-mode.prompt.md`
 3. **Watch agents work** in parallel
-4. **Check the report** in `.docs/report.md`
+4. **Check the report** in `.docs/report.xlsx`
 
 See [demo-tasks.md](../../.docs/demo-tasks.md) for an example plan!
 

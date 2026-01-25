@@ -108,7 +108,7 @@ Start-Job -Name "agent" -ScriptBlock { copilot -p "task" --allow-all-tools }
 │ STEP 5: MERGE & REPORT                                      │
 │ • Merge completed work back to main                         │
 │ • Move to next wave (repeat steps 3-5)                      │
-│ • Generate .docs/report.md when ALL done                    │
+│ • Generate .docs/report.xlsx when ALL done                    │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -245,7 +245,7 @@ Each agent MUST update `.docs/memory.md` when starting and completing:
 
 ## 📊 Generating the Final Report
 
-When ALL tasks complete, create `.docs/report.md`:
+When ALL tasks complete, create `.docs/report.xlsx`:
 
 ```markdown
 # Swarm Execution Report
@@ -376,7 +376,7 @@ For each wave:
 
 At the end:
 - [ ] All tasks complete in memory.md
-- [ ] Generate report.md
+- [ ] Generate report.xlsx
 - [ ] All worktrees cleaned up
 
 ---

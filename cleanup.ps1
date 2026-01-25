@@ -7,7 +7,7 @@
     1. Removing the MyPetVenues application files (except empty project files)
     2. Preserving: .docs/, .github/, .vscode/, README.md, how2.md, NuGet.config
     3. Keeping MyPetVenues.Api/ and MyPetVenues.Shared/ as empty placeholders
-    4. Resetting .docs/memory.md and .docs/report.md for fresh demo tracking
+    4. Resetting .docs/memory.md and .docs/report.xlsx for fresh demo tracking
 
 .EXAMPLE
     .\cleanup.ps1
@@ -229,8 +229,8 @@ if ($PSCmdlet.ShouldProcess($memoryPath, "Reset memory.md")) {
     Write-Host "  ✓ Reset: .docs/memory.md" -ForegroundColor Green
 }
 
-# Reset report.md
-$reportPath = Join-Path $RepoRoot ".docs\report.md"
+# Reset report.xlsx
+$reportPath = Join-Path $RepoRoot ".docs\report.xlsx"
 $reportContent = @"
 # Swarm Execution Report
 
@@ -263,9 +263,9 @@ $reportContent = @"
 - Time saved: (pending)
 "@
 
-if ($PSCmdlet.ShouldProcess($reportPath, "Reset report.md")) {
+if ($PSCmdlet.ShouldProcess($reportPath, "Reset report.xlsx")) {
     Set-Content -Path $reportPath -Value $reportContent -Encoding UTF8
-    Write-Host "  ✓ Reset: .docs/report.md" -ForegroundColor Green
+    Write-Host "  ✓ Reset: .docs/report.xlsx" -ForegroundColor Green
 }
 
 # ============================================================
