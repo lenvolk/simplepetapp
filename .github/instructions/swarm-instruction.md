@@ -70,7 +70,7 @@ Memory (`.docs/memory.md`) is how agents communicate:
 ### Step 1: Read the Plan
 The orchestrator (YOU as Copilot) reads the task plan and analyzes it:
 ```
-📄 demo-tasks.md or implementation.md
+📄 implementation.md
 ├── Task 1: Add venue map (no dependencies)
 ├── Task 2: Add favorites button (no dependencies)  
 ├── Task 3: Create email service (no dependencies)
@@ -256,14 +256,26 @@ Every orchestration session should produce a report like this:
 
 The report file (`.docs/report.xlsx`) is an Excel workbook with multiple sheets. **Use the xlsx skill** to update it properly.
 
+> ⚠️ **Before starting any build**: Ensure `report.xlsx` exists by running `cleanup.ps1` or:
+> ```powershell
+> Copy-Item ".docs/report-template.xlsx" ".docs/report.xlsx"
+> ```
+
 ### Report Structure
-| Sheet | Purpose |
-|-------|---------|
-| **Summary** | Overall execution stats (total time, task count, success rate) |
-| **Tasks** | Detailed task log with status, duration, tokens, agent info |
-| **Waves** | Wave-by-wave breakdown with timing |
-| **Agents** | Agent performance metrics |
-| **Timeline** | Chronological event log |
+| Sheet | Purpose | Key Columns |
+|-------|---------|-------------|
+| **Summary** | Overall execution stats (auto-calculated) | Agent counts, totals |
+| **Tasks** | Detailed task log | Task, Agent, **Type**, Status, Duration |
+| **Waves** | Wave-by-wave breakdown | Wave #, Agent count, Duration |
+| **Research** | 🆕 **Subagent research calls** | Purpose, Findings, Enriched Wave |
+| **Agents** | Background CLI Agent metrics | Agent, Task, **Type**, Worktree |
+| **Timeline** | Chronological event log | Timestamp, Event, Details |
+
+### Agent Type Values (Critical for Demo!)
+
+The **Type** column distinguishes agent types for students:
+- `Background CLI` - Workers spawned via `Start-Job` + `copilot` CLI (true parallel)
+- `Subagent` - Research calls via `runSubagent` in chat (synchronous analysis)
 
 ### Using openpyxl to Update the Report
 
@@ -274,20 +286,41 @@ from datetime import datetime
 # Load existing report
 wb = load_workbook('.docs/report.xlsx')
 
-# Update Tasks sheet - add a completed task row
+# ===== Update Tasks sheet - Background CLI Agent task =====
 tasks_sheet = wb['Tasks']
 next_row = tasks_sheet.max_row + 1
 tasks_sheet[f'A{next_row}'] = 'Add venue map'      # Task name
-tasks_sheet[f'B{next_row}'] = 'Agent-1'            # Agent ID
-tasks_sheet[f'C{next_row}'] = '✅ Done'            # Status
-tasks_sheet[f'D{next_row}'] = '3m 15s'             # Duration
-tasks_sheet[f'E{next_row}'] = 'Claude Sonnet 4'   # Model
-tasks_sheet[f'F{next_row}'] = 2450                 # Tokens
-tasks_sheet[f'G{next_row}'] = datetime.now()       # Timestamp
+tasks_sheet[f'B{next_row}'] = 'agent-models'       # Agent ID
+tasks_sheet[f'C{next_row}'] = 'Background CLI'    # Type (important!)
+tasks_sheet[f'D{next_row}'] = '✅ Done'            # Status
+tasks_sheet[f'E{next_row}'] = '3m 15s'             # Duration
+tasks_sheet[f'F{next_row}'] = 'Claude Sonnet 4'   # Model
+tasks_sheet[f'G{next_row}'] = 2450                 # Tokens
+tasks_sheet[f'H{next_row}'] = datetime.now()       # Timestamp
 
-# Update Summary sheet formulas (they auto-calculate)
-summary_sheet = wb['Summary']
-# Example: Total tasks formula already exists as =COUNTA(Tasks!A:A)-1
+# ===== Update Research sheet - Subagent research call =====
+research_sheet = wb['Research']
+next_row = research_sheet.max_row + 1
+research_sheet[f'A{next_row}'] = 'R1'                          # Research ID
+research_sheet[f'B{next_row}'] = 'Wave 0'                      # After which wave
+research_sheet[f'C{next_row}'] = 'Analyze model properties'   # Purpose
+research_sheet[f'D{next_row}'] = 'Found 12 Venue properties, 9 VenueTypes'  # Findings
+research_sheet[f'E{next_row}'] = '45s'                         # Duration
+research_sheet[f'F{next_row}'] = 850                           # Tokens
+research_sheet[f'G{next_row}'] = 'Wave 1'                      # Which wave benefited
+research_sheet[f'H{next_row}'] = datetime.now()                # Timestamp
+
+# ===== Update Agents sheet - Background CLI Agent =====
+agents_sheet = wb['Agents']
+next_row = agents_sheet.max_row + 1
+agents_sheet[f'A{next_row}'] = 'agent-models'
+agents_sheet[f'B{next_row}'] = 'Create domain models'
+agents_sheet[f'C{next_row}'] = 'Background CLI'    # Type (important!)
+agents_sheet[f'D{next_row}'] = 'Wave 0'
+agents_sheet[f'E{next_row}'] = 'wt-models'
+agents_sheet[f'F{next_row}'] = '2m 30s'
+agents_sheet[f'G{next_row}'] = 1850
+agents_sheet[f'H{next_row}'] = '✅ Done'
 
 wb.save('.docs/report.xlsx')
 ```
@@ -295,16 +328,19 @@ wb.save('.docs/report.xlsx')
 ### Key Points for Agents
 1. **Always load existing file** - Don't create new, use `load_workbook()`
 2. **Append rows** - Use `max_row + 1` to find next available row
-3. **Preserve formulas** - Summary sheet has formulas that auto-calculate from Tasks data
-4. **Save after updates** - Don't forget `wb.save()`
+3. **Set Type column** - Always specify "Background CLI" or "Subagent"
+4. **Track Research** - Log subagent calls in Research sheet for demo visibility
+5. **Preserve formulas** - Summary sheet auto-calculates from other sheets
+6. **Save after updates** - Don't forget `wb.save()`
 
 ### Orchestrator Responsibility
-The **orchestrator** (not subagents) should update report.xlsx after each wave completes:
-- Update wave timing in Waves sheet
-- Mark tasks complete in Tasks sheet
-- Log agent performance in Agents sheet
+The **orchestrator** updates report.xlsx throughout execution:
+- **After spawning Background CLI Agents**: Log in Agents sheet
+- **After subagent research**: Log in Research sheet  
+- **After each wave completes**: Update Waves sheet
+- **After task completion**: Update Tasks sheet
 
-Subagents update `.docs/memory.md` for progress tracking; the orchestrator consolidates into the Excel report.
+Subagents also update `.docs/memory.md` for real-time progress; the orchestrator consolidates into Excel for the final demo report.
 
 ## 🎓 Learning Path
 
@@ -328,12 +364,12 @@ Subagents update `.docs/memory.md` for progress tracking; the orchestrator conso
 
 Want to try it? Here's a simple 3-task demo you can run:
 
-1. **Create a plan file** (`.docs/demo-tasks.md`)
+1. **Create a plan file** (`.docs/implementation.md`)
 2. **Run the orchestrator** with `swarm-mode.prompt.md`
 3. **Watch agents work** in parallel
 4. **Check the report** in `.docs/report.xlsx`
 
-See [demo-tasks.md](../../.docs/demo-tasks.md) for an example plan!
+See [implementation.md](../../.docs/implementation.md) for the full build plan!
 
 ## 💡 Key Takeaways
 

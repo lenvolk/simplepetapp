@@ -20,7 +20,7 @@ The application has been cleaned. Use the orchestrator with .docs/implementation
 
 ### Files Reference
 - Implementation Plan: .docs/implementation.md
-- Demo Tasks (simple): .docs/demo-tasks.md
+- Implementation Plan: .docs/implementation.md
 - Swarm Instructions: .github/instructions/swarm-instruction.md
 - Orchestrator Prompt: .github/prompts/swarm-mode.prompt.md
 

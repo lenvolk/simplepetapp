@@ -93,7 +93,29 @@ git status
 
 # 4. Clean workspace (run cleanup.ps1 if needed)
 # Only MyPetVenues.Api/, MyPetVenues.Shared/, .docs/, .github/, .vscode/ should exist
+
+# 5. CRITICAL: Initialize report.xlsx from template
+# Either run cleanup.ps1 OR manually copy:
+Copy-Item ".docs/report-template.xlsx" ".docs/report.xlsx"
 ```
+
+### 📊 Report Tracking Setup
+
+The orchestrator MUST use `.docs/report.xlsx` to track all agent activity. Use the **xlsx skill** (`.github/skills/xlsx/SKILL.md`) to update it.
+
+| Sheet | What to Track | When to Update |
+|-------|--------------|----------------|
+| **Tasks** | All tasks with Type="Background CLI" or "Subagent" | After each task completes |
+| **Waves** | Wave timing and agent count | After each wave completes |
+| **Research** | Subagent research calls | After each subagent analysis |
+| **Agents** | Background CLI Agent performance | After each agent completes |
+| **Timeline** | All events chronologically | As events happen |
+
+**Important for Demo**: The `Type` column distinguishes:
+- `Background CLI` - Parallel worker agents in worktrees
+- `Subagent` - Synchronous research within Copilot chat
+
+This helps students understand **when each agent type is used** and their different purposes.
 
 ---
 

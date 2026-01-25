@@ -210,7 +210,7 @@ The application has been cleaned. Use the orchestrator with `.docs/implementatio
 
 ### Files Reference
 - Implementation Plan: `.docs/implementation.md`
-- Demo Tasks (simple): `.docs/demo-tasks.md`
+- Implementation (full build): `.docs/implementation.md`
 - Swarm Instructions: `.github/instructions/swarm-instruction.md`
 - Orchestrator Prompt: `.github/prompts/swarm-mode.prompt.md`
 
@@ -234,6 +234,15 @@ if ($PSCmdlet.ShouldProcess($memoryPath, "Reset memory.md")) {
 $reportPath = Join-Path $RepoRoot ".docs\report.xlsx"
 $templatePath = Join-Path $RepoRoot ".docs\report-template.xlsx"
 
+# Delete existing report.xlsx first
+if (Test-Path $reportPath) {
+    if ($PSCmdlet.ShouldProcess($reportPath, "Delete report.xlsx")) {
+        Remove-Item -LiteralPath $reportPath -Force
+        Write-Host "  Deleted: .docs/report.xlsx" -ForegroundColor DarkGray
+    }
+}
+
+# Copy fresh from template
 if (Test-Path $templatePath) {
     if ($PSCmdlet.ShouldProcess($reportPath, "Copy report-template.xlsx to report.xlsx")) {
         Copy-Item -Path $templatePath -Destination $reportPath -Force
@@ -261,7 +270,7 @@ Write-Host "   3. Say: 'Build the app using .docs/implementation.md'"
 Write-Host ""
 Write-Host "📁 Preserved Files:" -ForegroundColor Cyan
 Write-Host "   • .docs/implementation.md  - Full build plan"
-Write-Host "   • .docs/demo-tasks.md      - Simple 4-task demo"
+Write-Host "   • .docs/implementation.md   - Full 17-task build plan"
 Write-Host "   • .github/                 - All instructions & prompts"
 Write-Host "   • .vscode/                 - Tasks & launch config"
 Write-Host "   • README.md                - Documentation"

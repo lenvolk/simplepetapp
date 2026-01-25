@@ -136,7 +136,7 @@ winget install GitHub.Copilot
 ## 📋 Plan Acquisition
 
 Get tasks in one of two ways:
-1. **Plan File**: Look for `.docs/demo-tasks.md` or ask user for path
+1. **Plan File**: Look for `.docs/implementation.md` or ask user for path
 2. **Chat Context**: Extract tasks from conversation
 
 Each task needs:
@@ -245,7 +245,7 @@ When ALL tasks complete, create `.docs/report.xlsx`:
 # Swarm Execution Report
 
 **Generated**: 2026-01-24 10:30:00
-**Plan File**: .docs/demo-tasks.md
+**Plan File**: .docs/implementation.md
 
 ## Summary
 | Metric | Value |
@@ -358,7 +358,7 @@ Wave: [WAVE NUMBER]
 Before starting:
 - [ ] Copilot CLI installed (`copilot --version`)
 - [ ] Git repo initialized
-- [ ] Plan file exists (`.docs/demo-tasks.md` or `.docs/implementation.md`)
+- [ ] Plan file exists (`.docs/implementation.md`)
 
 For each wave:
 - [ ] Create worktrees for all tasks (`git worktree add ..\wt-<taskname> -b task-<taskname>`)
@@ -385,5 +385,5 @@ At the end:
 
 ---
 
-**Pro Tip**: Start with the simple 3-task demo in `.docs/demo-tasks.md` to learn the flow before tackling bigger plans!
+**Pro Tip**: Study the wave structure in `.docs/implementation.md` to understand how dependencies are organized!
 ````

@@ -105,7 +105,7 @@ winget install GitHub.Copilot
 flowchart TB
     subgraph START ["🚀 YOU START HERE"]
         A[Open VS Code] --> B[Load swarm-mode.prompt.md]
-        B --> C["Say: Run demo-tasks.md"]
+        B --> C["Say: Build the app"]
     end
     
     subgraph ORCHESTRATOR ["🎭 ORCHESTRATOR DOES THIS"]
@@ -159,16 +159,6 @@ Press `Ctrl+Shift+I` (or click the Copilot icon)
 
 Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), use this prompt:
 
-#### Quick Demo (4 Tasks):
-```
-@workspace Read these files for context:
-- .github/instructions/swarm-instruction.md (HOW to orchestrate)
-- .docs/demo-tasks.md (WHAT tasks to run)
-
-Execute the demo tasks using parallel background agents.
-```
-
-#### Full Build (17 Tasks):
 ```
 @workspace Read these files for context:
 - .github/instructions/swarm-instruction.md (HOW to orchestrate)  
@@ -179,22 +169,24 @@ Build the complete MyPetVenues app using parallel background agents.
 
 ### Step 4: Watch the Magic! ✨
 
-**Quick Demo (4 Tasks):**
 1. AI reads the task plan and analyzes dependencies
-2. Groups independent tasks into Wave 0
+2. Groups independent tasks into waves
 3. Creates git worktrees for isolation
 4. Spawns parallel Background CLI Agents via `Start-Job` + `copilot`
-5. Waits for Wave 0 to complete
-6. Continues with Wave 1 (dependent tasks)
-7. Merges and cleans up
+5. Uses subagent research between waves to enrich prompts
+6. Merges completed work and continues to next wave
+7. Final integration and cleanup
 
-**Full Build (17 Tasks):**
-1. **Wave 0**: Foundation (3 parallel agents) - Project, Models, CSS
-2. **Wave 1**: Services & Layout (3 parallel agents)
-3. **Wave 2**: Components (5 parallel agents)
-4. **Wave 3**: Pages (5 parallel agents)
-5. **Wave 4**: Integration (1 agent)
-6. Complete app built in ~25-35 minutes vs ~70 minutes sequential!
+**Wave Breakdown (17 Tasks):**
+| Wave | Tasks | Agents |
+|------|-------|--------|
+| 0 | Foundation | 3 parallel (Project, Models, CSS) |
+| 1 | Services & Layout | 3 parallel |
+| 2 | Components | 5 parallel |
+| 3 | Pages | 5 parallel |
+| 4 | Integration | 1 (final wiring) |
+
+**Result**: Complete app built in ~25-35 minutes vs ~70 minutes sequential!
 
 ### Step 5: Check Results
 Look at these files when done:
@@ -213,7 +205,7 @@ flowchart LR
     
     subgraph RUN ["🏃 Run (Use These)"]
         B["swarm-mode.prompt.md<br/>Operations Guide"]
-        C["demo-tasks.md<br/>Task Plan"]
+        C["implementation.md<br/>Build Plan (17 tasks)"]
     end
     
     subgraph CHECK ["✅ Check (Results Here)"]
@@ -232,8 +224,7 @@ flowchart LR
 
 | Concepts | `.github/instructions/swarm-instruction.md` | Learn the theory |
 | Operations | `.github/prompts/swarm-mode.prompt.md` | How to run agents |
-| **Full Build Plan** | `.docs/implementation.md` | Build entire app (17 tasks) |
-| Quick Demo Tasks | `.docs/demo-tasks.md` | Simple 4-task demo |
+| **Build Plan** | `.docs/implementation.md` | Full app build (17 tasks, 5 waves) |
 | Progress | `.docs/memory.md` | Agent updates |
 | Report | `.docs/report.xlsx` | Final summary |
 
@@ -265,23 +256,33 @@ gantt
 
 ---
 
-## 📊 What the Demo Tasks Do
+## 📊 What Gets Built
 
-The demo adds 3 small features to the MyPetVenues app:
+The full build creates a complete Blazor WebAssembly app:
 
 ```mermaid
 flowchart TB
-    subgraph WAVE0 ["Wave 0 (Parallel)"]
-        T1["⭐ Task 1<br/>Interactive Rating Stars<br/>Hover + Click to rate"]
-        T2["🟢 Task 2<br/>Open/Closed Badge<br/>Shows venue status"]
+    subgraph WAVE0 ["Wave 0: Foundation"]
+        T1["🏗️ Project Setup"]
+        T2["📦 Domain Models"]
+        T3["🎨 Global CSS"]
     end
     
-    subgraph WAVE1 ["Wave 1 (Depends on Wave 0)"]
-        T3["🃏 Task 3<br/>Enhanced VenueCard<br/>Combines Task 1 & 2"]
+    subgraph WAVE1 ["Wave 1: Core"]
+        T4["⚙️ Services"]
+        T5["📐 Layout"]
+        T6["🌓 Theme"]
     end
     
-    T1 --> T3
-    T2 --> T3
+    subgraph WAVE2 ["Wave 2: Components"]
+        T7["🃏 VenueCard"]
+        T8["⭐ StarRating"]
+        T9["💬 ReviewCard"]
+        T10["🔍 SearchFilters"]
+        T11["🏷️ Badges"]
+    end
+    
+    WAVE0 --> WAVE1 --> WAVE2
 ```
 
 ---
@@ -308,16 +309,16 @@ Make sure agents have write access to `.docs/memory.md`
 
 ```mermaid
 flowchart LR
-    A["1️⃣ Read This<br/>README"] --> B["2️⃣ Run Demo<br/>3 Tasks"]
-    B --> C["3️⃣ Read Concepts<br/>swarm-instruction.md"]
-    C --> D["4️⃣ Create Your<br/>Own Tasks"]
-    D --> E["5️⃣ Try Complex<br/>Dependencies"]
+    A["1️⃣ Read This<br/>README"] --> B["2️⃣ Run Full Build<br/>17 Tasks"]
+    B --> C["3️⃣ Review Report<br/>report.xlsx"]
+    C --> D["4️⃣ Read Concepts<br/>swarm-instruction.md"]
+    D --> E["5️⃣ Create Your<br/>Own Tasks"]
 ```
 
 | Level | What to Do |
 |-------|------------|
-| **Beginner** | Run the quick 4-task demo, watch the report |
-| **Intermediate** | Run the full build demo (17 tasks), see app built from scratch |
+| **Beginner** | Run the full build, watch agents work in parallel |
+| **Intermediate** | Study report.xlsx to understand Background CLI vs Subagent usage |
 | **Advanced** | Modify `implementation.md`, create your own multi-wave plans |
 
 ---
@@ -459,17 +460,17 @@ Get-Job | Where-Object { $_.State -eq "Completed" } | Remove-Job
 
 ## 🎉 Success Checklist
 
-**Quick Demo (4 tasks):**
-- [ ] `.docs/memory.md` shows all 4 tasks completed
-- [ ] `.docs/report.xlsx` has timing and token metrics
-- [ ] Wave 0 tasks ran in parallel (check timestamps)
-- [ ] Wave 1 started only after Wave 0 finished
-
-**Full Build Demo (17 tasks):**
+**Build Verification:**
 - [ ] Application builds: `dotnet build MyPetVenues/MyPetVenues.csproj`
-- [ ] All 5 waves completed in `.docs/memory.md`
 - [ ] App runs: `dotnet run --project MyPetVenues/MyPetVenues.csproj`
+- [ ] All 5 waves completed in `.docs/memory.md`
 - [ ] ~50% time saved vs sequential execution
+
+**Understanding the Report (for students):**
+- [ ] **Tasks sheet**: Shows "Background CLI" type for parallel workers
+- [ ] **Research sheet**: Shows subagent analysis calls between waves
+- [ ] **Agents sheet**: Lists all Background CLI agents with worktrees
+- [ ] Compare: Background CLI agents = parallel work, Subagents = research checkpoints
 
 ---
 
