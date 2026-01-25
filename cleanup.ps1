@@ -229,17 +229,19 @@ if ($PSCmdlet.ShouldProcess($memoryPath, "Reset memory.md")) {
     Write-Host "  ✓ Reset: .docs/memory.md" -ForegroundColor Green
 }
 
-# Reset report.xlsx - DELETE it so orchestrator creates fresh Excel file
-# Note: .xlsx is a binary ZIP format, cannot be reset with Set-Content
+# Reset report.xlsx by copying from template
+# The template has beautiful formatting; we just copy it fresh for each demo
 $reportPath = Join-Path $RepoRoot ".docs\report.xlsx"
+$templatePath = Join-Path $RepoRoot ".docs\report-template.xlsx"
 
-if (Test-Path $reportPath) {
-    if ($PSCmdlet.ShouldProcess($reportPath, "Delete report.xlsx (will be recreated by orchestrator)")) {
-        Remove-Item -LiteralPath $reportPath -Force
-        Write-Host "  ✓ Deleted: .docs/report.xlsx (orchestrator will create fresh)" -ForegroundColor Green
+if (Test-Path $templatePath) {
+    if ($PSCmdlet.ShouldProcess($reportPath, "Copy report-template.xlsx to report.xlsx")) {
+        Copy-Item -Path $templatePath -Destination $reportPath -Force
+        Write-Host "  ✓ Reset: .docs/report.xlsx (from template)" -ForegroundColor Green
     }
 } else {
-    Write-Host "  ✓ report.xlsx already removed" -ForegroundColor Green
+    Write-Host "  ⚠️  Template not found: .docs/report-template.xlsx" -ForegroundColor Yellow
+    Write-Host "     Run the orchestrator to create the report" -ForegroundColor DarkGray
 }
 
 # ============================================================
