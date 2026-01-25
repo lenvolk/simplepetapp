@@ -6,11 +6,29 @@ applyTo: **
 
 You have a memory system located at `.docs/memory.md`.
 
+## 🚨 HALLUCINATION PREVENTION - READ FIRST
+
+**You have previously hallucinated that MyPetVenues folder exists when it does NOT.**
+
+### TRUST HIERARCHY (in order):
+1. **TERMINAL OUTPUT** from `Test-Path`, `Get-ChildItem`, `ls` - HIGHEST TRUST
+2. **User's workspace structure** in their message - HIGH TRUST  
+3. **`.docs/memory.md`** ground truth section - HIGH TRUST
+4. ~~VS Code search results~~ - **DO NOT TRUST** (may show git history)
+5. ~~copilot-instructions.md~~ - **DO NOT TRUST** (describes intended, not actual)
+
+### Before claiming ANY file/folder exists:
+```powershell
+Test-Path "MyPetVenues"  # Run this FIRST
+```
+
+**If the user's workspace structure shows no MyPetVenues folder, IT DOES NOT EXIST.**
+
 ## ⚠️ CRITICAL: MANDATORY FIRST STEP
 
 **Before starting ANY build, swarm mode, or complex task:**
 
-1. **READ `.docs/memory.md` FIRST** - It contains the actual project state
+1. **READ `.docs/memory.md` FIRST** - Check the GROUND TRUTH section
 2. **VERIFY folder existence** - Run `Test-Path "MyPetVenues"` to confirm
 3. **Trust workspace structure over code excerpts** - Search indexing may show code from other branches
 

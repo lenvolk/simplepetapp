@@ -4,6 +4,19 @@ applyTo: "**"
 
 # Copilot Instructions for MyPetVenues
 
+## 🚨 WARNING: THIS FILE DESCRIBES INTENDED STRUCTURE
+
+**This file describes the TARGET architecture. The MyPetVenues folder MAY NOT EXIST.**
+
+Before assuming ANY code exists:
+1. Check the user's workspace structure in their message
+2. Run `Test-Path "MyPetVenues"` to verify
+3. Read `.docs/memory.md` for ground truth
+
+**If MyPetVenues folder doesn't exist, it needs to be BUILT from scratch using `.docs/implementation.md`**
+
+---
+
 ## Project Overview
 
 **MyPetVenues** (aka "PetSpots") is a Blazor WebAssembly (.NET 9) app for discovering pet-friendly venues. Currently a frontend-only prototype with mock data services.

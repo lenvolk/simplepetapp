@@ -1,8 +1,43 @@
 # MyPetVenues Project Memory
 
-## ⚠️ CRITICAL: READ THIS FIRST - DO NOT SKIP
+---
+# 🚨🚨🚨 GROUND TRUTH - VERIFIED FILE SYSTEM STATE 🚨🚨🚨
+---
 
-### 🤖 FULLY AUTONOMOUS MODE - NO QUESTIONS ALLOWED
+## ❌ MyPetVenues FOLDER DOES NOT EXIST
+
+**Last verified**: 2026-01-25  
+**Method**: `Test-Path "MyPetVenues"` returned `False`  
+**Actual workspace contents**:
+```
+.docs/
+.git/
+.github/
+.gitignore
+.vscode/
+cleanup.ps1
+how2.md
+NuGet.config
+README.md
+simkplepetapp.sln
+```
+
+### ⛔ HALLUCINATION PREVENTION RULES
+
+1. **NEVER trust code excerpts from VS Code search** - They may come from git history or other branches
+2. **NEVER trust `copilot-instructions.md`** - It describes INTENDED structure, not ACTUAL state
+3. **NEVER claim files exist without running `Test-Path` or `Get-ChildItem`**
+4. **ALWAYS verify with terminal commands** before claiming anything exists
+5. **The workspace structure in the user's message IS THE TRUTH**
+
+### If you see code snippets that suggest MyPetVenues exists:
+- **STOP** - You are about to hallucinate
+- **CHECK** - Run `Test-Path "MyPetVenues"` 
+- **TRUST** - Only terminal output and explicit user-provided directory listings
+
+---
+
+## ⚠️ AUTONOMOUS MODE - NO QUESTIONS
 
 **DO NOT ask the user any questions. Work autonomously using `.docs/implementation.md` as your complete guide.**
 
@@ -14,17 +49,6 @@ If `Test-Path "MyPetVenues"` returns `False`:
 5. ❌ DO NOT offer choices like "Option A / Option B" 
 
 **JUST BUILD. The implementation.md has everything you need.**
-
-### Verification Step (Still Required)
-
-```powershell
-# Run this FIRST to check if MyPetVenues folder exists
-Test-Path "MyPetVenues"
-```
-
-**WHY:** VS Code search indexing may show code excerpts from other branches/history. These DO NOT reflect the current state.
-
-**RULE:** If `Test-Path "MyPetVenues"` returns `False` → START BUILDING IMMEDIATELY. No questions.
 
 ---
 
