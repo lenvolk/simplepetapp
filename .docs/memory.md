@@ -18,28 +18,17 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 
 The application has been cleaned. Use the orchestrator with .docs/implementation.md to rebuild from scratch.
 
-### Documentation Updated (2026-01-25)
-
-**Key changes to swarm documentation:**
-- **Job naming convention**: Changed from `wave-N-taskname` to `agent-<taskname>` (e.g., `agent-models`, `agent-services`)
-- **Clarified agent types**:
-  - **Background CLI Agents** (`Start-Job` + `copilot` CLI): Actual workers that edit files
-  - **runSubagent tool**: For analysis/research only, runs synchronously in chat
-- **Updated all monitoring commands** to use `Get-Job | Where-Object { $_.Name -like "agent-*" }`
-- **Files updated**: swarm-instruction.md, README.md, swarm-mode.prompt.md
-
 ### Files Reference
 - Implementation Plan: .docs/implementation.md
 - Demo Tasks (simple): .docs/demo-tasks.md
 - Swarm Instructions: .github/instructions/swarm-instruction.md
 - Orchestrator Prompt: .github/prompts/swarm-mode.prompt.md
-- **Execution Report: .docs/report.xlsx** (Excel workbook with sheets: Summary, Tasks, Waves, Agents, Timeline)
 
 ---
 
 ## Agent Progress Log
 
-> Agents update this section when working on tasks. Detailed metrics (timing, tokens, context window) are tracked in `.docs/report.xlsx`.
+> Agents update this section when working on tasks
 
 (Waiting for orchestrator to start...)
 

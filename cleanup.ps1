@@ -229,43 +229,17 @@ if ($PSCmdlet.ShouldProcess($memoryPath, "Reset memory.md")) {
     Write-Host "  ✓ Reset: .docs/memory.md" -ForegroundColor Green
 }
 
-# Reset report.xlsx
+# Reset report.xlsx - DELETE it so orchestrator creates fresh Excel file
+# Note: .xlsx is a binary ZIP format, cannot be reset with Set-Content
 $reportPath = Join-Path $RepoRoot ".docs\report.xlsx"
-$reportContent = @"
-# Swarm Execution Report
 
-**Status**: Pending  
-**Generated**: (will be populated after demo run)
-
----
-
-## Summary
-
-| Metric | Value |
-|--------|-------|
-| Total Tasks | - |
-| Total Waves | - |
-| Total Duration | - |
-| Total Tokens | - |
-
----
-
-## Wave Execution
-
-(Report will be generated after running the demo)
-
----
-
-## Efficiency Metrics
-
-- Sequential time (estimated): ~60-70 minutes
-- Parallel time (actual): (pending)
-- Time saved: (pending)
-"@
-
-if ($PSCmdlet.ShouldProcess($reportPath, "Reset report.xlsx")) {
-    Set-Content -Path $reportPath -Value $reportContent -Encoding UTF8
-    Write-Host "  ✓ Reset: .docs/report.xlsx" -ForegroundColor Green
+if (Test-Path $reportPath) {
+    if ($PSCmdlet.ShouldProcess($reportPath, "Delete report.xlsx (will be recreated by orchestrator)")) {
+        Remove-Item -LiteralPath $reportPath -Force
+        Write-Host "  ✓ Deleted: .docs/report.xlsx (orchestrator will create fresh)" -ForegroundColor Green
+    }
+} else {
+    Write-Host "  ✓ report.xlsx already removed" -ForegroundColor Green
 }
 
 # ============================================================
