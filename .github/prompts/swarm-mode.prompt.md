@@ -116,14 +116,25 @@ Start-Job -Name "agent" -ScriptBlock { copilot -p "task" --allow-all-tools }
 
 ## ✅ Prerequisites Check
 
-**FIRST**: Verify Copilot CLI is installed:
+**FIRST**: Verify GitHub CLI and Copilot extension are installed:
 ```powershell
-copilot -v
+# Check GitHub CLI
+gh --version
+
+# Check Copilot extension
+gh copilot --version
 ```
 
 If not installed:
 ```powershell
-winget install GitHub.Copilot.Prerelease
+# Install GitHub CLI
+winget install GitHub.cli
+
+# Install Copilot extension
+gh extension install github/gh-copilot
+
+# Authenticate
+gh auth login
 ```
 
 ---
@@ -172,28 +183,36 @@ git worktree add ..\worktree-task1 -b task-1
 git worktree add ..\worktree-task2 -b task-2
 ```
 
-### Spawn Parallel Agents
+### Spawn Parallel Agents with gh copilot CLI
 ```powershell
 # Launch agent for Task 1 (runs in background)
-Start-Job -Name "agent-task1" -ScriptBlock {
+Start-Job -Name "wave-0-task1" -ScriptBlock {
     Set-Location "C:\Temp\GIT\worktree-task1"
-    copilot -p "Your task: Add venue map component. When done, update .docs/memory.md with your progress." --allow-all-tools
+    gh copilot -p "Your task: Add venue map component. When done, update .docs/memory.md with your progress." --agent workspace --allow-all-tools
 }
 
 # Launch agent for Task 2 (runs in parallel!)
-Start-Job -Name "agent-task2" -ScriptBlock {
+Start-Job -Name "wave-0-task2" -ScriptBlock {
     Set-Location "C:\Temp\GIT\worktree-task2"
-    copilot -p "Your task: Add favorites button. When done, update .docs/memory.md with your progress." --allow-all-tools
+    gh copilot -p "Your task: Add favorites button. When done, update .docs/memory.md with your progress." --agent workspace --allow-all-tools
 }
 ```
 
+**Key flags:**
+- `--agent workspace` - Uses the workspace agent for file editing
+- `--allow-all-tools` - Enables all tools without prompts
+- Job names start with `wave-X-` for easy monitoring
+
 ### Monitor Progress
 ```powershell
-# Check status of all agents
-Get-Job | Format-Table Name, State, HasMoreData
+# Check status of all wave agents
+Get-Job | Where-Object { $_.Name -like "wave-*" } | Format-Table Name, State, HasMoreData
 
-# Get output from an agent
-Receive-Job -Name "agent-task1"
+# Get output from a specific agent
+Receive-Job -Name "wave-0-task1"
+
+# Or use the monitor script
+.\monitor-swarm.ps1
 ```
 
 ---
@@ -313,7 +332,8 @@ If an agent fails:
 When spawning an agent, use this template:
 
 ```
-You are working on: [TASK NAME]
+You are Agent [AGENT-NAME] working on: [TASK NAME]
+Wave: [WAVE NUMBER]
 
 ## Context
 - Project: MyPetVenues Blazor WASM app
@@ -333,12 +353,11 @@ You are working on: [TASK NAME]
 
 ## When Complete
 1. Run: dotnet build to verify no errors
-2. Update .docs/memory.md with your progress:
-   - Status: Complete
-   - Files changed
-   - Duration (estimate)
-   - Any notes
-3. Commit with message: "Task X: [brief description]"
+2. Update .docs/memory.md with your progress (CRITICAL for monitoring!):
+   ```markdown
+   - [timestamp] ✅ [AGENT-NAME] completed: [TASK NAME] [Wave X]
+   ```
+3. Commit with message: "[Wave X] Task: [brief description]"
 ```
 
 ---

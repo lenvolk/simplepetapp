@@ -78,16 +78,28 @@ Wave 1: [Task 4]                  ← Must wait for Task 3
 ```
 
 ### Step 3: Spawn Agents
-For each task in Wave 0, we create a separate agent:
+For each task in Wave 0, we create a separate agent using `gh copilot` CLI:
 ```powershell
-# Agent 1 works on Task 1
-copilot -p "Add venue map component" --allow-all-tools
+# Agent 1 works on Task 1 (background job)
+Start-Job -Name "wave-0-task1" -ScriptBlock {
+    Set-Location "C:\path\to\worktree-task1"
+    gh copilot -p "Add venue map component" --agent workspace --allow-all-tools
+}
 
-# Agent 2 works on Task 2 (at the same time!)
-copilot -p "Add favorites button" --allow-all-tools
+# Agent 2 works on Task 2 (runs in parallel!)
+Start-Job -Name "wave-0-task2" -ScriptBlock {
+    Set-Location "C:\path\to\worktree-task2"
+    gh copilot -p "Add favorites button" --agent workspace --allow-all-tools
+}
 
-# Agent 3 works on Task 3 (at the same time!)
-copilot -p "Create email service" --allow-all-tools
+# Agent 3 works on Task 3 (runs in parallel!)
+Start-Job -Name "wave-0-task3" -ScriptBlock {
+    Set-Location "C:\path\to\worktree-task3"
+    gh copilot -p "Create email service" --agent workspace --allow-all-tools
+}
+
+# Monitor all agents
+Get-Job | Where-Object { $_.Name -like "wave-*" }
 ```
 
 ### Step 4: Track Progress
@@ -98,6 +110,21 @@ Each agent updates memory when done:
 - [x] Task 2: Add favorites - COMPLETED by Agent-2 at 10:18 AM
 - [x] Task 3: Email service - COMPLETED by Agent-3 at 10:20 AM
 ```
+
+### Step 4b: Monitor Running Agents
+Use the monitor script to see active agents:
+```powershell
+# Run the swarm monitor
+.\monitor-swarm.ps1
+
+# Or check manually
+Get-Job | Where-Object { $_.Name -like "wave-*" }
+```
+
+The monitor shows:
+- **Active Agents**: Count of running background jobs
+- **RUNNING**: Which agents are working and their wave
+- **COMPLETED**: Finished agents
 
 ### Step 5: Generate Report
 When all tasks are done, create a summary report in `.docs/report.md`

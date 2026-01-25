@@ -26,14 +26,19 @@ Before starting, you need:
 - [ ] **.NET 9 SDK** (for the demo app)
 - [ ] **GitHub Copilot CLI** (install below)
 
-### Install Copilot CLI
+### Install GitHub CLI + Copilot Extension
 
 ```powershell
-# Check if already installed
-copilot -v
+# Check if GitHub CLI is installed
+gh --version
 
-# If not installed, run:
-winget install GitHub.Copilot.Prerelease
+# Check if Copilot extension is installed
+gh copilot --version
+
+# If not installed:
+winget install GitHub.cli
+gh extension install github/gh-copilot
+gh auth login
 ```
 
 ---
@@ -315,8 +320,9 @@ flowchart LR
 ## 🔑 Key Commands
 
 ```powershell
-# Check Copilot CLI
-copilot -v
+# Check GitHub CLI + Copilot
+gh --version
+gh copilot --version
 
 # Start monitoring dashboard (run in separate terminal!)
 .\monitor-swarm.ps1
@@ -328,15 +334,65 @@ dotnet build MyPetVenues/MyPetVenues.csproj
 dotnet run --project MyPetVenues/MyPetVenues.csproj
 
 # Check agent job status (during run)
-Get-Job | Format-Table Name, State
+Get-Job | Where-Object { $_.Name -like "wave-*" }
 
 # View agent output
-Receive-Job -Name "agent-task1"
+Receive-Job -Name "wave-0-task1"
+
+# Spawn an agent manually (example)
+Start-Job -Name "wave-0-task1" -ScriptBlock {
+    Set-Location "C:\path\to\worktree"
+    gh copilot -p "Your task..." --agent workspace --allow-all-tools
+}
 ```
 
 ---
 
-## 📝 Glossary
+## � Monitoring Subagents
+
+**How agents run**: Subagents are spawned as PowerShell background jobs using `Start-Job`. Each job runs `gh copilot` CLI in a separate git worktree.
+
+```powershell
+# Terminal 1: Start the monitor (shows live agent status)
+.\monitor-swarm.ps1
+
+# What you'll see:
+#   🐝 SWARM MONITOR  [21:30:45]
+#   ════════════════════════════════════════
+#
+#   Active Agents: 3
+#
+#   RUNNING:
+#     🔄 wave-0-task1  [Wave 0]  02:15
+#     🔄 wave-0-task2  [Wave 0]  02:10
+#     🔄 wave-0-task3  [Wave 0]  01:58
+#
+#   COMPLETED: 0
+```
+
+**Job naming convention**: Agents are named `wave-X-taskY` so the monitor can:
+- Count active agents per wave
+- Show which wave is currently executing
+- Track duration of each agent
+
+**Manual monitoring commands**:
+```powershell
+# List all wave jobs
+Get-Job | Where-Object { $_.Name -like "wave-*" }
+
+# Get output from specific agent
+Receive-Job -Name "wave-0-task1"
+
+# Stop all agents
+Get-Job | Where-Object { $_.Name -like "wave-*" } | Stop-Job
+
+# Clean up completed jobs
+Get-Job | Where-Object { $_.State -eq "Completed" } | Remove-Job
+```
+
+---
+
+## �📝 Glossary
 
 | Term | Meaning |
 |------|---------|
