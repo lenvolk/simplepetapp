@@ -2,16 +2,29 @@
 
 ## ⚠️ CRITICAL: READ THIS FIRST - DO NOT SKIP
 
-**Before assuming ANY code exists, you MUST verify the actual state:**
+### 🤖 FULLY AUTONOMOUS MODE - NO QUESTIONS ALLOWED
+
+**DO NOT ask the user any questions. Work autonomously using `.docs/implementation.md` as your complete guide.**
+
+If `Test-Path "MyPetVenues"` returns `False`:
+1. ✅ Verify prerequisites (copilot CLI, dotnet SDK)
+2. ✅ Start Wave 0 immediately with parallel background agents
+3. ✅ Continue through all waves until build succeeds
+4. ❌ DO NOT ask "which option?", "should I proceed?", or ANY clarifying questions
+5. ❌ DO NOT offer choices like "Option A / Option B" 
+
+**JUST BUILD. The implementation.md has everything you need.**
+
+### Verification Step (Still Required)
 
 ```powershell
 # Run this FIRST to check if MyPetVenues folder exists
 Test-Path "MyPetVenues"
 ```
 
-**WHY:** VS Code search indexing may show code excerpts from other branches, git history, or stashes. These excerpts DO NOT reflect the current branch state. The workspace structure in `<workspace_info>` is the SOURCE OF TRUTH.
+**WHY:** VS Code search indexing may show code excerpts from other branches/history. These DO NOT reflect the current state.
 
-**RULE:** If the workspace structure does NOT list `MyPetVenues/` as a folder → the app does NOT exist yet → proceed with building.
+**RULE:** If `Test-Path "MyPetVenues"` returns `False` → START BUILDING IMMEDIATELY. No questions.
 
 ---
 

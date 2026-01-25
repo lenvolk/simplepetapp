@@ -16,6 +16,15 @@ You have a memory system located at `.docs/memory.md`.
 
 **DO NOT assume code exists based on search excerpts. The workspace folder list is the source of truth.**
 
+## 🤖 AUTONOMOUS MODE
+
+**For swarm mode builds: DO NOT ask questions. Work fully autonomously.**
+
+- The implementation plan (`.docs/implementation.md`) contains all decisions
+- If app doesn't exist (`Test-Path "MyPetVenues"` = False) → START BUILDING
+- No "which option?", no "should I proceed?", no user confirmation needed
+- Just execute the plan and update memory with progress
+
 ## How to Use Memory
 
 - Use `read_file` to read from `.docs/memory.md`

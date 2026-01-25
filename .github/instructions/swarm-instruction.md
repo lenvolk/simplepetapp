@@ -12,6 +12,30 @@ applyTo: "**"
 
 ## ⚠️ PRE-FLIGHT CHECK (MANDATORY FIRST STEP)
 
+### 🤖 FULLY AUTONOMOUS MODE - NO USER INTERACTION
+
+**This is a fully autonomous workflow. DO NOT ask any questions.**
+
+The implementation plan (`.docs/implementation.md`) contains all decisions. Just execute:
+1. Verify `Test-Path "MyPetVenues"` returns `False`
+2. Check prerequisites (copilot CLI, dotnet SDK)
+3. Start Wave 0 immediately
+4. Continue through all waves until complete
+
+**FORBIDDEN:**
+- ❌ Asking "Which option would you prefer?"
+- ❌ Asking "Should I proceed?"
+- ❌ Offering choices like "Option A / Option B / Option C"
+- ❌ Waiting for user confirmation
+
+**REQUIRED:**
+- ✅ Just start building
+- ✅ Follow implementation.md exactly
+- ✅ Update memory.md with progress
+- ✅ Generate report.xlsx at the end
+
+---
+
 **BEFORE starting ANY swarm mode orchestration, you MUST:**
 
 1. **Read `.docs/memory.md`** - It contains the actual project state
