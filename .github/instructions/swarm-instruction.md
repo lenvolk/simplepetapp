@@ -7,6 +7,9 @@ applyTo: "**"
 > **What is this?** A beginner-friendly guide to orchestrating multiple AI agents working in parallel.
 > Think of it like a conductor leading an orchestra - each musician (agent) plays their part, and you coordinate them all!
 
+> **📊 Excel Updates**: To update `.docs/report.xlsx`, use the **xlsx skill** (`.github/skills/xlsx/SKILL.md`).
+> Read the skill documentation first for proper openpyxl usage and formula preservation.
+
 ## 🎯 The Big Picture
 
 ```
@@ -180,6 +183,60 @@ Every orchestration session should produce a report like this:
 | Email service | Agent-3 | ✅ Done | 5m 30s | gpt-4 | 3,210 |
 | Booking confirm | Agent-4 | ✅ Done | 2m 45s | gpt-4 | 1,650 |
 ```
+
+## 📝 How to Update report.xlsx
+
+The report file (`.docs/report.xlsx`) is an Excel workbook with multiple sheets. **Use the xlsx skill** to update it properly.
+
+### Report Structure
+| Sheet | Purpose |
+|-------|---------|
+| **Summary** | Overall execution stats (total time, task count, success rate) |
+| **Tasks** | Detailed task log with status, duration, tokens, agent info |
+| **Waves** | Wave-by-wave breakdown with timing |
+| **Agents** | Agent performance metrics |
+| **Timeline** | Chronological event log |
+
+### Using openpyxl to Update the Report
+
+```python
+from openpyxl import load_workbook
+from datetime import datetime
+
+# Load existing report
+wb = load_workbook('.docs/report.xlsx')
+
+# Update Tasks sheet - add a completed task row
+tasks_sheet = wb['Tasks']
+next_row = tasks_sheet.max_row + 1
+tasks_sheet[f'A{next_row}'] = 'Add venue map'      # Task name
+tasks_sheet[f'B{next_row}'] = 'Agent-1'            # Agent ID
+tasks_sheet[f'C{next_row}'] = '✅ Done'            # Status
+tasks_sheet[f'D{next_row}'] = '3m 15s'             # Duration
+tasks_sheet[f'E{next_row}'] = 'Claude Sonnet 4'   # Model
+tasks_sheet[f'F{next_row}'] = 2450                 # Tokens
+tasks_sheet[f'G{next_row}'] = datetime.now()       # Timestamp
+
+# Update Summary sheet formulas (they auto-calculate)
+summary_sheet = wb['Summary']
+# Example: Total tasks formula already exists as =COUNTA(Tasks!A:A)-1
+
+wb.save('.docs/report.xlsx')
+```
+
+### Key Points for Agents
+1. **Always load existing file** - Don't create new, use `load_workbook()`
+2. **Append rows** - Use `max_row + 1` to find next available row
+3. **Preserve formulas** - Summary sheet has formulas that auto-calculate from Tasks data
+4. **Save after updates** - Don't forget `wb.save()`
+
+### Orchestrator Responsibility
+The **orchestrator** (not subagents) should update report.xlsx after each wave completes:
+- Update wave timing in Waves sheet
+- Mark tasks complete in Tasks sheet
+- Log agent performance in Agents sheet
+
+Subagents update `.docs/memory.md` for progress tracking; the orchestrator consolidates into the Excel report.
 
 ## 🎓 Learning Path
 
