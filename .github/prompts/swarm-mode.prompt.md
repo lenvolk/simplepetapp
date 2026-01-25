@@ -116,25 +116,16 @@ Start-Job -Name "agent" -ScriptBlock { copilot -p "task" --allow-all-tools }
 
 ## ✅ Prerequisites Check
 
-**FIRST**: Verify GitHub CLI and Copilot extension are installed:
+**FIRST**: Verify Copilot CLI is installed:
 ```powershell
-# Check GitHub CLI
-gh --version
-
-# Check Copilot extension
-gh copilot --version
+# Check Copilot CLI
+copilot --version
 ```
 
 If not installed:
 ```powershell
-# Install GitHub CLI
-winget install GitHub.cli
-
-# Install Copilot extension
-gh extension install github/gh-copilot
-
-# Authenticate
-gh auth login
+# Install Copilot CLI
+winget install GitHub.Copilot
 ```
 
 ---
@@ -183,23 +174,22 @@ git worktree add ..\worktree-task1 -b task-1
 git worktree add ..\worktree-task2 -b task-2
 ```
 
-### Spawn Parallel Agents with gh copilot CLI
+### Spawn Parallel Agents with Copilot CLI
 ```powershell
 # Launch agent for Task 1 (runs in background)
 Start-Job -Name "wave-0-task1" -ScriptBlock {
     Set-Location "C:\Temp\GIT\worktree-task1"
-    gh copilot -p "Your task: Add venue map component. When done, update .docs/memory.md with your progress." --agent workspace --allow-all-tools
+    copilot -p "Your task: Add venue map component. When done, update .docs/memory.md with your progress." --allow-all-tools
 }
 
 # Launch agent for Task 2 (runs in parallel!)
 Start-Job -Name "wave-0-task2" -ScriptBlock {
     Set-Location "C:\Temp\GIT\worktree-task2"
-    gh copilot -p "Your task: Add favorites button. When done, update .docs/memory.md with your progress." --agent workspace --allow-all-tools
+    copilot -p "Your task: Add favorites button. When done, update .docs/memory.md with your progress." --allow-all-tools
 }
 ```
 
 **Key flags:**
-- `--agent workspace` - Uses the workspace agent for file editing
 - `--allow-all-tools` - Enables all tools without prompts
 - Job names start with `wave-X-` for easy monitoring
 
@@ -362,7 +352,7 @@ Wave: [WAVE NUMBER]
 ## ✅ Quick Checklist
 
 Before starting:
-- [ ] Copilot CLI installed (`copilot -v`)
+- [ ] Copilot CLI installed (`copilot --version`)
 - [ ] Git repo initialized
 - [ ] Plan file exists (`.docs/demo-tasks.md`)
 

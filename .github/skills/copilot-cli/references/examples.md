@@ -4,7 +4,7 @@
 
 Fix a bug non-interactively:
 ```powershell
-gh copilot -p "Fix the null reference exception in UserService.cs" --agent workspace --allow-all-tools -s
+copilot -p "Fix the null reference exception in UserService.cs" --allow-all-tools -s
 ```
 
 ## Parallel Agent Orchestration
@@ -18,12 +18,12 @@ git worktree add ../worktree-ui -b task-ui
 # Spawn parallel agents
 $apiJob = Start-Job -Name "agent-api" -ScriptBlock {
     Set-Location "C:\repo\worktree-api"
-    gh copilot -p "Implement the REST API endpoints for user management. Run tests before committing." --agent workspace --allow-all-tools
+    copilot -p "Implement the REST API endpoints for user management. Run tests before committing." --allow-all-tools
 }
 
 $uiJob = Start-Job -Name "agent-ui" -ScriptBlock {
     Set-Location "C:\repo\worktree-ui"
-    gh copilot -p "Create React components for user dashboard. Run linter before committing." --agent workspace --allow-all-tools
+    copilot -p "Create React components for user dashboard. Run linter before committing." --allow-all-tools
 }
 
 # Wait and collect results
@@ -35,9 +35,8 @@ Receive-Job $uiJob
 ## Scripted Pipeline
 
 ```powershell
-# Run gh copilot with specific permissions
-$result = gh copilot -p "Refactor the authentication module" `
-    --agent workspace `
+# Run copilot with specific permissions
+$result = copilot -p "Refactor the authentication module" `
     --allow-all-tools `
     --model claude-sonnet-4 `
     -s
@@ -53,14 +52,14 @@ if ($LASTEXITCODE -eq 0) {
 
 Continue previous session without prompts:
 ```powershell
-gh copilot --allow-all-tools --continue
+copilot --allow-all-tools --continue
 ```
 
 ## Restricted Tool Access
 
 Allow only safe operations:
 ```powershell
-gh copilot -p "Review and suggest improvements for auth.js" `
+copilot -p "Review and suggest improvements for auth.js" `
     --allow-tool 'read' `
     --deny-tool 'write' `
     --deny-tool 'shell'
@@ -70,7 +69,7 @@ gh copilot -p "Review and suggest improvements for auth.js" `
 
 Add custom MCP servers for the session:
 ```powershell
-gh copilot --additional-mcp-config "@mcp-servers.json"
+copilot --additional-mcp-config "@mcp-servers.json"
 ```
 
 ## Batch Processing Template
@@ -87,7 +86,7 @@ foreach ($task in $tasks) {
     $jobs += Start-Job -Name "agent-$($task.Name)" -ScriptBlock {
         param($path, $prompt)
         Set-Location $path
-        gh copilot -p $prompt --agent workspace --allow-all-tools
+        copilot -p $prompt --allow-all-tools
     } -ArgumentList $task.Path, $task.Prompt
 }
 

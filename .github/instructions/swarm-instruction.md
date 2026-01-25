@@ -92,18 +92,18 @@ git worktree add ..\wt-task3 -b task-3
 ```
 
 ### Step 4: Spawn Agents via Terminal ⚠️ CRITICAL
-**YOU MUST spawn agents using `run_in_terminal` with `Start-Job` and `gh copilot` CLI.**
+**YOU MUST spawn agents using `run_in_terminal` with `Start-Job` and the `copilot` CLI.**
 
 ```powershell
 # Spawn Wave 0 agents (run this in terminal)
 Start-Job -Name "wave-0-task1" -ScriptBlock {
     Set-Location "C:\Temp\GIT\wt-task1"
-    gh copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --agent workspace --allow-all-tools
+    copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --allow-all-tools
 }
 
 Start-Job -Name "wave-0-task2" -ScriptBlock {
     Set-Location "C:\Temp\GIT\wt-task2"
-    gh copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --agent workspace --allow-all-tools
+    copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --allow-all-tools
 }
 ```
 
@@ -158,7 +158,7 @@ runSubagent("Build models...")  ← Cannot be monitored!
 **CORRECT** (visible in monitor):
 ```powershell
 Start-Job -Name "wave-0-models" -ScriptBlock {
-    gh copilot -p "Build models..." --agent workspace --allow-all-tools
+    copilot -p "Build models..." --allow-all-tools
 }
 ```
 

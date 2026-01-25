@@ -26,19 +26,14 @@ Before starting, you need:
 - [ ] **.NET 9 SDK** (for the demo app)
 - [ ] **GitHub Copilot CLI** (install below)
 
-### Install GitHub CLI + Copilot Extension
+### Install GitHub Copilot CLI
 
 ```powershell
-# Check if GitHub CLI is installed
-gh --version
-
-# Check if Copilot extension is installed
-gh copilot --version
+# Check if Copilot CLI is installed
+copilot --version
 
 # If not installed:
-winget install GitHub.cli
-gh extension install github/gh-copilot
-gh auth login
+winget install GitHub.Copilot
 ```
 
 ---
@@ -234,12 +229,8 @@ flowchart TB
 
 ### Copilot CLI not found
 ```powershell
-# Install GitHub CLI first
-winget install GitHub.cli
-gh auth login
-
-# Then install Copilot extension
-gh extension install github/gh-copilot
+# Install Copilot CLI
+winget install GitHub.Copilot
 ```
 
 ### Build errors
@@ -289,7 +280,7 @@ The AI orchestrator spawns **real background jobs** visible in the monitor:
 ```powershell
 Start-Job -Name "wave-0-taskname" -ScriptBlock {
     Set-Location "path/to/worktree"
-    gh copilot -p "task prompt" --agent workspace --allow-all-tools
+    copilot -p "task prompt" --allow-all-tools
 }
 ```
 
@@ -304,9 +295,8 @@ This approach shows how the model:
 ## 🔑 Key Commands
 
 ```powershell
-# Check GitHub CLI + Copilot
-gh --version
-gh copilot --version
+# Check Copilot CLI
+copilot --version
 
 # Build the app
 dotnet build MyPetVenues/MyPetVenues.csproj
@@ -323,14 +313,14 @@ Receive-Job -Name "wave-0-task1"
 # Spawn an agent manually (example)
 Start-Job -Name "wave-0-task1" -ScriptBlock {
     Set-Location "C:\path\to\worktree"
-    gh copilot -p "Your task..." --agent workspace --allow-all-tools
+    copilot -p "Your task..." --allow-all-tools
 }
 ```
 
 ---
 
 
-**How agents run**: Subagents are spawned as PowerShell background jobs using `Start-Job`. Each job runs `gh copilot` CLI in a separate git worktree.
+**How agents run**: Subagents are spawned as PowerShell background jobs using `Start-Job`. Each job runs `copilot` CLI in a separate git worktree.
 
 ```powershell
 # Terminal 1: Start the monitor (shows live agent status)

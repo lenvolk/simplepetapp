@@ -14,22 +14,22 @@
 
 ```powershell
 # Check if installed
-gh copilot --version
+copilot --version
 
-# Install if needed (via GitHub CLI extension)
-gh extension install github/gh-copilot
+# Install if needed
+winget install GitHub.Copilot
 ```
 
 ## Essential Commands
 
 | Mode | Command |
 |------|---------|
-| Interactive | `gh copilot` |
-| Single prompt | `gh copilot -p "your task"` |
-| YOLO mode | `gh copilot --allow-all-tools` |
-| Non-interactive YOLO | `gh copilot -p "task" --allow-all-tools` |
-| Resume session | `gh copilot --continue` |
-| Silent (scripting) | `gh copilot -p "task" --allow-all-tools -s` |
+| Interactive | `copilot` |
+| Single prompt | `copilot -p "your task"` |
+| YOLO mode | `copilot --allow-all-tools` |
+| Non-interactive YOLO | `copilot -p "task" --allow-all-tools` |
+| Resume session | `copilot --continue` |
+| Silent (scripting) | `copilot -p "task" --allow-all-tools -s` |
 
 ## Key Flags
 
@@ -52,7 +52,7 @@ gh extension install github/gh-copilot
 ```powershell
 Start-Job -Name "agent-{task_name}" -ScriptBlock {
     Set-Location "{worktree_path}"
-    gh copilot -p "{task_prompt}" --agent workspace --allow-all-tools
+    copilot -p "{task_prompt}" --allow-all-tools
 }
 ```
 
@@ -67,13 +67,13 @@ Receive-Job -Name "agent-{task_name}"
 
 ```powershell
 # Allow git, block push
-gh copilot --allow-tool 'shell(git:*)' --deny-tool 'shell(git push)'
+copilot --allow-tool 'shell(git:*)' --deny-tool 'shell(git push)'
 
 # Allow file editing only
-gh copilot --allow-tool 'write'
+copilot --allow-tool 'write'
 
 # Read-only mode
-gh copilot --allow-tool 'read' --deny-tool 'write' --deny-tool 'shell'
+copilot --allow-tool 'read' --deny-tool 'write' --deny-tool 'shell'
 ```
 
 ## Available Models
@@ -83,5 +83,5 @@ gh copilot --allow-tool 'read' --deny-tool 'write' --deny-tool 'shell'
 - `gemini-3-pro-preview`
 
 ---
-*Run `gh copilot --help` for full documentation*
+*Run `copilot --help` for full documentation*
 ````
