@@ -1,5 +1,20 @@
 # MyPetVenues Project Memory
 
+## ⚠️ CRITICAL: READ THIS FIRST - DO NOT SKIP
+
+**Before assuming ANY code exists, you MUST verify the actual state:**
+
+```powershell
+# Run this FIRST to check if MyPetVenues folder exists
+Test-Path "MyPetVenues"
+```
+
+**WHY:** VS Code search indexing may show code excerpts from other branches, git history, or stashes. These excerpts DO NOT reflect the current branch state. The workspace structure in `<workspace_info>` is the SOURCE OF TRUTH.
+
+**RULE:** If the workspace structure does NOT list `MyPetVenues/` as a folder → the app does NOT exist yet → proceed with building.
+
+---
+
 ## Project Summary
 A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor WebAssembly app.
 
@@ -16,7 +31,7 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 
 ### Status: Ready for Fresh Build
 
-The application has been cleaned. Use the orchestrator with .docs/implementation.md to rebuild from scratch.
+The application has been cleaned (`cleanup.ps1` was run). The `MyPetVenues/` folder does NOT exist. Use the orchestrator with `.docs/implementation.md` to rebuild from scratch.
 
 ### Files Reference
 - Implementation Plan: .docs/implementation.md

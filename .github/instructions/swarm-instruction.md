@@ -10,6 +10,26 @@ applyTo: "**"
 > **📊 Excel Updates**: To update `.docs/report.xlsx`, use the **xlsx skill** (`.github/skills/xlsx/SKILL.md`).
 > Read the skill documentation first for proper openpyxl usage and formula preservation.
 
+## ⚠️ PRE-FLIGHT CHECK (MANDATORY FIRST STEP)
+
+**BEFORE starting ANY swarm mode orchestration, you MUST:**
+
+1. **Read `.docs/memory.md`** - It contains the actual project state
+2. **Verify folder existence** - Run `Test-Path "MyPetVenues"` in terminal
+3. **DO NOT trust code excerpts** - Search indexing may show code from other branches/history
+
+```powershell
+# Run these commands FIRST before spawning any agents:
+Test-Path "MyPetVenues"          # Should return False if cleaned
+Get-ChildItem -Directory | Select-Object Name  # Verify actual folders
+```
+
+**RULE:** If `Test-Path "MyPetVenues"` returns `False` → the app does NOT exist → proceed with building from Wave 0.
+
+**WHY:** VS Code search may show code excerpts from git history or other branches. These DO NOT reflect the current state. Always verify with actual file system checks.
+
+---
+
 ## 🎯 The Big Picture
 
 ```

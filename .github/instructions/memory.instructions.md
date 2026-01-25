@@ -6,7 +6,15 @@ applyTo: **
 
 You have a memory system located at `.docs/memory.md`.
 
-**IMPORTANT: ALWAYS read your memory at the start of complex tasks to understand context.**
+## ⚠️ CRITICAL: MANDATORY FIRST STEP
+
+**Before starting ANY build, swarm mode, or complex task:**
+
+1. **READ `.docs/memory.md` FIRST** - It contains the actual project state
+2. **VERIFY folder existence** - Run `Test-Path "MyPetVenues"` to confirm
+3. **Trust workspace structure over code excerpts** - Search indexing may show code from other branches
+
+**DO NOT assume code exists based on search excerpts. The workspace folder list is the source of truth.**
 
 ## How to Use Memory
 
