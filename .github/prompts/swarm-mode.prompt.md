@@ -42,29 +42,32 @@ Start-Job -Name "agent" -ScriptBlock { copilot -p "task" --allow-all-tools }
 
 ## 🎭 Role Model (Who Does What)
 
+| Role | Tool/Method | Edits Files? | Purpose |
+|------|-------------|--------------|---------|
+| **Orchestrator (You)** | Copilot in VS Code chat | Coordinates | Plan waves, spawn/monitor CLI jobs, merge, report |
+| **Background CLI Agents** | `Start-Job` + `copilot` CLI | **YES** | The actual workers - code, test, commit in worktrees |
+| **runSubagent tool** | `runSubagent(...)` | Optional | Analysis, research, quick queries (synchronous) |
+
+**Key distinction**: Background CLI agents run in isolated worktrees via PowerShell jobs.
+The `runSubagent` tool runs synchronously within your chat context - useful for analysis
+but not for parallel task execution.
+
 ```
 ┌─────────────────────────────────────────────────────────────┐
 │ 🎭 ORCHESTRATOR (You)                                       │
 │ • Read plans and build task waves                           │
-│ • Spawn background agents for parallel work                 │
+│ • Spawn background CLI agents for parallel work             │
 │ • Track progress via memory file                            │
 │ • Generate final report when done                           │
 └─────────────────────────────────────────────────────────────┘
          │
          ▼
 ┌─────────────────────────────────────────────────────────────┐
-│ 🤖 BACKGROUND AGENTS (Copilot CLI)                          │
+│ 🤖 BACKGROUND CLI AGENTS (Start-Job + copilot CLI)          │
 │ • Each works on ONE task in isolation                       │
 │ • Edit files, run tests, commit changes                     │
 │ • Report completion to memory file                          │
-└─────────────────────────────────────────────────────────────┘
-         │
-         ▼
-┌─────────────────────────────────────────────────────────────┐
-│ 📊 SUBAGENTS (Analysis Only)                                │
-│ • Run tests and validation checks                           │
-│ • Do NOT edit files                                         │
-│ • Report results back to orchestrator                       │
+│ • Named: agent-<taskname> (e.g., agent-models)              │
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -165,41 +168,42 @@ Wave 1: [Task 3, Task 4] ← Run together after Wave 0!
 
 ---
 
-## 🤖 Spawning Background Agents
+## 🤖 Spawning Background CLI Agents
 
 ### Create Isolated Workspace (Git Worktree)
 ```powershell
 # Create a separate folder for each task
-git worktree add ..\worktree-task1 -b task-1
-git worktree add ..\worktree-task2 -b task-2
+git worktree add ..\wt-models -b task-models
+git worktree add ..\wt-services -b task-services
 ```
 
 ### Spawn Parallel Agents with Copilot CLI
 ```powershell
 # Launch agent for Task 1 (runs in background)
-Start-Job -Name "wave-0-task1" -ScriptBlock {
-    Set-Location "C:\Temp\GIT\worktree-task1"
-    copilot -p "Your task: Add venue map component. When done, update .docs/memory.md with your progress." --allow-all-tools
+Start-Job -Name "agent-models" -ScriptBlock {
+    Set-Location "C:\Temp\GIT\wt-models"
+    copilot -p "Your task: Create domain models. When done, update .docs/memory.md with your progress." --allow-all-tools
 }
 
 # Launch agent for Task 2 (runs in parallel!)
-Start-Job -Name "wave-0-task2" -ScriptBlock {
-    Set-Location "C:\Temp\GIT\worktree-task2"
-    copilot -p "Your task: Add favorites button. When done, update .docs/memory.md with your progress." --allow-all-tools
+Start-Job -Name "agent-services" -ScriptBlock {
+    Set-Location "C:\Temp\GIT\wt-services"
+    copilot -p "Your task: Create service interfaces. When done, update .docs/memory.md with your progress." --allow-all-tools
 }
 ```
 
-**Key flags:**
-- `--allow-all-tools` - Enables all tools without prompts
-- Job names start with `wave-X-` for easy monitoring
+**Job naming convention**: `agent-<taskname>` (e.g., `agent-models`, `agent-services`, `agent-layout`)
 
 ### Monitor Progress
 ```powershell
-# Check status of all wave agents
-Get-Job | Where-Object { $_.Name -like "wave-*" } | Format-Table Name, State, HasMoreData
+# Check status of all agents
+Get-Job | Where-Object { $_.Name -like "agent-*" } | Format-Table Name, State, HasMoreData
 
 # Get output from a specific agent
-Receive-Job -Name "wave-0-task1"
+Receive-Job -Name "agent-models"
+
+# Wait for specific agents to complete
+Get-Job | Where-Object { $_.Name -in @("agent-models", "agent-services") } | Wait-Job
 ```
 
 ---
@@ -284,21 +288,21 @@ After each wave completes:
 
 ### 1. Check for Conflicts
 ```powershell
-cd ..\worktree-task1
+cd ..\wt-models
 git diff main
 ```
 
 ### 2. Merge if Clean
 ```powershell
 git checkout main
-git merge task-1 --no-ff -m "Merge Task 1: Add Venue Map"
+git merge task-models --no-ff -m "Merge Task: Create domain models"
 ```
 
 ### 3. Cleanup Worktrees
 ```powershell
-Remove-Item -LiteralPath "..\worktree-task1" -Recurse -Force
+Remove-Item -LiteralPath "..\wt-models" -Recurse -Force
 git worktree prune
-git branch -d task-1
+git branch -d task-models
 ```
 
 ---
@@ -307,7 +311,7 @@ git branch -d task-1
 
 If an agent fails:
 
-1. **Check the Logs**: `Receive-Job -Name "agent-task1"`
+1. **Check the Logs**: `Receive-Job -Name "agent-models"`
 2. **Retry Once**: Spawn a fix agent in the same worktree
 3. **Max 2 Attempts**: If still failing, pause and ask user
 4. **Don't Block Others**: Continue with non-dependent tasks
@@ -354,12 +358,12 @@ Wave: [WAVE NUMBER]
 Before starting:
 - [ ] Copilot CLI installed (`copilot --version`)
 - [ ] Git repo initialized
-- [ ] Plan file exists (`.docs/demo-tasks.md`)
+- [ ] Plan file exists (`.docs/demo-tasks.md` or `.docs/implementation.md`)
 
 For each wave:
-- [ ] Create worktrees for all tasks
-- [ ] Spawn agents in parallel
-- [ ] Monitor until all complete
+- [ ] Create worktrees for all tasks (`git worktree add ..\wt-<taskname> -b task-<taskname>`)
+- [ ] Spawn agents in parallel (`Start-Job -Name "agent-<taskname>"`)
+- [ ] Monitor until all complete (`Get-Job | Where-Object { $_.Name -like "agent-*" }`)
 - [ ] Check memory.md for updates
 - [ ] Merge successful tasks
 - [ ] Clean up worktrees

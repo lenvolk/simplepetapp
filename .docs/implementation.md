@@ -9,7 +9,9 @@
 
 ## 📋 Overview
 
-This implementation plan guides an **orchestrator agent** to build the entire MyPetVenues application using **parallel sub-agents**. Each wave contains independent tasks that execute simultaneously, maximizing efficiency.
+This implementation plan guides an **orchestrator agent** to build the entire MyPetVenues application using **parallel Background CLI Agents**. Each wave contains independent tasks that execute simultaneously, maximizing efficiency.
+
+**Optimization**: Between waves, use **subagent research** to analyze completed work and enrich prompts for the next wave. This reduces errors and improves agent accuracy.
 
 ```
 ┌────────────────────────────────────────────────────────────────────────────┐
@@ -261,6 +263,21 @@ When done: Update .docs/memory.md with status, commit changes.
 
 ---
 
+### 🔬 Subagent Research Checkpoint (After Wave 0)
+
+**Before spawning Wave 1 agents**, ask the orchestrator to use a subagent for research:
+
+```
+You: "Use a subagent to analyze MyPetVenues/Models/*.cs and summarize:
+     1. All class properties with their types
+     2. All enum values (VenueType, PetType, BookingStatus)
+     3. Any relationships between models"
+```
+
+**Use the findings to enrich Wave 1 prompts** with actual property names and enum values.
+
+---
+
 ## 🌊 WAVE 1: Services & Layout (3 Parallel Agents)
 
 > **Requires**: Wave 0 complete
@@ -427,6 +444,21 @@ Namespace: MyPetVenues.Services
 
 When done: Update .docs/memory.md with status, commit changes.
 ```
+
+---
+
+### 🔬 Subagent Research Checkpoint (After Wave 1)
+
+**Before spawning Wave 2 agents**, ask the orchestrator to use a subagent for research:
+
+```
+You: "Use a subagent to review MyPetVenues/Services/I*.cs interfaces and list:
+     1. All available methods with signatures
+     2. Return types (what data components will receive)
+     3. Which services components will need to inject"
+```
+
+**Use the findings to enrich Wave 2 prompts** with exact service methods and injection requirements.
 
 ---
 
@@ -626,6 +658,21 @@ Styling:
 
 When done: Update .docs/memory.md with status, commit changes.
 ```
+
+---
+
+### 🔬 Subagent Research Checkpoint (After Wave 2)
+
+**Before spawning Wave 3 agents**, ask the orchestrator to use a subagent for research:
+
+```
+You: "Use a subagent to list all components in MyPetVenues/Components/*.razor:
+     1. Component names and their [Parameter] properties
+     2. Required EventCallbacks
+     3. Which components pages should use together"
+```
+
+**Use the findings to enrich Wave 3 prompts** with exact component usage patterns.
 
 ---
 
@@ -890,6 +937,21 @@ Styling:
 
 When done: Update .docs/memory.md with status, commit changes.
 ```
+
+---
+
+### 🔬 Subagent Research Checkpoint (After Wave 3)
+
+**Before spawning Wave 4 agent**, ask the orchestrator to use a subagent for research:
+
+```
+You: "Use a subagent to:
+     1. Run 'dotnet build MyPetVenues/MyPetVenues.csproj' and report any errors
+     2. List all services that need registration in Program.cs
+     3. List all pages and their routes for router configuration"
+```
+
+**Use the findings to ensure Wave 4 integration is complete** with all services and routes.
 
 ---
 

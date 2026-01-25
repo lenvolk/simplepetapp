@@ -10,10 +10,71 @@ This repository demonstrates **multi-agent orchestration** using GitHub Copilot 
 
 | Concept | Description |
 |---------|-------------|
-| **Orchestrator** | The "boss" agent that assigns and tracks tasks |
-| **Subagents** | Worker agents that each complete one task |
+| **Orchestrator** | The "boss" agent (Copilot in chat) that assigns and tracks tasks |
+| **Background CLI Agent** | Worker agents spawned via `Start-Job` + `copilot` CLI |
 | **Waves** | Groups of tasks that can run in parallel |
 | **Memory** | How agents communicate progress |
+
+---
+
+## ⚠️ Key Clarifications: Agent Types
+
+Understanding the difference between agent types is **critical**:
+
+| Type | How to Spawn | Execution | Edits Files? | Use For |
+|------|--------------|-----------|--------------|---------|
+| **Background CLI Agent** | `Start-Job` + `copilot` CLI | True parallel, isolated worktree | ✅ YES | Actual coding tasks |
+| **Subagent** (`runSubagent` tool) | `runSubagent(...)` in chat | Synchronous, within chat | Optional | Analysis, research |
+
+**For parallel task execution, always use Background CLI Agents:**
+```powershell
+Start-Job -Name "agent-models" -ScriptBlock {
+    Set-Location "C:\Temp\GIT\wt-models"
+    copilot -p "Build models..." --allow-all-tools
+}
+```
+
+**Monitor with:**
+```powershell
+Get-Job | Where-Object { $_.Name -like "agent-*" }
+```
+
+The `runSubagent` tool in VS Code Copilot is **not** for parallel execution - it runs synchronously within your chat session and is best used for quick analysis or research tasks between waves.
+
+### Example: Using Subagent for Research
+
+```
+You: "Run Wave 0 tasks for models and CSS"
+Copilot: [Spawns Background CLI Agents via Start-Job]
+Copilot: "Wave 0 complete."
+
+You: "Use a subagent to review the models and suggest service methods"
+Copilot: [Calls runSubagent internally, waits for result]
+Copilot: "Analysis complete. The Venue model has 12 properties, 
+         suggesting these service methods: GetByCity, FilterByPetType..."
+
+You: "Good, now spawn Wave 1 agents with that context"
+Copilot: [Spawns Background CLI Agents with enriched prompts]
+```
+
+**Why use subagents for research?**
+- **Fresh context**: Subagent gets a clean, focused context window for the research task
+- **Summarized results**: Returns only key findings, not a full file dump
+- **Enriched prompts**: Use research findings to craft better prompts for Background CLI Agents
+- **No file conflicts**: Since subagents don't edit files, they can safely analyze while agents work
+
+### 🚀 Optimization: Research Between Waves
+
+For complex builds, use subagent research checkpoints between waves to improve accuracy:
+
+| After Wave | Research Task | Benefit |
+|------------|---------------|---------|
+| Wave 0 (Models) | Analyze model properties and enums | Services get exact type signatures |
+| Wave 1 (Services) | Review service interfaces | Components know available methods |
+| Wave 2 (Components) | List component parameters | Pages use correct bindings |
+| Wave 3 (Pages) | Run build, check errors | Integration agent has complete picture |
+
+See [implementation.md](.docs/implementation.md) for specific research prompts at each checkpoint.
 
 ---
 
@@ -104,7 +165,7 @@ Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), use this prompt:
 - .github/instructions/swarm-instruction.md (HOW to orchestrate)
 - .docs/demo-tasks.md (WHAT tasks to run)
 
-Execute the demo tasks using parallel sub-agents.
+Execute the demo tasks using parallel background agents.
 ```
 
 #### Full Build (17 Tasks):
@@ -113,7 +174,7 @@ Execute the demo tasks using parallel sub-agents.
 - .github/instructions/swarm-instruction.md (HOW to orchestrate)  
 - .docs/implementation.md (WHAT to build)
 
-Build the complete MyPetVenues app using parallel sub-agents.
+Build the complete MyPetVenues app using parallel background agents.
 ```
 
 ### Step 4: Watch the Magic! ✨
@@ -122,7 +183,7 @@ Build the complete MyPetVenues app using parallel sub-agents.
 1. AI reads the task plan and analyzes dependencies
 2. Groups independent tasks into Wave 0
 3. Creates git worktrees for isolation
-4. Spawns parallel agents via `Start-Job` + `gh copilot`
+4. Spawns parallel Background CLI Agents via `Start-Job` + `copilot`
 5. Waits for Wave 0 to complete
 6. Continues with Wave 1 (dependent tasks)
 7. Merges and cleans up
@@ -278,7 +339,7 @@ flowchart LR
 The AI orchestrator spawns **real background jobs** visible in the monitor:
 
 ```powershell
-Start-Job -Name "wave-0-taskname" -ScriptBlock {
+Start-Job -Name "agent-taskname" -ScriptBlock {
     Set-Location "path/to/worktree"
     copilot -p "task prompt" --allow-all-tools
 }
@@ -305,13 +366,13 @@ dotnet build MyPetVenues/MyPetVenues.csproj
 dotnet run --project MyPetVenues/MyPetVenues.csproj
 
 # Check agent job status (during run)
-Get-Job | Where-Object { $_.Name -like "wave-*" }
+Get-Job | Where-Object { $_.Name -like "agent-*" }
 
 # View agent output
-Receive-Job -Name "wave-0-task1"
+Receive-Job -Name "agent-models"
 
 # Spawn an agent manually (example)
-Start-Job -Name "wave-0-task1" -ScriptBlock {
+Start-Job -Name "agent-models" -ScriptBlock {
     Set-Location "C:\path\to\worktree"
     copilot -p "Your task..." --allow-all-tools
 }
@@ -320,7 +381,7 @@ Start-Job -Name "wave-0-task1" -ScriptBlock {
 ---
 
 
-**How agents run**: Subagents are spawned as PowerShell background jobs using `Start-Job`. Each job runs `copilot` CLI in a separate git worktree.
+**How agents run**: Background CLI Agents are spawned as PowerShell background jobs using `Start-Job`. Each job runs `copilot` CLI in a separate git worktree.
 
 ```powershell
 # Terminal 1: Start the monitor (shows live agent status)
@@ -332,28 +393,28 @@ Start-Job -Name "wave-0-task1" -ScriptBlock {
 #   Active Agents: 3
 #
 #   RUNNING:
-#     🔄 wave-0-task1  [Wave 0]  02:15
-#     🔄 wave-0-task2  [Wave 0]  02:10
-#     🔄 wave-0-task3  [Wave 0]  01:58
+#     🔄 agent-models   02:15
+#     🔄 agent-services 02:10
+#     🔄 agent-css      01:58
 #
 #   COMPLETED: 0
 ```
 
-**Job naming convention**: Agents are named `wave-X-taskY` so the monitor can:
-- Count active agents per wave
-- Show which wave is currently executing
+**Job naming convention**: Agents are named `agent-<taskname>` so the monitor can:
+- Count active agents
+- Track which tasks are running
 - Track duration of each agent
 
 **Manual monitoring commands**:
 ```powershell
-# List all wave jobs
-Get-Job | Where-Object { $_.Name -like "wave-*" }
+# List all agent jobs
+Get-Job | Where-Object { $_.Name -like "agent-*" }
 
 # Get output from specific agent
-Receive-Job -Name "wave-0-task1"
+Receive-Job -Name "agent-models"
 
 # Stop all agents
-Get-Job | Where-Object { $_.Name -like "wave-*" } | Stop-Job
+Get-Job | Where-Object { $_.Name -like "agent-*" } | Stop-Job
 
 # Clean up completed jobs
 Get-Job | Where-Object { $_.State -eq "Completed" } | Remove-Job
@@ -365,8 +426,8 @@ Get-Job | Where-Object { $_.State -eq "Completed" } | Remove-Job
 
 | Term | Meaning |
 |------|---------|
-| **Orchestrator** | Main agent that coordinates all work |
-| **Subagent** | Worker agent doing one specific task |
+| **Orchestrator** | Main Copilot instance (in chat) that coordinates all work |
+| **Background CLI Agent** | Worker agent spawned via `Start-Job` + `copilot` CLI |
 | **Wave** | Group of independent tasks that run in parallel |
 | **Worktree** | Isolated Git workspace for each agent |
 | **Memory** | Shared file (`.docs/memory.md`) for progress tracking |

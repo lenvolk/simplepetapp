@@ -101,7 +101,7 @@ Using Claude Sonnet 4.5 (default) - balanced performance for this task
 For parallel task orchestration, spawn agents in PowerShell jobs:
 
 ```powershell
-Start-Job -Name "wave-0-taskname" -ScriptBlock {
+Start-Job -Name "agent-taskname" -ScriptBlock {
     Set-Location "C:\path\to\worktree"
     copilot -p "Your detailed task prompt" --allow-all-tools
 }
@@ -109,8 +109,8 @@ Start-Job -Name "wave-0-taskname" -ScriptBlock {
 
 Monitor jobs:
 ```powershell
-Get-Job | Where-Object { $_.Name -like "wave-*" }
-Receive-Job -Name "wave-0-taskname"
+Get-Job | Where-Object { $_.Name -like "agent-*" }
+Receive-Job -Name "agent-taskname"
 ```
 
 ## Best Practices for Automation
@@ -118,7 +118,7 @@ Receive-Job -Name "wave-0-taskname"
 1. Always use `-p` + `--allow-all-tools` for non-interactive automation
 2. Set working directory before running (`Set-Location`)
 3. For parallel agents, use separate git worktrees to avoid conflicts
-4. Name jobs with `wave-X-` prefix for monitor compatibility
+4. Name jobs with `agent-` prefix for monitor compatibility (e.g., `agent-models`, `agent-services`)
 5. **Folder trust**: The CLI will prompt for folder trust on first run in a directory. In automation, ensure the folder is pre-trusted or handle the prompt
 6. **Authentication**: Verify `gh auth status` before spawning agents to ensure login is valid
 7. **Model selection**: Use `--model <model>` flag to explicitly set model; inform user of selection

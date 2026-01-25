@@ -41,13 +41,15 @@ applyTo: "**"
 
 ## 📚 Key Concepts (L200 - Beginner Friendly)
 
-### 1. What is a Subagent?
-A subagent is an AI assistant that works on ONE specific task. Think of it like hiring a specialist:
-- **Agent A**: "Add a new button to the homepage"
-- **Agent B**: "Create a new service file"
-- **Agent C**: "Update the CSS theme"
+### 1. What is a Background CLI Agent?
+A **Background CLI Agent** is a Copilot instance running in its own terminal via `Start-Job` + `copilot` CLI. These are the actual workers that edit files:
+- **agent-homepage**: "Add a new button to the homepage"
+- **agent-services**: "Create a new service file"
+- **agent-css**: "Update the CSS theme"
 
-Each agent works independently and reports back when done!
+Each agent works in an isolated git worktree and reports back when done!
+
+> **Note**: This is different from the `runSubagent` tool in VS Code, which runs synchronously within Copilot chat for analysis/research tasks.
 
 ### 2. What is a Wave?
 A wave is a group of tasks that can run **at the same time** because they don't depend on each other.
@@ -91,32 +93,35 @@ git worktree add ..\wt-task2 -b task-2
 git worktree add ..\wt-task3 -b task-3
 ```
 
-### Step 4: Spawn Agents via Terminal ⚠️ CRITICAL
+### Step 4: Spawn Background CLI Agents ⚠️ CRITICAL
 **YOU MUST spawn agents using `run_in_terminal` with `Start-Job` and the `copilot` CLI.**
 
 ```powershell
 # Spawn Wave 0 agents (run this in terminal)
-Start-Job -Name "wave-0-task1" -ScriptBlock {
-    Set-Location "C:\Temp\GIT\wt-task1"
+Start-Job -Name "agent-models" -ScriptBlock {
+    Set-Location "C:\Temp\GIT\wt-models"
     copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --allow-all-tools
 }
 
-Start-Job -Name "wave-0-task2" -ScriptBlock {
-    Set-Location "C:\Temp\GIT\wt-task2"
+Start-Job -Name "agent-services" -ScriptBlock {
+    Set-Location "C:\Temp\GIT\wt-services"
     copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --allow-all-tools
 }
 ```
 
-**Job naming convention**: `wave-{N}-{taskname}` (e.g., `wave-0-models`, `wave-1-services`)
+**Job naming convention**: `agent-<taskname>` (e.g., `agent-models`, `agent-services`, `agent-layout`)
 
 ### Step 5: Wait for Wave Completion
 Monitor and wait for all jobs in the wave to complete:
 ```powershell
-# Check status
-Get-Job | Where-Object { $_.Name -like "wave-0-*" }
+# Check status of all agents
+Get-Job | Where-Object { $_.Name -like "agent-*" }
 
-# Wait for all wave-0 jobs
-Get-Job | Where-Object { $_.Name -like "wave-0-*" } | Wait-Job
+# Wait for specific agents in current wave
+Get-Job | Where-Object { $_.Name -in @("agent-models", "agent-services") } | Wait-Job
+
+# Or wait for all agents
+Get-Job | Where-Object { $_.Name -like "agent-*" } | Wait-Job
 ```
 
 ### Step 6: Merge and Continue
@@ -146,21 +151,84 @@ Update `.docs/memory.md` as waves complete:
 ### Step 8: Generate Report
 Create final summary in `.docs/report.xlsx`
 
-## ⚠️ IMPORTANT: Do NOT Use runSubagent
+## 🔄 Background CLI Agents vs runSubagent Tool
 
-The `runSubagent` tool runs agents internally and they are **invisible** to PowerShell monitoring.
+| Aspect | Background CLI Agent | runSubagent Tool |
+|--------|---------------------|------------------|
+| **How to spawn** | `Start-Job` + `copilot` CLI | `runSubagent(...)` in Copilot chat |
+| **Execution** | True parallel, isolated worktree | Synchronous, within chat context |
+| **Can edit files?** | ✅ YES - this is their purpose | Optional - primarily for analysis |
+| **Visible in terminal?** | ✅ YES - monitored via `Get-Job` | ❌ NO - runs internally |
+| **Use for** | Actual coding tasks | Research, analysis, quick queries |
 
-**WRONG** (invisible to monitor):
-```
-runSubagent("Build models...")  ← Cannot be monitored!
-```
-
-**CORRECT** (visible in monitor):
+**For parallel task execution, always use Background CLI Agents:**
 ```powershell
-Start-Job -Name "wave-0-models" -ScriptBlock {
+Start-Job -Name "agent-models" -ScriptBlock {
+    Set-Location "C:\Temp\GIT\wt-models"
     copilot -p "Build models..." --allow-all-tools
 }
 ```
+
+## 🔬 Subagent Research Checkpoints (Optimization)
+
+Use subagents between waves to analyze completed work and enrich prompts for the next wave. This improves agent accuracy and reduces errors.
+
+### When to Use Subagent Research
+
+| Checkpoint | Research Task | Benefit |
+|------------|---------------|---------|
+| After Wave 0 (Models) | Analyze model properties and enums | Services get exact type signatures |
+| After Wave 1 (Services) | Review service interfaces | Components know available methods |
+| After Wave 2 (Components) | List component parameters | Pages use correct bindings |
+| After Any Wave | Analyze build errors | Next wave includes fixes |
+
+### Example: Research Between Waves
+
+```
+Wave 0 completes (models, CSS, project structure)
+    ↓
+You: "Use a subagent to analyze Models/*.cs and list all 
+     properties and enums the services should expose"
+    ↓
+Copilot: [Calls runSubagent internally, waits for result]
+Copilot: "Analysis complete:
+         - Venue: Id, Name, Rating, VenueType, AllowedPets...
+         - VenueType enum: Park, Cafe, Hotel, Beach...
+         - PetType enum: Dog, Cat, Bird..."
+    ↓
+Wave 1 agents get enriched prompts with actual model details
+```
+
+### Subagent Research Prompts
+
+**After Wave 0 (Models created):**
+```
+Use a subagent to analyze MyPetVenues/Models/*.cs and summarize:
+1. All class properties with their types
+2. All enum values
+3. Any relationships between models
+```
+
+**After Wave 1 (Services created):**
+```
+Use a subagent to review MyPetVenues/Services/I*.cs interfaces and list:
+1. All available methods
+2. Parameter types and return types
+3. Methods that components will likely need
+```
+
+**After Any Wave (Build check):**
+```
+Use a subagent to run 'dotnet build' and analyze any errors.
+Summarize fixes needed for the next wave.
+```
+
+### Why This Helps
+
+- **Fresh context**: Subagent gets focused context, not cluttered conversation history
+- **Accurate prompts**: Next wave agents get exact property names, method signatures
+- **Fewer errors**: Reduces "method not found" or "property doesn't exist" issues
+- **No file conflicts**: Subagents analyze only; they don't interfere with worktrees
 
 ## 📊 The Report Format
 
@@ -271,8 +339,8 @@ See [demo-tasks.md](../../.docs/demo-tasks.md) for an example plan!
 
 | Concept | What It Means | Why It Matters |
 |---------|---------------|----------------|
-| **Orchestrator** | The boss that assigns work | Keeps everything organized |
-| **Subagent** | A worker that does one task | Parallel = faster! |
+| **Orchestrator** | Copilot in chat that assigns work | Keeps everything organized |
+| **Background CLI Agent** | `Start-Job` + `copilot` worker | Parallel execution = faster! |
 | **Wave** | Tasks that run simultaneously | Maximize efficiency |
 | **Memory** | Shared progress tracking | Agents stay coordinated |
 | **Report** | Final summary of work | Know what happened |
