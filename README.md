@@ -103,14 +103,46 @@ Run the tasks in .docs/demo-tasks.md
 #### Option B: Full Build Demo (17 Tasks) 🏗️
 **Builds the entire app from scratch!** Shows the full power of parallel agents.
 
-```powershell
-# First, clean the repository (removes app files, keeps demo infrastructure)
-.\cleanup.ps1
+**You'll need 2 terminals** - one for monitoring, one for VS Code Copilot Chat.
 
-# Then in Copilot Chat:
+```powershell
+# TERMINAL 1: Start the monitoring dashboard FIRST
+.\monitor-swarm.ps1
+```
+
+You'll see the live dashboard waiting for agents:
+```
+╔══════════════════════════════════════════════════════════════════╗
+║           🐝 SWARM MODE MONITOR - Live Dashboard                 ║
+╚══════════════════════════════════════════════════════════════════╝
+
+┌──────────────────────────────────────────────────────────────────┐
+│  📋 BACKGROUND JOBS                                              │
+└──────────────────────────────────────────────────────────────────┘
+  (No agent jobs running yet - waiting for orchestrator to spawn...)
+```
+
+```powershell
+# TERMINAL 2 (or VS Code integrated terminal): Clean and run
+.\cleanup.ps1
+```
+
+Then in **Copilot Chat** (`Ctrl+Shift+I`):
+```
 @workspace Build the complete MyPetVenues app using .docs/implementation.md
 Execute all waves autonomously with parallel sub-agents. No user interaction needed.
 Follow .github/prompts/swarm-mode.prompt.md for orchestration.
+```
+
+**👀 Watch Terminal 1** - You'll see agents spawn in real-time:
+```
+  Name                    State        Duration     Has Output
+  ────────────────────    ─────────    ─────────    ──────────
+  agent-foundation        🔄 Running   01:23        Yes
+  agent-models            🔄 Running   01:20        Yes
+  agent-styles            ✅ Completed 00:58        Yes
+
+  Summary: 2 running | 1 completed | 0 failed
 ```
 
 > **🔄 Repeatable**: Run `.\cleanup.ps1` anytime to reset and demo again!
@@ -126,8 +158,11 @@ Follow .github/prompts/swarm-mode.prompt.md for orchestration.
 6. Generates final report
 
 **Full Build Demo (Option B):**
+
+**📺 Watch the `monitor-swarm.ps1` dashboard in Terminal 1 as you see:**
+
 1. Orchestrator reads 17-task implementation plan
-2. Executes Wave 0: Foundation (3 agents in parallel)
+2. Executes Wave 0: Foundation (3 agents in parallel) - **dashboard shows 3 jobs running!**
 3. Executes Wave 1: Services & Layout (3 agents in parallel)
 4. Executes Wave 2: Components (5 agents in parallel)
 5. Executes Wave 3: Pages (5 agents in parallel)
@@ -166,6 +201,7 @@ flowchart LR
 |------|----------|---------|
 | This README | `README.md` | Start here! |
 | **Cleanup Script** | `cleanup.ps1` | **Reset repo for fresh demo** |
+| **Monitor Dashboard** | `monitor-swarm.ps1` | **Watch agents run in real-time** |
 | Concepts | `.github/instructions/swarm-instruction.md` | Learn the theory |
 | Operations | `.github/prompts/swarm-mode.prompt.md` | How to run agents |
 | **Full Build Plan** | `.docs/implementation.md` | **Build entire app (17 tasks)** |
@@ -261,13 +297,16 @@ flowchart LR
 ## 🔄 Repeatable Demo Workflow
 
 ```powershell
-# 1. Reset the repository (keeps demo infrastructure)
+# TERMINAL 1: Start watching (leave this running)
+.\monitor-swarm.ps1
+
+# TERMINAL 2: Reset the repository
 .\cleanup.ps1
 
-# 2. In Copilot Chat, run the full build
-@workspace Build the app using .docs/implementation.md
+# Then in Copilot Chat, run the full build
+# @workspace Build the app using .docs/implementation.md
 
-# 3. After demo, reset again for next audience
+# After demo, reset again for next audience
 .\cleanup.ps1
 ```
 
@@ -278,6 +317,9 @@ flowchart LR
 ```powershell
 # Check Copilot CLI
 copilot -v
+
+# Start monitoring dashboard (run in separate terminal!)
+.\monitor-swarm.ps1
 
 # Build the app
 dotnet build MyPetVenues/MyPetVenues.csproj
@@ -338,6 +380,7 @@ Receive-Job -Name "agent-task1"
 - [ ] Wave 1 started only after Wave 0 finished
 
 **Full Build Demo (17 tasks):**
+- [ ] Monitor dashboard showed parallel jobs running (`monitor-swarm.ps1`)
 - [ ] Application builds: `dotnet build MyPetVenues/MyPetVenues.csproj`
 - [ ] All 5 waves completed in `.docs/memory.md`
 - [ ] App runs: `dotnet run --project MyPetVenues/MyPetVenues.csproj`
