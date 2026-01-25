@@ -210,9 +210,6 @@ Get-Job | Where-Object { $_.Name -like "wave-*" } | Format-Table Name, State, Ha
 
 # Get output from a specific agent
 Receive-Job -Name "wave-0-task1"
-
-# Or use the monitor script
-.\monitor-swarm.ps1
 ```
 
 ---

@@ -96,15 +96,8 @@ Press `Ctrl+Shift+I` (or click the Copilot icon)
 
 ### Step 3: Run the Orchestrator
 
-**You'll need 2 terminals** - one for monitoring, one for Copilot Chat.
-
 ```powershell
-# TERMINAL 1: Start the monitoring dashboard FIRST
-.\monitor-swarm.ps1
-```
-
-```powershell
-# TERMINAL 2: Clean the workspace
+# Clean the workspace first
 .\cleanup.ps1
 ```
 
@@ -116,8 +109,7 @@ Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), use this prompt:
 - .github/instructions/swarm-instruction.md (HOW to orchestrate)
 - .docs/demo-tasks.md (WHAT tasks to run)
 
-Execute the demo tasks using parallel sub-agents. 
-IMPORTANT: Spawn agents via Start-Job + gh copilot CLI so they appear in monitor-swarm.ps1
+Execute the demo tasks using parallel sub-agents.
 ```
 
 #### Full Build (17 Tasks):
@@ -127,10 +119,7 @@ IMPORTANT: Spawn agents via Start-Job + gh copilot CLI so they appear in monitor
 - .docs/implementation.md (WHAT to build)
 
 Build the complete MyPetVenues app using parallel sub-agents.
-IMPORTANT: Spawn agents via Start-Job + gh copilot CLI so they appear in monitor-swarm.ps1
 ```
-
-**👀 Watch Terminal 1** - You'll see agents spawn in real-time as the AI orchestrates!
 
 ### Step 4: Watch the Magic! ✨
 
@@ -183,7 +172,7 @@ flowchart LR
 |------|----------|---------|
 | This README | `README.md` | Start here! |
 | **Cleanup Script** | `cleanup.ps1` | Reset repo for fresh demo |
-| **Monitor Dashboard** | `monitor-swarm.ps1` | Watch agents run in real-time |
+
 
 | Concepts | `.github/instructions/swarm-instruction.md` | Learn the theory |
 | Operations | `.github/prompts/swarm-mode.prompt.md` | How to run agents |
@@ -284,10 +273,7 @@ flowchart LR
 ## 🔄 Repeatable Demo Workflow
 
 ```powershell
-# TERMINAL 1: Start watching (leave this running)
-.\monitor-swarm.ps1
-
-# TERMINAL 2: Reset and run in Copilot Chat
+# Reset workspace before demo
 .\cleanup.ps1
 
 # Then use the Copilot Chat prompt (see Step 3)
@@ -322,9 +308,6 @@ This approach shows how the model:
 gh --version
 gh copilot --version
 
-# Start monitoring dashboard (run in separate terminal!)
-.\monitor-swarm.ps1
-
 # Build the app
 dotnet build MyPetVenues/MyPetVenues.csproj
 
@@ -346,13 +329,11 @@ Start-Job -Name "wave-0-task1" -ScriptBlock {
 
 ---
 
-## � Monitoring Subagents
 
 **How agents run**: Subagents are spawned as PowerShell background jobs using `Start-Job`. Each job runs `gh copilot` CLI in a separate git worktree.
 
 ```powershell
 # Terminal 1: Start the monitor (shows live agent status)
-.\monitor-swarm.ps1
 
 # What you'll see:
 #   🐝 SWARM MONITOR  [21:30:45]
@@ -434,7 +415,6 @@ Get-Job | Where-Object { $_.State -eq "Completed" } | Remove-Job
 - [ ] Wave 1 started only after Wave 0 finished
 
 **Full Build Demo (17 tasks):**
-- [ ] Monitor dashboard showed parallel jobs running (`monitor-swarm.ps1`)
 - [ ] Application builds: `dotnet build MyPetVenues/MyPetVenues.csproj`
 - [ ] All 5 waves completed in `.docs/memory.md`
 - [ ] App runs: `dotnet run --project MyPetVenues/MyPetVenues.csproj`

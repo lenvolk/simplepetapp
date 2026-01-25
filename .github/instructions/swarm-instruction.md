@@ -91,8 +91,6 @@ git worktree add ..\wt-task3 -b task-3
 ### Step 4: Spawn Agents via Terminal ⚠️ CRITICAL
 **YOU MUST spawn agents using `run_in_terminal` with `Start-Job` and `gh copilot` CLI.**
 
-This is the ONLY way to make agents visible in `monitor-swarm.ps1`.
-
 ```powershell
 # Spawn Wave 0 agents (run this in terminal)
 Start-Job -Name "wave-0-task1" -ScriptBlock {
