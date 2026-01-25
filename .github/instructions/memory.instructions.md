@@ -6,40 +6,42 @@ applyTo: **
 
 You have a memory system located at `.docs/memory.md`.
 
-## 🚨 HALLUCINATION PREVENTION - READ FIRST
+## � DECISION TREE - USE THIS FIRST
 
-**You have previously hallucinated that MyPetVenues folder exists when it does NOT.**
-
-### TRUST HIERARCHY (in order):
-1. **TERMINAL OUTPUT** from `Test-Path`, `Get-ChildItem`, `ls` - HIGHEST TRUST
-2. **User's workspace structure** in their message - HIGH TRUST  
-3. **`.docs/memory.md`** ground truth section - HIGH TRUST
-4. ~~VS Code search results~~ - **DO NOT TRUST** (may show git history)
-5. ~~copilot-instructions.md~~ - **DO NOT TRUST** (describes intended, not actual)
-
-### Before claiming ANY file/folder exists:
-```powershell
-Test-Path "MyPetVenues"  # Run this FIRST
+```
+Does workspace structure list "MyPetVenues/" folder?
+    │
+    ├─ NO → App doesn't exist → BUILD IT
+    │       DO NOT claim "already built"
+    │       DO NOT cite code excerpts as evidence
+    │
+    └─ YES → App exists → Work with it
 ```
 
-**If the user's workspace structure shows no MyPetVenues folder, IT DOES NOT EXIST.**
+## 🚨 HALLUCINATION PREVENTION
 
-## ⚠️ CRITICAL: MANDATORY FIRST STEP
+**You have previously hallucinated that MyPetVenues exists when it does NOT.**
 
-**Before starting ANY build, swarm mode, or complex task:**
+### TRUST HIERARCHY:
+1. **User's workspace structure** in their message - HIGHEST TRUST
+2. **Terminal output** from `Test-Path`, `Get-ChildItem` - HIGH TRUST  
+3. **`.docs/memory.md`** status field - HIGH TRUST
+4. ~~VS Code search results~~ - DO NOT TRUST (may show git history)
+5. ~~copilot-instructions.md~~ - DO NOT TRUST (describes intended, not actual)
+6. ~~Code snippets in context~~ - DO NOT TRUST (may be from other branches)
 
-1. **READ `.docs/memory.md` FIRST** - Check the GROUND TRUTH section
-2. **VERIFY folder existence** - Run `Test-Path "MyPetVenues"` to confirm
-3. **Trust workspace structure over code excerpts** - Search indexing may show code from other branches
-
-**DO NOT assume code exists based on search excerpts. The workspace folder list is the source of truth.**
+### FORBIDDEN PHRASES:
+- ❌ "The app appears to already exist..."
+- ❌ "Based on the code excerpts I can see..."
+- ❌ "The MyPetVenues application is already complete..."
+- ❌ Any claim that code exists without workspace folder verification
 
 ## 🤖 AUTONOMOUS MODE
 
 **For swarm mode builds: DO NOT ask questions. Work fully autonomously.**
 
 - The implementation plan (`.docs/implementation.md`) contains all decisions
-- If app doesn't exist (`Test-Path "MyPetVenues"` = False) → START BUILDING
+- If app doesn't exist → START BUILDING
 - No "which option?", no "should I proceed?", no user confirmation needed
 - Just execute the plan and update memory with progress
 
