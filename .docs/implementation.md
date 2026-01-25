@@ -80,8 +80,8 @@ This implementation plan guides an **orchestrator agent** to build the entire My
 Before starting, the orchestrator must verify:
 
 ```powershell
-# 1. Copilot CLI installed
-copilot -v
+# 1. GitHub Copilot CLI extension installed
+gh copilot --version
 
 # 2. .NET 9 SDK available
 dotnet --version
@@ -983,7 +983,7 @@ git worktree add ..\wt-styles -b task-styles
 ```powershell
 Start-Job -Name "agent-foundation" -ScriptBlock {
     Set-Location "C:\Temp\GIT\wt-foundation"
-    copilot -p "[AGENT PROMPT HERE]" --allow-all-tools
+    gh copilot -p "[AGENT PROMPT HERE]" --agent workspace --allow-all-tools
 }
 ```
 
