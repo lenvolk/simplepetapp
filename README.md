@@ -94,85 +94,62 @@ code c:\Temp\GIT\simplepetapp
 ### Step 2: Open Copilot Chat
 Press `Ctrl+Shift+I` (or click the Copilot icon)
 
-### Step 3: Choose Your Demo Mode
+### Step 3: Run the Orchestrator
 
-You have **two demo options**:
-
-#### Option A: Quick Demo (4 Tasks) ⚡
-Adds features to the existing app. Great for learning the basics.
-```
-@workspace Use .github/prompts/swarm-mode.prompt.md
-Run the tasks in .docs/demo-tasks.md
-```
-
-#### Option B: Full Build Demo (17 Tasks) 🏗️
-**Builds the entire app from scratch!** Shows the full power of parallel agents.
-
-**You'll need 2 terminals** - one for monitoring, one for VS Code Copilot Chat.
+**You'll need 2 terminals** - one for monitoring, one for Copilot Chat.
 
 ```powershell
 # TERMINAL 1: Start the monitoring dashboard FIRST
 .\monitor-swarm.ps1
 ```
 
-You'll see the live dashboard waiting for agents:
-```
-╔══════════════════════════════════════════════════════════════════╗
-║           🐝 SWARM MODE MONITOR - Live Dashboard                 ║
-╚══════════════════════════════════════════════════════════════════╝
-
-┌──────────────────────────────────────────────────────────────────┐
-│  📋 BACKGROUND JOBS                                              │
-└──────────────────────────────────────────────────────────────────┘
-  (No agent jobs running yet - waiting for orchestrator to spawn...)
-```
-
 ```powershell
-# TERMINAL 2 (or VS Code integrated terminal): Clean and run
+# TERMINAL 2: Clean the workspace
 .\cleanup.ps1
 ```
 
-Then in **Copilot Chat** (`Ctrl+Shift+I`):
+Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), use this prompt:
+
+#### Quick Demo (4 Tasks):
 ```
-@workspace Build the complete MyPetVenues app using .docs/implementation.md
-Execute all waves autonomously with parallel sub-agents. No user interaction needed.
-Follow .github/prompts/swarm-mode.prompt.md for orchestration.
+@workspace Read these files for context:
+- .github/instructions/swarm-instruction.md (HOW to orchestrate)
+- .docs/demo-tasks.md (WHAT tasks to run)
+
+Execute the demo tasks using parallel sub-agents. 
+IMPORTANT: Spawn agents via Start-Job + gh copilot CLI so they appear in monitor-swarm.ps1
 ```
 
-**👀 Watch Terminal 1** - You'll see agents spawn in real-time:
+#### Full Build (17 Tasks):
 ```
-  Name                    State        Duration     Has Output
-  ────────────────────    ─────────    ─────────    ──────────
-  agent-foundation        🔄 Running   01:23        Yes
-  agent-models            🔄 Running   01:20        Yes
-  agent-styles            ✅ Completed 00:58        Yes
+@workspace Read these files for context:
+- .github/instructions/swarm-instruction.md (HOW to orchestrate)  
+- .docs/implementation.md (WHAT to build)
 
-  Summary: 2 running | 1 completed | 0 failed
+Build the complete MyPetVenues app using parallel sub-agents.
+IMPORTANT: Spawn agents via Start-Job + gh copilot CLI so they appear in monitor-swarm.ps1
 ```
 
-> **🔄 Repeatable**: Run `.\cleanup.ps1` anytime to reset and demo again!
+**👀 Watch Terminal 1** - You'll see agents spawn in real-time as the AI orchestrates!
 
 ### Step 4: Watch the Magic! ✨
 
-**Quick Demo (Option A):**
-1. Orchestrator analyzes the 4 tasks
-2. Groups Task 1 & 2 into Wave 0 (parallel)
-3. Creates separate workspaces for each
-4. Launches 2 agents simultaneously
-5. After both finish → runs Task 3
-6. Generates final report
+**Quick Demo (4 Tasks):**
+1. AI reads the task plan and analyzes dependencies
+2. Groups independent tasks into Wave 0
+3. Creates git worktrees for isolation
+4. Spawns parallel agents via `Start-Job` + `gh copilot`
+5. Waits for Wave 0 to complete
+6. Continues with Wave 1 (dependent tasks)
+7. Merges and cleans up
 
-**Full Build Demo (Option B):**
-
-**📺 Watch the `monitor-swarm.ps1` dashboard in Terminal 1 as you see:**
-
-1. Orchestrator reads 17-task implementation plan
-2. Executes Wave 0: Foundation (3 agents in parallel) - **dashboard shows 3 jobs running!**
-3. Executes Wave 1: Services & Layout (3 agents in parallel)
-4. Executes Wave 2: Components (5 agents in parallel)
-5. Executes Wave 3: Pages (5 agents in parallel)
-6. Executes Wave 4: Integration (1 agent)
-7. Complete app built in ~25-35 minutes vs ~70 minutes sequential!
+**Full Build (17 Tasks):**
+1. **Wave 0**: Foundation (3 parallel agents) - Project, Models, CSS
+2. **Wave 1**: Services & Layout (3 parallel agents)
+3. **Wave 2**: Components (5 parallel agents)
+4. **Wave 3**: Pages (5 parallel agents)
+5. **Wave 4**: Integration (1 agent)
+6. Complete app built in ~25-35 minutes vs ~70 minutes sequential!
 
 ### Step 5: Check Results
 Look at these files when done:
@@ -205,11 +182,12 @@ flowchart LR
 | File | Location | Purpose |
 |------|----------|---------|
 | This README | `README.md` | Start here! |
-| **Cleanup Script** | `cleanup.ps1` | **Reset repo for fresh demo** |
-| **Monitor Dashboard** | `monitor-swarm.ps1` | **Watch agents run in real-time** |
+| **Cleanup Script** | `cleanup.ps1` | Reset repo for fresh demo |
+| **Monitor Dashboard** | `monitor-swarm.ps1` | Watch agents run in real-time |
+
 | Concepts | `.github/instructions/swarm-instruction.md` | Learn the theory |
 | Operations | `.github/prompts/swarm-mode.prompt.md` | How to run agents |
-| **Full Build Plan** | `.docs/implementation.md` | **Build entire app (17 tasks)** |
+| **Full Build Plan** | `.docs/implementation.md` | Build entire app (17 tasks) |
 | Quick Demo Tasks | `.docs/demo-tasks.md` | Simple 4-task demo |
 | Progress | `.docs/memory.md` | Agent updates |
 | Report | `.docs/report.md` | Final summary |
@@ -267,8 +245,12 @@ flowchart TB
 
 ### Copilot CLI not found
 ```powershell
-winget install GitHub.Copilot.Prerelease
-# Restart your terminal after installing
+# Install GitHub CLI first
+winget install GitHub.cli
+gh auth login
+
+# Then install Copilot extension
+gh extension install github/gh-copilot
 ```
 
 ### Build errors
@@ -305,15 +287,31 @@ flowchart LR
 # TERMINAL 1: Start watching (leave this running)
 .\monitor-swarm.ps1
 
-# TERMINAL 2: Reset the repository
+# TERMINAL 2: Reset and run in Copilot Chat
 .\cleanup.ps1
 
-# Then in Copilot Chat, run the full build
-# @workspace Build the app using .docs/implementation.md
+# Then use the Copilot Chat prompt (see Step 3)
 
 # After demo, reset again for next audience
 .\cleanup.ps1
 ```
+
+### How Agents Are Spawned
+
+The AI orchestrator spawns **real background jobs** visible in the monitor:
+
+```powershell
+Start-Job -Name "wave-0-taskname" -ScriptBlock {
+    Set-Location "path/to/worktree"
+    gh copilot -p "task prompt" --agent workspace --allow-all-tools
+}
+```
+
+This approach shows how the model:
+1. Reads and understands the task plan
+2. Analyzes dependencies
+3. Groups tasks into waves
+4. Spawns parallel agents intelligently
 
 ---
 

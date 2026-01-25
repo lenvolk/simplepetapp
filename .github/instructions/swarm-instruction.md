@@ -63,71 +63,103 @@ Memory (`.docs/memory.md`) is how agents communicate:
 ## 🔧 How It Works (Step by Step)
 
 ### Step 1: Read the Plan
+The orchestrator (YOU as Copilot) reads the task plan and analyzes it:
 ```
-📄 demo-tasks.md
+📄 demo-tasks.md or implementation.md
 ├── Task 1: Add venue map (no dependencies)
 ├── Task 2: Add favorites button (no dependencies)  
 ├── Task 3: Create email service (no dependencies)
 └── Task 4: Add booking confirmation (depends on Task 3)
 ```
 
-### Step 2: Build Waves
+### Step 2: Build Waves (AI Decision)
+Analyze dependencies and group independent tasks:
 ```
 Wave 0: [Task 1, Task 2, Task 3]  ← Can run together!
 Wave 1: [Task 4]                  ← Must wait for Task 3
 ```
 
-### Step 3: Spawn Agents
-For each task in Wave 0, we create a separate agent using `gh copilot` CLI:
+### Step 3: Create Worktrees for Isolation
+Before spawning agents, create isolated git worktrees:
 ```powershell
-# Agent 1 works on Task 1 (background job)
+# Create worktree for each task in the wave
+git worktree add ..\wt-task1 -b task-1
+git worktree add ..\wt-task2 -b task-2
+git worktree add ..\wt-task3 -b task-3
+```
+
+### Step 4: Spawn Agents via Terminal ⚠️ CRITICAL
+**YOU MUST spawn agents using `run_in_terminal` with `Start-Job` and `gh copilot` CLI.**
+
+This is the ONLY way to make agents visible in `monitor-swarm.ps1`.
+
+```powershell
+# Spawn Wave 0 agents (run this in terminal)
 Start-Job -Name "wave-0-task1" -ScriptBlock {
-    Set-Location "C:\path\to\worktree-task1"
-    gh copilot -p "Add venue map component" --agent workspace --allow-all-tools
+    Set-Location "C:\Temp\GIT\wt-task1"
+    gh copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --agent workspace --allow-all-tools
 }
 
-# Agent 2 works on Task 2 (runs in parallel!)
 Start-Job -Name "wave-0-task2" -ScriptBlock {
-    Set-Location "C:\path\to\worktree-task2"
-    gh copilot -p "Add favorites button" --agent workspace --allow-all-tools
+    Set-Location "C:\Temp\GIT\wt-task2"
+    gh copilot -p "Your detailed task prompt here. When done, commit changes and update .docs/memory.md" --agent workspace --allow-all-tools
 }
-
-# Agent 3 works on Task 3 (runs in parallel!)
-Start-Job -Name "wave-0-task3" -ScriptBlock {
-    Set-Location "C:\path\to\worktree-task3"
-    gh copilot -p "Create email service" --agent workspace --allow-all-tools
-}
-
-# Monitor all agents
-Get-Job | Where-Object { $_.Name -like "wave-*" }
 ```
 
-### Step 4: Track Progress
-Each agent updates memory when done:
-```markdown
-## Task Progress
-- [x] Task 1: Add venue map - COMPLETED by Agent-1 at 10:15 AM
-- [x] Task 2: Add favorites - COMPLETED by Agent-2 at 10:18 AM
-- [x] Task 3: Email service - COMPLETED by Agent-3 at 10:20 AM
-```
+**Job naming convention**: `wave-{N}-{taskname}` (e.g., `wave-0-models`, `wave-1-services`)
 
-### Step 4b: Monitor Running Agents
-Use the monitor script to see active agents:
+### Step 5: Wait for Wave Completion
+Monitor and wait for all jobs in the wave to complete:
 ```powershell
-# Run the swarm monitor
-.\monitor-swarm.ps1
+# Check status
+Get-Job | Where-Object { $_.Name -like "wave-0-*" }
 
-# Or check manually
-Get-Job | Where-Object { $_.Name -like "wave-*" }
+# Wait for all wave-0 jobs
+Get-Job | Where-Object { $_.Name -like "wave-0-*" } | Wait-Job
 ```
 
-The monitor shows:
-- **Active Agents**: Count of running background jobs
-- **RUNNING**: Which agents are working and their wave
-- **COMPLETED**: Finished agents
+### Step 6: Merge and Continue
+After wave completes:
+```powershell
+# Merge completed branches
+git merge task-1 --no-ff -m "Merge task-1"
+git merge task-2 --no-ff -m "Merge task-2"
 
-### Step 5: Generate Report
-When all tasks are done, create a summary report in `.docs/report.md`
+# Clean up worktrees
+Remove-Item ..\wt-task1 -Recurse -Force
+git worktree prune
+git branch -d task-1
+```
+
+Then proceed to Wave 1, repeating steps 3-6.
+
+### Step 7: Track Progress in Memory
+Update `.docs/memory.md` as waves complete:
+```markdown
+## Agent Progress Log
+- 10:15 ✅ Wave 0 complete (3 agents)
+- 10:20 🔄 Wave 1 started (1 agent)
+- 10:25 ✅ Wave 1 complete
+```
+
+### Step 8: Generate Report
+Create final summary in `.docs/report.md`
+
+## ⚠️ IMPORTANT: Do NOT Use runSubagent
+
+The `runSubagent` tool runs agents internally and they are **invisible** to PowerShell monitoring.
+
+**WRONG** (invisible to monitor):
+```
+runSubagent("Build models...")  ← Cannot be monitored!
+```
+
+**CORRECT** (visible in monitor):
+```powershell
+Start-Job -Name "wave-0-models" -ScriptBlock {
+    gh copilot -p "Build models..." --agent workspace --allow-all-tools
+}
+```
 
 ## 📊 The Report Format
 
