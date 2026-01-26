@@ -2,6 +2,18 @@
 applyTo: "**"
 ---
 
+# 🚨🚨🚨 CRITICAL REMINDER - READ BEFORE EVERY BUILD 🚨🚨🚨
+
+> **PAST FAILURE**: On 2026-01-26, the orchestrator completed a full build but FORGOT to update
+> `report.xlsx` because it got absorbed in fixing 32+ build errors. The report was empty at the end.
+>
+> **ROOT CAUSE**: Report updates felt "lower priority" than making progress on the actual build.
+>
+> **FIX**: Report updates are now a **BLOCKING REQUIREMENT**. You CANNOT proceed to Wave N+1
+> until you have updated report.xlsx for Wave N. This is not optional documentation.
+
+---
+
 # Swarm Mode: The Brain 🧠
 
 > **What is this?** A beginner-friendly guide to orchestrating multiple AI agents working in parallel.

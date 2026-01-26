@@ -29,7 +29,56 @@ When given the build command:
 
 ---
 
-## 🚨 CRITICAL: EXECUTION RULES (READ FIRST!)
+## � MANDATORY: REPORT.XLSX UPDATES (DO NOT SKIP!)
+
+> **ROOT CAUSE OF PAST FAILURE**: During complex builds with many errors to fix, report updates
+> were deprioritized. This made it impossible to track progress or demonstrate the swarm workflow.
+
+### BLOCKING CHECKPOINT PATTERN
+
+**After EVERY wave completes, you MUST update `.docs/report.xlsx` BEFORE proceeding.**
+
+```python
+# Run this IMMEDIATELY after each wave merge (copy-paste ready)
+python -c "
+from openpyxl import load_workbook
+from datetime import datetime
+wb = load_workbook('.docs/report.xlsx')
+
+# Update Waves sheet
+waves = wb['Waves']
+row = waves.max_row + 1
+waves[f'A{row}'] = 'Wave N'  # Replace N
+waves[f'B{row}'] = AGENT_COUNT
+waves[f'C{row}'] = 'START_TIME'
+waves[f'D{row}'] = 'END_TIME'
+waves[f'E{row}'] = 'DURATION'
+waves[f'F{row}'] = '✅ Complete'
+
+# Update Timeline
+timeline = wb['Timeline']
+row = timeline.max_row + 1
+timeline[f'A{row}'] = datetime.now().strftime('%H:%M')
+timeline[f'B{row}'] = 'Wave N Complete'
+timeline[f'C{row}'] = 'Details here'
+
+wb.save('.docs/report.xlsx')
+print('✅ Report updated')
+"
+```
+
+### ENFORCEMENT RULE
+
+```
+┌────────────────────────────────────────────────────────────┐
+│  🛑 DO NOT proceed to Wave N+1 until report.xlsx updated! │
+│     This is a BLOCKING requirement, not optional docs.     │
+└────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## �🚨 CRITICAL: EXECUTION RULES (READ FIRST!)
 
 **YOU MUST USE THE `run_in_terminal` TOOL TO EXECUTE COMMANDS.**
 
