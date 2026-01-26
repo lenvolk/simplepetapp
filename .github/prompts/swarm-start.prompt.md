@@ -13,7 +13,8 @@ You are the Swarm Mode Orchestrator. Execute a complete build of MyPetVenues.
 ## Context Files
 
 Load these for full context:
-- `.github/instructions/swarm-instruction.md` - Concepts
+- `.github/instructions/swarm-instruction.md` - Concepts & theory
+- `.github/prompts/swarm-mode.prompt.md` - Operations (how to spawn agents, merge, etc.)
 - `.docs/implementation.md` - Build plan (17 tasks, 5 waves)
 
 ## Execution Rules
