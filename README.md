@@ -17,6 +17,18 @@ This repository demonstrates **multi-agent orchestration** using GitHub Copilot 
 
 ---
 
+## 🚀 Quick Entry Points (Slash Commands)
+
+| Command | Description |
+|---------|-------------|
+| `/swarm-start` | Start fresh build from Wave 0 |
+| `/swarm-resume` | Continue an interrupted build |
+| `/swarm-status` | Check build progress and state |
+
+> **🆕 APM Improvements**: This version includes enhancements inspired by [Agentic Project Management](https://github.com/sdi2200262/agentic-project-management). See [ReadMeImprovement.md](ReadMeImprovement.md) for details.
+
+---
+
 ## ⚠️ Key Clarifications: Agent Types
 
 Understanding the difference between agent types is **critical**:
@@ -157,12 +169,19 @@ Press `Ctrl+Shift+I` (or click the Copilot icon)
 .\cleanup.ps1
 ```
 
-Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), copy and paste this prompt:
+Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), simply type:
 
 ```
-#file:swarm-instruction.md #file:swarm-mode.prompt.md #file:implementation.md 
-Build the complete MyPetVenues app using parallel background agents. Do NOT commit any changes after the build completes - leave all changes uncommitted for review.
+/swarm-start
 ```
+
+**That's it!** The slash command loads all required context automatically.
+
+> **Alternative** (manual prompt if slash commands don't work):
+> ```
+> #file:swarm-instruction.md #file:swarm-mode.prompt.md #file:implementation.md 
+> Build the complete MyPetVenues app using parallel background agents.
+> ```
 
 ### Step 4: Watch the Magic! ✨
 

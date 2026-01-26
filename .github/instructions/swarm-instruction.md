@@ -48,7 +48,19 @@ The implementation plan (`.docs/implementation.md`) contains all decisions. Just
 
 ---
 
-## 📊 MANDATORY: Incremental Report Updates
+## � Quick Entry Points (Slash Commands)
+
+| Command | What It Does | When to Use |
+|---------|--------------|-------------|
+| `/swarm-start` | Fresh build from Wave 0 | Starting a new demo |
+| `/swarm-resume` | Continue interrupted build | After session handoff |
+| `/swarm-status` | Check progress & state | Anytime during build |
+
+These prompt files in `.github/prompts/` are auto-discovered by VS Code Copilot.
+
+---
+
+## �📊 MANDATORY: Incremental Report Updates
 
 **YOU MUST update `.docs/report.xlsx` after EACH wave completes, NOT just at the end!**
 
@@ -323,7 +335,34 @@ Start-Job -Name "agent-models" -ScriptBlock {
 }
 ```
 
-## 🔬 Subagent Research Checkpoints (Optimization)
+## � Specialized Agent Roles (APM-Inspired)
+
+Instead of generic `agent-taskname`, use role-based personas for better results:
+
+| Role | Focus Area | Best For |
+|------|------------|----------|
+| `agent-architect` | Structure, patterns, foundations | Project setup, models, configuration |
+| `agent-stylist` | Visual design, CSS, UX | Themes, animations, layouts |
+| `agent-implementer` | Feature code, business logic | Services, components, pages |
+| `agent-integrator` | Wiring, testing, validation | Program.cs, final build, fixes |
+
+**Why roles matter?** Different tasks need different expertise focus:
+- An architect thinks about patterns and structure
+- A stylist knows CSS tricks and animations
+- An integrator knows dependency injection and testing
+
+**Example prompt for agent-stylist:**
+```
+You are agent-stylist, a CSS and design specialist.
+Your focus: Beautiful, unique designs (NOT generic AI slop!).
+- Use CSS variables for consistency
+- Create smooth animations
+- Consider both light and dark themes
+```
+
+---
+
+## �🔬 Subagent Research Checkpoints (Optimization)
 
 Use subagents between waves to analyze completed work and enrich prompts for the next wave. This improves agent accuracy and reduces errors.
 
@@ -556,6 +595,40 @@ print('✅ Report updated for Wave 0')
 ```
 
 **Repeat similar updates after Wave 1, 2, 3, 4!**
+
+## 📏 Context Budgeting (Know Your Limits)
+
+LLMs have finite context windows. Plan accordingly:
+
+| Guideline | Why |
+|-----------|-----|
+| Each wave should use < 25% of orchestrator's context | Leave room for errors and research |
+| 5+ agents per wave? Add research checkpoint | Consolidate findings before continuing |
+| Large file edits = high token cost | Consider splitting into smaller tasks |
+| Long conversations = context pressure | Use session handoff if needed |
+
+**Signs you're running low on context:**
+- Copilot repeats itself or forgets earlier decisions
+- Responses become generic or vague
+- Agent prompts lose specificity
+
+**Solution**: Use `/swarm-resume` after exporting state. See `.docs/session-handoff.md`.
+
+---
+
+## 🛟 Session Handoff (When Context Fills Up)
+
+If context gets too full mid-build, don't start over!
+
+1. **Export state**: Save progress to `.docs/session-state.json`
+2. **Start fresh**: Open new Copilot chat
+3. **Resume**: Use `/swarm-resume` to continue
+
+Full protocol: `.docs/session-handoff.md`
+
+**Key insight**: Session handoff is a feature, not a failure. It's how you handle LLM limits gracefully.
+
+---
 
 ## 🎓 Learning Path
 
