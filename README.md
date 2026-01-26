@@ -157,12 +157,10 @@ Press `Ctrl+Shift+I` (or click the Copilot icon)
 .\cleanup.ps1
 ```
 
-Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), use this prompt:
+Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), copy and paste this prompt:
 
 ```
-@workspace Read these files for context:
-- .github/instructions/swarm-instruction.md (HOW to orchestrate)  
-- .docs/implementation.md (WHAT to build)
+#file:.github/instructions/swarm-instruction.md #file:.github/prompts/swarm-mode.prompt.md #file:.docs/implementation.md
 
 Build the complete MyPetVenues app using parallel background agents.
 ```
