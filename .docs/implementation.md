@@ -99,6 +99,227 @@ git status
 Copy-Item ".docs/report-template.xlsx" ".docs/report.xlsx"
 ```
 
+---
+
+## ⚠️ KNOWN ISSUES & FIXES (From Previous Builds)
+
+> **CRITICAL**: The orchestrator MUST apply these fixes after each wave merge to prevent build failures.
+
+### Wave 0 Common Issues
+
+#### Issue 0.1: _Imports.razor Forward References
+**Problem**: Agent creates `_Imports.razor` with `@using MyPetVenues.Components` and `@using MyPetVenues.Layout` before those namespaces exist.
+
+**Fix**: After Wave 0 merge, edit `_Imports.razor` to only include:
+```razor
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using MyPetVenues
+@using MyPetVenues.Models
+```
+
+Then after Wave 1, add:
+```razor
+@using MyPetVenues.Services
+@using MyPetVenues.Layout
+```
+
+And after Wave 2, add:
+```razor
+@using MyPetVenues.Components
+```
+
+#### Issue 0.2: Missing MainLayout Reference
+**Problem**: `App.razor` references `MainLayout` before it exists.
+
+**Fix**: Create placeholder `Layout/MainLayout.razor` in Wave 0:
+```razor
+@inherits LayoutComponentBase
+<main>@Body</main>
+```
+
+---
+
+### Wave 1 Common Issues
+
+#### Issue 1.1: Service/Model Property Mismatch
+**Problem**: Agents creating services may invent properties not in the actual models.
+
+**Common mismatches**:
+| Agent Invents | Actual Model Has |
+|---------------|------------------|
+| `Venue.Photos` | `Venue.ImageUrl` (single string) |
+| `Venue.Location` | `Venue.Address` + `Venue.City` |
+| `Venue.Types` | `Venue.Type` (single VenueType) |
+| `Review.Date` | `Review.VisitDate` |
+| `User.Avatar` | `User.ProfileImageUrl` |
+
+**Fix**: After Wave 0, use subagent research to get exact model properties, then include them in Wave 1 agent prompts:
+```
+EXACT MODEL PROPERTIES (use these, not invented ones):
+- Venue: Id, Name, Description, Address, City, ImageUrl, Rating, ReviewCount, Type, AllowedPets, Amenities, OpeningHours, IsFeatured, ContactPhone, Website
+- Review: Id, VenueId, UserId, UserName, Rating, Comment, VisitDate, PetName
+- User: Id, Name, Email, ProfileImageUrl, Pets, FavoriteVenueIds, Bookings
+```
+
+#### Issue 1.2: Missing Service Interfaces
+**Problem**: Agent creates implementation but forgets interface, or vice versa.
+
+**Fix**: Explicitly require both in agent prompt:
+```
+Create BOTH:
+1. IVenueService interface with method signatures
+2. MockVenueService class implementing IVenueService
+```
+
+---
+
+### Wave 2 Common Issues
+
+#### Issue 2.1: Incorrect Enum Values
+**Problem**: Agents use wrong enum values (e.g., `PetType.Small` instead of `PetType.SmallPet`).
+
+**Exact enum values to use**:
+```csharp
+// VenueType enum values:
+Park, Restaurant, Cafe, Hotel, Store, Beach, DayCare, Grooming, VetClinic
+
+// PetType enum values:
+Dog, Cat, Bird, Rabbit, SmallPet, All  // NOT "Small"!
+
+// BookingStatus enum values:
+Pending, Confirmed, Cancelled, Completed
+```
+
+**Fix**: Include exact enum values in Wave 2 agent prompts:
+```
+CRITICAL - Use these EXACT enum values:
+- VenueType: Park, Restaurant, Cafe, Hotel, Store, Beach, DayCare, Grooming, VetClinic
+- PetType: Dog, Cat, Bird, Rabbit, SmallPet, All (NOT "Small"!)
+```
+
+#### Issue 2.2: Component Parameter Type Mismatches
+**Problem**: Components expect `List<PetType>` but receive `PetType[]`, or similar.
+
+**Fix**: Use consistent types in agent prompts:
+```
+Parameter types to use:
+- AllowedPets: List<PetType> (use .ToList() if needed)
+- Amenities: List<string>
+- Rating: double (not float, not decimal)
+```
+
+---
+
+### Wave 3 Common Issues
+
+#### Issue 3.1: Escaped Quotes in Razor Lambda Expressions
+**Problem**: Agents generate escaped quotes in Razor files causing CS1646/CS1525 errors.
+
+**Bad code**:
+```razor
+<button @onclick="() => SetActiveTab(\"pets\")">  <!-- WRONG! -->
+```
+
+**Good code**:
+```razor
+<button @onclick='() => SetActiveTab("pets")'>   <!-- Correct: outer single quotes -->
+<!-- OR -->
+<button @onclick="@(() => SetActiveTab("pets"))">  <!-- Correct: @() wrapper -->
+```
+
+**Fix**: Add to Wave 3 agent prompts:
+```
+RAZOR SYNTAX RULES:
+- For lambdas with string literals, use SINGLE QUOTES for outer attribute:
+  @onclick='() => Method("value")'
+- OR use @() wrapper:
+  @onclick="@(() => Method("value"))"
+- NEVER escape quotes inside Razor attributes!
+```
+
+#### Issue 3.2: Missing Service Injections
+**Problem**: Pages use services without `@inject` directive.
+
+**Fix**: Include required injections in agent prompts:
+```
+REQUIRED INJECTIONS for this page:
+@inject IVenueService VenueService
+@inject IUserService UserService
+@inject NavigationManager NavigationManager
+```
+
+#### Issue 3.3: Null Reference in Async Loading
+**Problem**: Pages render before async data loads, causing null reference.
+
+**Fix**: Always include loading state pattern:
+```razor
+@if (venues == null)
+{
+    <p>Loading...</p>
+}
+else if (!venues.Any())
+{
+    <p>No venues found.</p>
+}
+else
+{
+    @foreach (var venue in venues) { ... }
+}
+```
+
+---
+
+### Wave 4 Common Issues
+
+#### Issue 4.1: Missing Service Registrations
+**Problem**: Services created but not registered in `Program.cs`.
+
+**Required registrations**:
+```csharp
+builder.Services.AddSingleton<IThemeService, ThemeService>();
+builder.Services.AddSingleton<IVenueService, MockVenueService>();
+builder.Services.AddSingleton<IBookingService, MockBookingService>();
+builder.Services.AddScoped<IUserService, MockUserService>();
+```
+
+#### Issue 4.2: Router NotFound Missing Layout
+**Problem**: `NotFound` section doesn't use layout, causing blank page.
+
+**Fix**:
+```razor
+<NotFound>
+    <LayoutView Layout="typeof(MainLayout)">
+        <p>Sorry, this page doesn't exist.</p>
+    </LayoutView>
+</NotFound>
+```
+
+---
+
+### 🔧 Orchestrator Build Verification Checklist
+
+After EACH wave merge, run:
+```powershell
+# 1. Build check
+dotnet build MyPetVenues/MyPetVenues.csproj 2>&1
+
+# 2. If errors, check for common issues above
+
+# 3. Fix errors BEFORE starting next wave
+
+# 4. Commit fixes
+git add -A; git commit -m "Fix Wave N build errors"
+```
+
+**DO NOT proceed to next wave until build passes!**
+
 ### 📊 Report Tracking Setup
 
 The orchestrator MUST use `.docs/report.xlsx` to track all agent activity. Use the **xlsx skill** (`.github/skills/xlsx/SKILL.md`) to update it.
@@ -151,12 +372,27 @@ Files to create:
 4. MyPetVenues/_Imports.razor - Common using statements
 5. MyPetVenues/wwwroot/index.html - HTML host page with loading indicator
 6. Create empty folders: Pages/, Components/, Layout/, Models/, Services/
+7. MyPetVenues/Layout/MainLayout.razor - PLACEHOLDER (just @inherits LayoutComponentBase and <main>@Body</main>)
 
 Requirements:
 - Target net9.0
 - Enable <Nullable>enable</Nullable>
 - Enable <ImplicitUsings>enable</ImplicitUsings>
 - Add Microsoft.AspNetCore.Components.WebAssembly package
+
+⚠️ CRITICAL FOR _Imports.razor - ONLY include these namespaces (Components/Layout don't exist yet!):
+@using System.Net.Http
+@using System.Net.Http.Json
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.AspNetCore.Components.Web.Virtualization
+@using Microsoft.AspNetCore.Components.WebAssembly.Http
+@using Microsoft.JSInterop
+@using MyPetVenues
+@using MyPetVenues.Models
+
+DO NOT add @using MyPetVenues.Components or @using MyPetVenues.Layout yet!
 
 When done: Update .docs/memory.md with status, commit changes.
 ```
@@ -329,17 +565,29 @@ You: "Use a subagent to analyze MyPetVenues/Models/*.cs and summarize:
 ```
 Create mock services for MyPetVenues.
 
-Files (each with interface + implementation):
+⚠️ CRITICAL - Use these EXACT model properties (from Wave 0 models):
+- Venue: Id, Name, Description, Address, City, ImageUrl, Rating, ReviewCount, Type (VenueType), AllowedPets (List<PetType>), Amenities (List<string>), OpeningHours (Dictionary<string,string>), IsFeatured, ContactPhone, Website
+- Review: Id, VenueId, UserId, UserName, Rating (double), Comment, VisitDate (DateTime), PetName
+- User: Id, Name, Email, ProfileImageUrl, Pets (List<Pet>), FavoriteVenueIds (List<int>), Bookings (List<Booking>)
+- Pet: Name, Type (PetType), Breed, Age (int), ImageUrl
+- Booking: Id, UserId, VenueId, BookingDate, TimeSlot, NumberOfPets, Notes, Status (BookingStatus)
+
+⚠️ CRITICAL - Use these EXACT enum values:
+- VenueType: Park, Restaurant, Cafe, Hotel, Store, Beach, DayCare, Grooming, VetClinic
+- PetType: Dog, Cat, Bird, Rabbit, SmallPet, All  (NOT "Small"!)
+- BookingStatus: Pending, Confirmed, Cancelled, Completed
+
+Files (each with BOTH interface AND implementation):
 
 1. MyPetVenues/Services/VenueService.cs
    - IVenueService interface
    - MockVenueService implementation
    Methods:
-   - GetAllVenuesAsync()
-   - GetVenueByIdAsync(int id)
-   - GetFeaturedVenuesAsync()
-   - SearchVenuesAsync(string? search, VenueType? type, PetType? pet)
-   - GetVenueReviewsAsync(int venueId)
+   - Task<List<Venue>> GetAllVenuesAsync()
+   - Task<Venue?> GetVenueByIdAsync(int id)
+   - Task<List<Venue>> GetFeaturedVenuesAsync()
+   - Task<List<Venue>> SearchVenuesAsync(string? search, VenueType? type, PetType? pet)
+   - Task<List<Review>> GetVenueReviewsAsync(int venueId)
    
    Generate 6 realistic venues:
    - Pawsome Park (Park), Bark & Brew Café (Cafe), Furry Friends Hotel (Hotel)
@@ -350,10 +598,10 @@ Files (each with interface + implementation):
    - IUserService interface
    - MockUserService implementation
    Methods:
-   - GetCurrentUserAsync()
-   - UpdateUserAsync(User user)
-   - AddFavoriteVenueAsync(int venueId)
-   - RemoveFavoriteVenueAsync(int venueId)
+   - Task<User> GetCurrentUserAsync()
+   - Task UpdateUserAsync(User user)
+   - Task AddFavoriteVenueAsync(int venueId)
+   - Task RemoveFavoriteVenueAsync(int venueId)
    
    Generate 1 mock user with 2 pets
 
@@ -361,9 +609,9 @@ Files (each with interface + implementation):
    - IBookingService interface
    - MockBookingService implementation
    Methods:
-   - GetUserBookingsAsync()
-   - CreateBookingAsync(Booking booking)
-   - CancelBookingAsync(int bookingId)
+   - Task<List<Booking>> GetUserBookingsAsync()
+   - Task<Booking> CreateBookingAsync(Booking booking)
+   - Task CancelBookingAsync(int bookingId)
 
 Namespace: MyPetVenues.Services
 Using: MyPetVenues.Models
@@ -503,17 +751,29 @@ Create VenueCard component for MyPetVenues.
 
 Files: MyPetVenues/Components/VenueCard.razor + .razor.css
 
+⚠️ CRITICAL - Use these EXACT enum values when displaying pet types:
+- PetType: Dog, Cat, Bird, Rabbit, SmallPet, All  (NOT "Small"!)
+- VenueType: Park, Restaurant, Cafe, Hotel, Store, Beach, DayCare, Grooming, VetClinic
+
+⚠️ CRITICAL - Venue model properties to use:
+- Venue.ImageUrl (string, not Photos or Images)
+- Venue.Address + Venue.City (not Location)
+- Venue.Type (VenueType, not Types)
+- Venue.AllowedPets (List<PetType>)
+- Venue.Rating (double)
+- Venue.Amenities (List<string>)
+
 Parameters:
 - [Parameter] Venue Venue
-- [Parameter] bool IsFeatured
+- [Parameter] bool IsFeatured = false
 - [Parameter] EventCallback OnClick
 
 Structure:
 - Card container with click handler
 - Featured badge (if IsFeatured)
-- Image section with venue photo
+- Image section with venue photo (use Venue.ImageUrl)
 - VenueTypeBadge overlay
-- Content section: name, location, rating, pets, amenities
+- Content section: name, location (Address, City), rating, pets, amenities
 
 Styling (distinctive, not generic!):
 - 20px border radius with soft shadow
@@ -865,9 +1125,32 @@ Files: MyPetVenues/Pages/Profile.razor + .razor.css
 
 Route: @page "/profile"
 
+⚠️ CRITICAL RAZOR SYNTAX RULES (prevent CS1646/CS1525 errors):
+- For lambdas with string literals, use SINGLE QUOTES for outer attribute:
+  @onclick='() => SetActiveTab("pets")'
+- OR use @() wrapper with double quotes:
+  @onclick="@(() => SetActiveTab("pets"))"
+- NEVER escape quotes like this: @onclick="() => SetActiveTab(\"pets\")"  ← WRONG!
+
+⚠️ CRITICAL - User model properties:
+- User.ProfileImageUrl (not Avatar)
+- User.Pets (List<Pet>)
+- User.FavoriteVenueIds (List<int>)
+- User.Bookings (List<Booking>)
+
+⚠️ ALWAYS include loading state pattern:
+@if (user == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    // render content
+}
+
 Structure:
 1. Profile header
-   - User avatar (large)
+   - User avatar (large) - use User.ProfileImageUrl
    - Name and email
    - Edit profile button
 
@@ -921,6 +1204,23 @@ Files: MyPetVenues/Pages/BookVenue.razor + .razor.css
 
 Route: @page "/booking"
        @page "/booking/{PreselectedVenueId:int}"
+
+⚠️ CRITICAL RAZOR SYNTAX RULES (prevent CS1646/CS1525 errors):
+- For lambdas with string literals, use SINGLE QUOTES for outer attribute:
+  @onclick='() => GoToStep(2)'
+- OR use @() wrapper:
+  @onclick="@(() => GoToStep(2))"
+- NEVER escape quotes inside Razor attributes!
+
+⚠️ ALWAYS include loading state pattern:
+@if (venues == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    // render content
+}
 
 Multi-step wizard:
 1. Step 1: Select Venue

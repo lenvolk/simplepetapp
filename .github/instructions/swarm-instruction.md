@@ -32,7 +32,96 @@ The implementation plan (`.docs/implementation.md`) contains all decisions. Just
 - ✅ Just start building
 - ✅ Follow implementation.md exactly
 - ✅ Update memory.md with progress
-- ✅ Generate report.xlsx at the end
+- ✅ **Update report.xlsx AFTER EACH WAVE** (not just at the end!)
+
+---
+
+## 📊 MANDATORY: Incremental Report Updates
+
+**YOU MUST update `.docs/report.xlsx` after EACH wave completes, NOT just at the end!**
+
+This is critical for:
+1. Real-time demo visibility
+2. Progress tracking if session is interrupted
+3. Accurate timing data capture
+
+### When to Update report.xlsx
+
+| Event | Update These Sheets |
+|-------|---------------------|
+| **Pre-flight complete** | Timeline (add "Pre-flight" event) |
+| **Wave N agents spawned** | Agents, Timeline |
+| **Wave N complete** | Waves, Tasks, Timeline |
+| **Subagent research done** | Research, Timeline |
+| **Final build passes** | Summary, Timeline |
+
+### Python Code to Run After EACH Wave
+
+**After Wave N completes, run this in terminal:**
+
+```python
+python -c "
+from openpyxl import load_workbook
+from datetime import datetime
+
+wb = load_workbook('.docs/report.xlsx')
+
+# Update Waves sheet
+waves = wb['Waves']
+row = 2 + WAVE_NUMBER  # Replace WAVE_NUMBER with 0, 1, 2, etc.
+waves[f'A{row}'] = 'Wave N'
+waves[f'B{row}'] = AGENT_COUNT
+waves[f'C{row}'] = 'START_TIME'
+waves[f'D{row}'] = 'END_TIME'
+waves[f'E{row}'] = 'DURATION'
+waves[f'F{row}'] = '✅ Complete'
+
+# Update Timeline sheet
+timeline = wb['Timeline']
+next_row = timeline.max_row + 1
+timeline[f'A{next_row}'] = datetime.now().strftime('%H:%M')
+timeline[f'B{next_row}'] = 'Wave N Complete'
+timeline[f'C{next_row}'] = 'Merged X branches, Y files changed'
+
+# Update Agents sheet for each agent in this wave
+agents = wb['Agents']
+# Add one row per agent...
+
+# Update Tasks sheet
+tasks = wb['Tasks']
+# Add one row per task...
+
+wb.save('.docs/report.xlsx')
+print('✅ Report updated for Wave N')
+"
+```
+
+### Orchestrator Checklist (Per Wave)
+
+```
+□ Wave N Start
+  ├── Create worktrees
+  ├── Spawn agents via Start-Job
+  └── Log agents to report.xlsx Agents sheet
+
+□ Wave N Wait
+  └── Get-Job | Wait-Job
+
+□ Wave N Complete  
+  ├── Check job outputs
+  ├── Merge branches
+  ├── Run dotnet build
+  ├── Fix any errors
+  ├── **UPDATE report.xlsx** ← MANDATORY!
+  │   ├── Waves sheet: add wave row
+  │   ├── Tasks sheet: add task rows
+  │   ├── Agents sheet: update status
+  │   └── Timeline sheet: add event
+  ├── Clean up worktrees
+  └── Update memory.md
+
+□ Proceed to Wave N+1
+```
 
 ---
 
@@ -71,16 +160,18 @@ Get-ChildItem -Directory | Select-Object Name  # Verify actual folders
            │                  │                  │
            └──────────────────┼──────────────────┘
                               ▼
-                    ┌─────────────────┐
-                    │  📝 Memory File │
-                    │ .docs/memory.md │
-                    └─────────────────┘
-                              │
-                              ▼
-                    ┌─────────────────┐
-                    │  📊 Final Report│
-                    │ .docs/report.xlsx │
-                    └─────────────────┘
+              ┌───────────────────────────────────┐
+              │  After EACH wave completes:       │
+              │  1. Update 📝 .docs/memory.md     │
+              │  2. Update 📊 .docs/report.xlsx   │ ← MANDATORY!
+              └───────────────────────────────────┘
+```
+
+### Report Update Flow (Per Wave)
+```
+Wave 0 spawned → Wave 0 complete → UPDATE report.xlsx → Wave 1 spawned → ...
+                                         ↑
+                                   DON'T SKIP THIS!
 ```
 
 ## 📚 Key Concepts (L200 - Beginner Friendly)
@@ -181,6 +272,8 @@ git worktree prune
 git branch -d task-1
 ```
 
+**⚠️ IMMEDIATELY after merge: Update report.xlsx!** (See "Incremental Report Updates" section above)
+
 Then proceed to Wave 1, repeating steps 3-6.
 
 ### Step 7: Track Progress in Memory
@@ -192,8 +285,13 @@ Update `.docs/memory.md` as waves complete:
 - 10:25 ✅ Wave 1 complete
 ```
 
-### Step 8: Generate Report
-Create final summary in `.docs/report.xlsx`
+### Step 8: Update Report (After EACH Wave!)
+**DO NOT wait until the end!** Update `.docs/report.xlsx` after EVERY wave:
+- Add completed agents to Agents sheet
+- Add completed tasks to Tasks sheet  
+- Add wave summary to Waves sheet
+- Add timeline event to Timeline sheet
+- Update Summary sheet totals at the very end
 
 ## 🔄 Background CLI Agents vs runSubagent Tool
 
@@ -378,13 +476,74 @@ wb.save('.docs/report.xlsx')
 6. **Save after updates** - Don't forget `wb.save()`
 
 ### Orchestrator Responsibility
-The **orchestrator** updates report.xlsx throughout execution:
-- **After spawning Background CLI Agents**: Log in Agents sheet
-- **After subagent research**: Log in Research sheet  
-- **After each wave completes**: Update Waves sheet
-- **After task completion**: Update Tasks sheet
+The **orchestrator** updates report.xlsx **incrementally after each wave**:
 
-Subagents also update `.docs/memory.md` for real-time progress; the orchestrator consolidates into Excel for the final demo report.
+**This is NOT optional!** Update the report:
+1. **After spawning agents**: Log to Agents sheet with status "🔄 Running"
+2. **After wave completes**: Update Waves sheet, change agent status to "✅ Done"
+3. **After subagent research**: Log to Research sheet
+4. **After fixes applied**: Log to Timeline sheet
+5. **After final wave**: Update Summary sheet totals
+
+### Complete Example: Update Report After Wave 0
+
+Run this Python code in terminal after Wave 0 completes:
+
+```python
+python -c "
+from openpyxl import load_workbook
+
+wb = load_workbook('.docs/report.xlsx')
+
+# ===== Waves sheet =====
+waves = wb['Waves']
+waves['A2'] = 'Wave 0'
+waves['B2'] = 3  # agent count
+waves['C2'] = '18:13'  # start time
+waves['D2'] = '18:17'  # end time
+waves['E2'] = '~4 min'
+waves['F2'] = '✅ Complete'
+
+# ===== Agents sheet =====
+agents = wb['Agents']
+agent_data = [
+    ('agent-foundation', 'Create project structure', 'Background CLI', 'Wave 0', 'wt-foundation', '~3 min', 2500, '✅ Done'),
+    ('agent-models', 'Create domain models', 'Background CLI', 'Wave 0', 'wt-models', '~3 min', 2200, '✅ Done'),
+    ('agent-styles', 'Create CSS design system', 'Background CLI', 'Wave 0', 'wt-styles', '~4 min', 3100, '✅ Done'),
+]
+for i, row in enumerate(agent_data, start=2):
+    for j, val in enumerate(row):
+        agents.cell(row=i, column=j+1, value=val)
+
+# ===== Tasks sheet =====
+tasks = wb['Tasks']
+task_data = [
+    ('Create Blazor project', 'agent-foundation', 'Background CLI', '✅ Done', '~3 min', 'Claude Sonnet 4', 2500, '18:13'),
+    ('Create domain models', 'agent-models', 'Background CLI', '✅ Done', '~3 min', 'Claude Sonnet 4', 2200, '18:14'),
+    ('Create CSS design system', 'agent-styles', 'Background CLI', '✅ Done', '~4 min', 'Claude Sonnet 4', 3100, '18:16'),
+]
+for i, row in enumerate(task_data, start=2):
+    for j, val in enumerate(row):
+        tasks.cell(row=i, column=j+1, value=val)
+
+# ===== Timeline sheet =====
+timeline = wb['Timeline']
+timeline['A2'] = '18:10'
+timeline['B2'] = 'Pre-flight'
+timeline['C2'] = 'Verified prerequisites'
+timeline['A3'] = '18:13'
+timeline['B3'] = 'Wave 0 Start'
+timeline['C3'] = 'Spawned 3 agents'
+timeline['A4'] = '18:17'
+timeline['B4'] = 'Wave 0 Complete'
+timeline['C4'] = 'Merged branches, build passed'
+
+wb.save('.docs/report.xlsx')
+print('✅ Report updated for Wave 0')
+"
+```
+
+**Repeat similar updates after Wave 1, 2, 3, 4!**
 
 ## 🎓 Learning Path
 
@@ -423,7 +582,7 @@ See [implementation.md](../../.docs/implementation.md) for the full build plan!
 | **Background CLI Agent** | `Start-Job` + `copilot` worker | Parallel execution = faster! |
 | **Wave** | Tasks that run simultaneously | Maximize efficiency |
 | **Memory** | Shared progress tracking | Agents stay coordinated |
-| **Report** | Final summary of work | Know what happened |
+| **Report** | **Incremental** summary after each wave | Track progress in real-time |
 
 ## ⚠️ Common Mistakes to Avoid
 
@@ -431,6 +590,7 @@ See [implementation.md](../../.docs/implementation.md) for the full build plan!
 2. **Forgetting to track progress** - Always update memory when a task completes
 3. **No error handling** - What if an agent fails? Have a plan!
 4. **Too many agents at once** - Start with 2-3, not 10
+5. **⚠️ Waiting until the end to update report.xlsx** - Update AFTER EACH WAVE, not at the end!
 
 ---
 
