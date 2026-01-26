@@ -162,7 +162,7 @@ Then in **VS Code Copilot Chat** (`Ctrl+Shift+I`), copy and paste this prompt:
 ```
 #file:.github/instructions/swarm-instruction.md #file:.github/prompts/swarm-mode.prompt.md #file:.docs/implementation.md
 
-Build the complete MyPetVenues app using parallel background agents.
+Build the complete MyPetVenues app using parallel background agents. Do NOT commit any changes after the build completes - leave all changes uncommitted for review.
 ```
 
 ### Step 4: Watch the Magic! ✨
