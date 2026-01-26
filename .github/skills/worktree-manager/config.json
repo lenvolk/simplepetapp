@@ -1,0 +1,16 @@
+{
+  "terminal": "windows-terminal",
+  "shell": "pwsh",
+  "claudeCommand": "copilot",
+  "portPool": {
+    "start": 5100,
+    "end": 5199
+  },
+  "portsPerWorktree": 1,
+  "worktreeBase": "$env:TEMP\\worktrees",
+  "registryPath": "$env:USERPROFILE\\.copilot\\worktree-registry.json",
+  "defaultCopyDirs": [".github", ".docs", ".env.example"],
+  "healthCheckTimeout": 60,
+  "healthCheckRetries": 3,
+  "dotnetProject": "MyPetVenues/MyPetVenues.csproj"
+}
