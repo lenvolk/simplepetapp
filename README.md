@@ -35,8 +35,8 @@ Understanding the difference between agent types is **critical**:
 
 | Type | How to Spawn | Execution | Edits Files? | Use For |
 |------|--------------|-----------|--------------|---------|
-| **Background CLI Agent** | `Start-Job` + `copilot` CLI | True parallel, isolated worktree | ✅ YES | Actual coding tasks |
-| **Subagent** (`runSubagent` tool) | `runSubagent(...)` in chat | Synchronous, within chat | Optional | Analysis, research |
+| [**Background CLI Agent**](https://code.visualstudio.com/docs/copilot/agents/background-agents#_create-an-isolated-background-agent-session-experimental) | `Start-Job` + `copilot` CLI | True parallel, isolated worktree | ✅ YES | Actual coding tasks |
+| [**Subagent**](https://code.visualstudio.com/docs/copilot/chat/chat-sessions#_contextisolated-subagents) (`runSubagent` tool) | `runSubagent(...)` in chat | Synchronous, within chat | Optional | Analysis, research |
 
 **For parallel task execution, always use Background CLI Agents:**
 ```powershell
@@ -70,10 +70,15 @@ Copilot: [Spawns Background CLI Agents with enriched prompts]
 ```
 
 **Why use subagents for research?**
-- **Fresh context**: Subagent gets a clean, focused context window for the research task
-- **Summarized results**: Returns only key findings, not a full file dump
+
+Subagents run in the same session but get their own dedicated context window. At the end, they yield the result back to the main session - keeping it uncluttered from the task-specific context gathered during research. The orchestrator receives only the findings, not all the resources the subagent gathered along the way.
+
+**Benefits:**
+- **Isolated context**: Subagent gets a clean, focused context window for the research task
+- **Clean handoff**: Returns only key findings back to the orchestrator, not a full file dump
 - **Enriched prompts**: Use research findings to craft better prompts for Background CLI Agents
 - **No file conflicts**: Since subagents don't edit files, they can safely analyze while agents work
+- **Uncluttered session**: Main orchestrator stays focused on coordination, not buried in research details
 
 ### 🚀 Optimization: Research Between Waves
 
