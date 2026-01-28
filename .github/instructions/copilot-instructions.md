@@ -41,8 +41,10 @@ MyPetVenues.Shared/    # Empty - future shared models placeholder
 ### Service Pattern
 All data access uses interface + mock implementation. Services registered in `Program.cs`:
 ```csharp
+builder.Services.AddSingleton<IThemeService, ThemeService>();
 builder.Services.AddSingleton<IVenueService, MockVenueService>();
 builder.Services.AddSingleton<IBookingService, MockBookingService>();
+builder.Services.AddScoped<IUserService, MockUserService>();
 ```
 When implementing real services, keep the interface and swap the implementation.
 
@@ -66,9 +68,21 @@ Each component has paired `.razor` and `.razor.css` files for scoped styling:
 - **BEM-ish naming**: `.venue-card`, `.venue-card-header`, `.featured-badge`
 
 ### Enums & Types
-Key enums in `Models/Venue.cs`:
+Key enums (use these EXACT values):
 - `VenueType`: Park, Restaurant, Cafe, Hotel, Store, Beach, DayCare, Grooming, VetClinic
-- `PetType`: Dog, Cat, Bird, Rabbit, SmallPet, All
+- `PetType`: Dog, Cat, Bird, Rabbit, SmallPet, All *(NOT "Small"!)*
+- `BookingStatus`: Pending, Confirmed, Cancelled, Completed
+
+### Model Properties (Canonical Reference)
+Use these exact property names to avoid mismatches:
+```
+Venue: Id, Name, Description, Address, City, ImageUrl, Rating, ReviewCount,
+       Type, AllowedPets, Amenities, OpeningHours, IsFeatured, ContactPhone, Website
+Review: Id, VenueId, UserId, UserName, Rating, Comment, VisitDate, PetName
+Booking: Id, UserId, VenueId, BookingDate, TimeSlot, NumberOfPets, Notes, Status
+User: Id, Name, Email, ProfileImageUrl, Pets, FavoriteVenueIds, Bookings
+Pet: Name, Type, Breed, Age, ImageUrl
+```
 
 ## Build & Run
 
@@ -104,6 +118,19 @@ Or use VS Code tasks: `build (MyPetVenues)`, `run (MyPetVenues)`
 - Use `string.Empty` over `""`
 - Use collection expressions `new List<T> { }` → `[]` where appropriate
 - Async methods return `Task<T>` and suffix with `Async`
+
+### Razor Syntax Warning
+When using lambdas with string literals in Razor attributes:
+```razor
+// ❌ BAD - escaped quotes cause CS1646/CS1525 errors:
+<button @onclick="() => SetTab(\"pets\")">Pets</button>
+
+// ✅ GOOD - use single quotes for outer attribute:
+<button @onclick='() => SetTab("pets")'>Pets</button>
+
+// ✅ ALSO GOOD - use @() wrapper:
+<button @onclick="@(() => SetTab("pets"))">Pets</button>
+```
 
 ## Testing Notes
 
