@@ -241,8 +241,6 @@ flowchart LR
 |------|----------|---------|
 | This README | `README.md` | Start here! |
 | **Cleanup Script** | `cleanup.ps1` | Reset repo for fresh demo |
-
-
 | Concepts | `.github/instructions/swarm-instruction.md` | Learn the theory |
 | Operations | `.github/prompts/swarm-mode.prompt.md` | How to run agents |
 | **Build Plan** | `.docs/implementation.md` | Full app build (17 tasks, 5 waves) |
