@@ -7,32 +7,24 @@ model: 'Claude Sonnet 4.5'
 
 # Playwright Testing with MCP
 
-## 🤖 AUTONOMOUS MODE
+## EXECUTION MODE: AUTONOMOUS
 
-**This prompt operates in FULLY AUTONOMOUS mode:**
-- ✅ Do NOT ask the user for confirmation or input
-- ✅ Make all testing decisions automatically
-- ✅ Use defaults when choices are needed
-- ✅ Complete all steps without prompting
-- ✅ Start the application if not running
-- ✅ Test all critical workflows systematically
-- ✅ Create folders and files as needed
-- ✅ Generate comprehensive report automatically
-
-**If something is unclear, choose the most reasonable option and proceed.**
+Do not stop. Do not ask.
+Execute fully. Report at end.
+Failures trigger alternatives, not questions.
 
 ---
 
-## Quick Reference - Autonomous Testing
+## Quick Reference
 
 | Action | Behavior |
 |--------|----------|
-| **Start app** | Automatically if not running (localhost:5050) |
-| **Test data** | Use realistic defaults (see guidelines) |
-| **Screenshots** | Save all to `TestWithPlaywright/screenshots/` |
-| **Report** | Auto-create at `TestWithPlaywright/TestReport.md` |
-| **Failures** | Note and continue with other tests |
-| **Completion** | Summarize results, no confirmation needed |
+| **Start app** | Auto-start on localhost:5050 if not running |
+| **Test data** | Use realistic defaults |
+| **Screenshots** | Save to `TestWithPlaywright/screenshots/` |
+| **Report** | Create at `TestWithPlaywright/TestReport.md` |
+| **Failures** | Note and continue |
+| **Completion** | Summarize at end |
 
 ---
 
@@ -56,13 +48,6 @@ model: 'Claude Sonnet 4.5'
 - Report: `TestWithPlaywright/TestReport.md`
 - Screenshots: `TestWithPlaywright/screenshots/*.png`
 
-**AUTONOMOUS EXECUTION:**
-- Proceed through ALL steps without asking for confirmation
-- If application is not running, start it automatically
-- Test ALL critical workflows you can identify
-- Make decisions based on best practices
-- Create all folders/files as needed
-
 ### Step 0: Create Memory Checkpoint
 Before testing, update `.docs/memory.md` with:
 - Task: "Playwright Testing"
@@ -72,8 +57,6 @@ Before testing, update `.docs/memory.md` with:
 This allows recovery if context is lost mid-testing.
 
 ### Step 1: Start the Application
-**AUTONOMOUS ACTION:** If no URL is provided, automatically start the application.
-
 Start command (run in background):
 ```
 run_in_terminal: dotnet run --project MyPetVenues/MyPetVenues.csproj --urls "http://localhost:5050"
@@ -84,16 +67,12 @@ Default URL: `http://localhost:5050`
 Wait 5-10 seconds for application to start, then proceed to testing.
 
 ### Step 2: Navigate and Explore
-**AUTONOMOUS ACTION:** Navigate to the URL and analyze the page structure automatically.
-
 1. `browser_navigate` → go to the URL
 2. `browser_snapshot` → get element references
 3. Analyze the snapshot to understand the page
 4. Identify all testable workflows (navigation, forms, buttons, etc.)
 
 ### Step 3: Test All Critical Workflows
-**AUTONOMOUS ACTION:** Test these workflows systematically without asking:
-
 **Must Test:**
 - ✅ Homepage loading and display
 - ✅ All navigation menu links
@@ -112,8 +91,6 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 5. Note any issues
 
 ### Step 4: Interact with Elements
-**AUTONOMOUS ACTION:** Use these tools automatically as needed:
-
 - **ALWAYS snapshot before clicking** - you need the `ref` attribute
 - Click: `browser_click` with `ref` from snapshot
 - Type: `browser_type` with `ref` and `text`
@@ -125,16 +102,12 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 - Keep names clear and concise
 
 ### Step 5: Document Results
-**AUTONOMOUS ACTION:** Capture evidence automatically:
-
 - Take screenshots for visual evidence (save to `TestWithPlaywright/screenshots/`)
 - Check console messages for errors using `browser_console_messages`
 - Note any issues found
 - Document all test results in memory
 
 ### Step 6: Complete Testing
-**AUTONOMOUS ACTION:** Finalize without prompting:
-
 1. Create `TestWithPlaywright` folder in repository root (if doesn't exist)
 2. Create `TestWithPlaywright/screenshots` subfolder (if doesn't exist)
 3. Verify all screenshots saved to `TestWithPlaywright/screenshots/`
@@ -142,16 +115,13 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 5. Update `.docs/memory.md` → clear checkpoint, note results
 6. Provide user with summary and location of report
 
-**DO NOT ask for confirmation - just complete all steps.**
-
 ## Key Guidelines
 
-**AUTONOMOUS DECISION-MAKING:**
-- **Never ask for confirmation** - proceed with best judgment
-- **If unsure about a value**, use realistic defaults (dates, names, etc.)
-- **If multiple options exist**, test the most common/critical path
-- **If something fails**, note it and continue with other tests
-- **Prioritize critical workflows** over edge cases
+**Decision-Making:**
+- Use realistic defaults for all values (dates, names, etc.)
+- Test most common/critical paths
+- Note failures and continue with other tests
+- Prioritize critical workflows over edge cases
 
 **Technical Guidelines:**
 - **Snapshot first, click second** - refs change between snapshots
@@ -170,11 +140,9 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 - Text fields: Realistic but generic content
 - Dropdowns: Select first valid option or most common choice
 
-## Example Autonomous Flow
+## Example Flow
 
 ```
-AUTONOMOUS EXECUTION - NO USER PROMPTS:
-
 1. Start application → dotnet run in background
 2. Wait 10 seconds → let app initialize
 3. Navigate → "http://localhost:5050"
@@ -201,8 +169,6 @@ AUTONOMOUS EXECUTION - NO USER PROMPTS:
 13. Create report → TestWithPlaywright/TestReport.md
 14. Update memory → note completion
 15. Summarize → tell user where to find results
-
-NEVER STOP TO ASK - JUST EXECUTE!
 ```
 
 ## Report Template
