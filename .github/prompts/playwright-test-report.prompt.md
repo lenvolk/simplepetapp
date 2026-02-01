@@ -1,7 +1,7 @@
 ---
 agent: agent
 description: "Test a web app using Playwright MCP and create a report"
-tools: ['run_in_terminal', 'create_file', 'mcp_microsoft_pla_*']
+tools: ['run_in_terminal', 'create_file', 'replace_string_in_file', 'read_file', 'mcp_microsoft_pla_*']
 model: 'Claude Sonnet 4.5'
 ---
 
