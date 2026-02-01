@@ -45,3 +45,20 @@ A pet-friendly location discovery platform ("Yelp/Meetup for pets") - Blazor Web
 - Blazor WebAssembly for SPA experience
 - Mock services for demo data
 - Dark pink gradient theme
+
+## Current Task: Playwright Testing
+**Started:** February 1, 2026
+**Status:** In Progress
+
+### Tests Planned
+- [ ] Home page navigation and layout
+- [ ] Venue search and filtering
+- [ ] Venue detail page navigation
+- [ ] Pet profile viewing
+- [ ] Booking flow interaction
+- [ ] Navigation menu functionality
+- [ ] Responsive design elements
+
+### Progress
+- App URL: http://localhost:5050
+- Status: Starting application and browser testing

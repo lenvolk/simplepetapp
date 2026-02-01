@@ -23,6 +23,10 @@ model: 'Claude Sonnet 4.5'
 
 ## Testing Workflow
 
+**IMPORTANT:** All test artifacts must be saved in the `TestWithPlaywright` folder:
+- Report: `TestWithPlaywright/TestReport.md`
+- Screenshots: `TestWithPlaywright/screenshots/*.png`
+
 ### Step 0: Create Memory Checkpoint
 Before testing, update `.docs/memory.md` with:
 - Task: "Playwright Testing"
@@ -48,23 +52,28 @@ Default URL: `http://localhost:5050`
 - **ALWAYS snapshot before clicking** - you need the `ref` attribute
 - Click: `mcp_microsoft_pla_browser_click` with `ref` from snapshot
 - Type: `mcp_microsoft_pla_browser_type` with `ref` and `text`
+- Screenshot: `mcp_microsoft_pla_browser_take_screenshot` with `filename: "TestWithPlaywright/screenshots/[descriptive-name].png"`
 
 ### Step 4: Document Results
-- Take screenshots for visual evidence
+- Take screenshots for visual evidence (save to `TestWithPlaywright/screenshots/`)
 - Check console messages for errors
 - Note any issues found
 
 ### Step 5: Complete Testing
-1. `mcp_microsoft_pla_browser_close` → end session
-2. Create report at `manual-tests/[name]-test-report.md`
-3. Update `.docs/memory.md` → clear checkpoint, note results
+1. Create `TestWithPlaywright` folder in repository root if it doesn't exist
+2. Create `TestWithPlaywright/screenshots` subfolder
+3. Save all screenshots to `TestWithPlaywright/screenshots/[descriptive-name].png`
+4. Create comprehensive report at `TestWithPlaywright/TestReport.md`
+5. Update `.docs/memory.md` → clear checkpoint, note results
+6. Close browser if needed
 
 ## Key Guidelines
 
 - **Snapshot first, click second** - refs change between snapshots
 - **Use `ref` exactly** as shown in snapshot (e.g., `ref="S1E2"`)
-- **Take screenshots** for documentation
+- **Take screenshots** for documentation and save to `TestWithPlaywright/screenshots/`
 - **Check console** for JavaScript errors
+- **Organize output** - All test files go in `TestWithPlaywright` folder
 
 ## Example Flow
 
@@ -73,20 +82,31 @@ Default URL: `http://localhost:5050`
 2. Snapshot → see page structure
 3. Click → ref: "S1E5" (Venues link)
 4. Snapshot → verify navigation worked
-5. Screenshot → document the page
-6. Close → end session
-7. Create report
+5. Screenshot → save to TestWithPlaywright/screenshots/01-venues-page.png
+6. Create report → TestWithPlaywright/TestReport.md
+7. Update memory
 ```
 
 ## Report Template
 
-Save to: `manual-tests/[feature]-test-report.md`
+**Folder Structure:**
+```
+TestWithPlaywright/
+├── TestReport.md
+└── screenshots/
+    ├── 01-homepage.png
+    ├── 02-feature-test.png
+    └── ...
+```
+
+Save report to: `TestWithPlaywright/TestReport.md`
 
 ```markdown
-# Test Report - [Feature Name]
+# [Application Name] - Playwright Test Report
 
 **Date:** [Date]
-**URL:** [URL]
+**Application URL:** [URL]
+**Overall Status:** ✅ PASS / ⚠️ PARTIAL / ❌ FAIL
 
 ## Summary
 | Status | Test | Notes |
@@ -104,9 +124,16 @@ Save to: `manual-tests/[feature]-test-report.md`
 **Actual:** [What happened]
 **Status:** ✅ Pass / ❌ Fail
 
+## Screenshots
+All screenshots are located in: `TestWithPlaywright/screenshots/`
+
+**Files:**
+- `01-homepage.png` - [description]
+- `02-feature-test.png` - [description]
+
 ## Issues Found
 - [ ] [Description]
 
-## Screenshots
-(Include screenshots here)
+## Conclusion
+[Overall assessment and recommendations]
 ```
