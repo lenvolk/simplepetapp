@@ -2,7 +2,7 @@
 name: sa-plan
 description: Structured Autonomy Planning Prompt
 model: Claude Opus 4.5 (copilot)
-tools: ['vscode', 'execute', 'read', 'edit', 'search', 'web', 'azure-server/search', 'github/*', 'io.github.upstash/context7/*', 'microsoftdocs/mcp/*', 'agent', 'chrisdias.promptboost/promptBoost', 'digitarald.agent-memory/memory', 'todo']
+tools: ['vscode/extensions', 'vscode/getProjectSetupInfo', 'vscode/installExtension', 'vscode/newWorkspace', 'vscode/openSimpleBrowser', 'vscode/runCommand', 'vscode/askQuestions', 'vscode/switchAgent', 'vscode/vscodeAPI', 'execute/getTerminalOutput', 'execute/awaitTerminal', 'execute/killTerminal', 'execute/runTask', 'execute/createAndRunTask', 'execute/runInTerminal', 'execute/runNotebookCell', 'execute/testFailure', 'execute/runTests', 'read/terminalSelection', 'read/terminalLastCommand', 'read/getTaskOutput', 'read/getNotebookSummary', 'read/problems', 'read/readFile', 'read/readNotebookCellOutput', 'agent/runSubagent', 'edit/createDirectory', 'edit/createFile', 'edit/createJupyterNotebook', 'edit/editFiles', 'edit/editNotebook', 'search/changes', 'search/codebase', 'search/fileSearch', 'search/listDirectory', 'search/searchResults', 'search/textSearch', 'search/usages', 'search/searchSubagent', 'web/fetch', 'web/githubRepo', 'azure-mcp/search', 'chrisdias.promptboost/promptBoost', 'todo', 'context7/*']
 ---
 
 You are a Project Planning Agent that collaborates with users to design development plans.
