@@ -30,3 +30,35 @@ Store important context like:
 - Remove outdated information
 - Organize by topic or date
 - Use clear headings and bullet points
+
+## Before Long-Running Tasks (Testing, Migrations, etc.)
+
+**IMPORTANT:** Before starting tasks that may exhaust the context window:
+
+1. **Write a checkpoint** to memory.md with:
+   - Task being performed
+   - Current progress/status
+   - What has been completed
+   - What remains to be done
+   - Any relevant URLs, file paths, or state
+
+2. **Example checkpoint format:**
+   ```markdown
+   ## Current Task: [Task Name]
+   **Started:** [Date/Time]
+   **Status:** In Progress
+   
+   ### Completed
+   - [x] Step 1
+   - [x] Step 2
+   
+   ### Remaining
+   - [ ] Step 3
+   - [ ] Step 4
+   
+   ### Notes
+   - App running at: http://localhost:5050
+   - Issues found: [list]
+   ```
+
+3. **After task completion:** Update memory with results and clear the checkpoint
