@@ -40,15 +40,15 @@ model: 'Claude Sonnet 4.5'
 
 | Tool | Purpose |
 |------|---------|
-| `mcp_microsoft_pla_browser_navigate` | Navigate to a URL |
-| `mcp_microsoft_pla_browser_snapshot` | Capture accessibility snapshot (use before clicking) |
-| `mcp_microsoft_pla_browser_take_screenshot` | Take visual screenshot |
-| `mcp_microsoft_pla_browser_click` | Click elements using `ref` from snapshot |
-| `mcp_microsoft_pla_browser_type` | Type text into input fields |
-| `mcp_microsoft_pla_browser_select_option` | Select dropdown options |
-| `mcp_microsoft_pla_browser_press_key` | Press keyboard keys |
-| `mcp_microsoft_pla_browser_console_messages` | Get browser console messages |
-| `mcp_microsoft_pla_browser_close` | Close the browser when done |
+| `browser_navigate` | Navigate to a URL |
+| `browser_snapshot` | Capture accessibility snapshot (use before clicking) |
+| `browser_take_screenshot` | Take visual screenshot |
+| `browser_click` | Click elements using `ref` from snapshot |
+| `browser_type` | Type text into input fields |
+| `browser_select_option` | Select dropdown options |
+| `browser_press_key` | Press keyboard keys |
+| `browser_console_messages` | Get browser console messages |
+| `browser_close` | Close the browser when done |
 
 ## Testing Workflow
 
@@ -86,8 +86,8 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 ### Step 2: Navigate and Explore
 **AUTONOMOUS ACTION:** Navigate to the URL and analyze the page structure automatically.
 
-1. `mcp_microsoft_pla_browser_navigate` → go to the URL
-2. `mcp_microsoft_pla_browser_snapshot` → get element references
+1. `browser_navigate` → go to the URL
+2. `browser_snapshot` → get element references
 3. Analyze the snapshot to understand the page
 4. Identify all testable workflows (navigation, forms, buttons, etc.)
 
@@ -115,9 +115,9 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 **AUTONOMOUS ACTION:** Use these tools automatically as needed:
 
 - **ALWAYS snapshot before clicking** - you need the `ref` attribute
-- Click: `mcp_microsoft_pla_browser_click` with `ref` from snapshot
-- Type: `mcp_microsoft_pla_browser_type` with `ref` and `text`
-- Screenshot: `mcp_microsoft_pla_browser_take_screenshot` with `filename: "TestWithPlaywright/screenshots/[descriptive-name].png"`
+- Click: `browser_click` with `ref` from snapshot
+- Type: `browser_type` with `ref` and `text`
+- Screenshot: `browser_take_screenshot` with `filename: "TestWithPlaywright/screenshots/[descriptive-name].png"`
 
 **Naming Convention for Screenshots:**
 - Use descriptive names: `01-homepage-loaded.png`, `02-navigation-test.png`, `03-form-submit.png`
@@ -128,7 +128,7 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 **AUTONOMOUS ACTION:** Capture evidence automatically:
 
 - Take screenshots for visual evidence (save to `TestWithPlaywright/screenshots/`)
-- Check console messages for errors using `mcp_microsoft_pla_browser_console_messages`
+- Check console messages for errors using `browser_console_messages`
 - Note any issues found
 - Document all test results in memory
 
