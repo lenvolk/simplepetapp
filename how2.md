@@ -22,4 +22,4 @@ dotnet run --urls "http://localhost:5050"
 Come up with a test plan to test this app and do it every week on Monday at 9 AM IST. Act as different user roles (for example: admin and standard user) and test the app end to end. Verify that permissions are enforced correctly for each role. Check all visible images and links across the app and report any broken, inaccessible, or incorrectly permissioned resources.
 
 ===
-/playwright-test-report start this application and test the most critical user workflows using Playwright MCP and create report at the root of this repository in the folder named "Report"
+/playwright-test-report start this application and test the most critical user workflows using Playwright MCP and create report as insructed
