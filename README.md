@@ -4,7 +4,7 @@
 
 ## Overview
 
-This project uses a team of four specialized AI agents that collaborate to handle complex development tasks. An **Orchestrator** breaks down user requests and delegates work to a **Planner**, **Coder**, and **Designer** — each with a distinct role and set of tools. The agents communicate via subagent calls, enabling parallel execution of independent tasks.
+This project uses a team of four specialized AI agents that collaborate to handle complex development tasks. An **Orchestrator** breaks down user requests and delegates work to specialist **subagents** — a Planner, Coder, and Designer. Each agent has a distinct role, and the Orchestrator coordinates everything.
 
 ## Agents
 
@@ -12,179 +12,101 @@ This project uses a team of four specialized AI agents that collaborate to handl
 |-------|-------|------|
 | **Orchestrator** | Claude Opus 4.6 | Decomposes requests, delegates to specialists, coordinates phases |
 | **Planner** | Claude Opus 4.6 | Researches codebase, consults docs, produces implementation plans |
-| **Coder** | Claude Opus 4.6 | Writes code, fixes bugs, implements features following strict coding principles |
+| **Coder** | Claude Opus 4.6 | Writes code, fixes bugs, implements features |
 | **Designer** | Gemini 3 Pro (Preview) | Handles UI/UX design, styling, and visual decisions |
+
+- **Orchestrator** — Never writes code. Breaks the request into tasks, assigns files to each agent, and controls execution order.
+- **Planner** — Never writes code. Researches the codebase and docs, then returns an ordered implementation plan with file assignments.
+- **Coder** — Implements features, fixes bugs, writes tests. Follows coding principles defined in its agent file.
+- **Designer** — Owns all UI/UX decisions. Focuses on usability, accessibility, and aesthetics.
 
 ## How It Works
 
 ```mermaid
 flowchart TD
-    User([👤 User Request]) --> Orchestrator
+    User([👤 User Request]) --> Orchestrator[🎯 Orchestrator]
 
-    subgraph Orchestrator["🎯 Orchestrator"]
-        direction TB
-        O1[Receive request]
-        O2[Call Planner for strategy]
-        O3[Parse plan into phases]
-        O4[Detect parallelizable tasks]
-        O5[Delegate & coordinate]
-        O6[Verify & report]
-        O1 --> O2 --> O3 --> O4 --> O5 --> O6
-    end
+    Orchestrator -->|1. Get plan| Planner[📋 Planner]
+    Planner -->|Plan + file assignments| Orchestrator
 
-    Orchestrator -->|Step 1: Get plan| Planner
+    Orchestrator -->|2. Delegate tasks| Phase
 
-    subgraph Planner["📋 Planner"]
-        direction TB
-        P1[Research codebase]
-        P2[Check docs via context7]
-        P3[Identify edge cases]
-        P4[Return ordered steps + file assignments]
-        P1 --> P2 --> P3 --> P4
-    end
-
-    Planner -->|Plan with file assignments| Orchestrator
-
-    Orchestrator -->|Phase N tasks| Phase
-
-    subgraph Phase["⚡ Phase Execution"]
+    subgraph Phase["⚡ Parallel Phase Execution"]
         direction LR
-        Coder1[🔧 Coder Task A]
-        Coder2[🔧 Coder Task B]
-        Designer1[🎨 Designer Task]
+        Coder1[🔧 Coder]
+        Coder2[🔧 Coder]
+        Designer1[🎨 Designer]
     end
 
-    Phase -->|Phase complete| Orchestrator
-    Orchestrator -->|All phases done| Result([✅ Result])
+    Phase -->|3. Phase complete| Orchestrator
+    Orchestrator -->|All done| Result([✅ Result])
 ```
 
-## Execution Flow
+**The flow is simple:**
+1. User asks for something (e.g. *"Add dark mode"*)
+2. Orchestrator calls the **Planner** to research and create a step-by-step plan
+3. Orchestrator groups steps into **phases** — tasks that touch different files run in parallel, tasks that share files run sequentially
+4. Orchestrator delegates each task to the right **Coder** or **Designer** subagent
+5. Once all phases complete, Orchestrator verifies and reports back
 
-### 1. Orchestrator receives the request
+---
 
-The user submits a task (e.g., *"Add dark mode"*). The Orchestrator never implements anything itself — it only coordinates.
+## Subagents vs Agent Teams
 
-### 2. Planner creates the strategy
+This project uses the **Subagents** pattern. Here's how it compares to **Agent Teams** — a different multi-agent approach.
 
-The Orchestrator calls the **Planner**, which:
+### Subagents (this project)
 
-- Searches the codebase (parallelizing subagents for independent research)
-- Consults external documentation via `#context7`
-- Identifies edge cases and implicit requirements
-- Returns an ordered list of steps with **file assignments** for each
-
-### 3. Orchestrator builds phases
-
-The Orchestrator parses the plan and groups steps into **phases** based on file overlap:
+The Orchestrator spawns each worker as a **subagent** — a synchronous, blocking call. When the Orchestrator calls the Planner, it waits for the Planner to finish and return its result before doing anything else. The Planner has no idea the Coder or Designer exist; it just does its job and reports back. The same applies when the Orchestrator later calls the Coder or Designer — each subagent runs, returns a result, and is done. No worker talks to another worker directly. All coordination flows through the Orchestrator.
 
 ```mermaid
-flowchart LR
-    subgraph Phase1["Phase 1 (parallel)"]
-        T1["Task 1.1\nFiles: A.razor, B.cs"]
-        T2["Task 1.2\nFiles: C.razor, D.css"]
-    end
+flowchart TD
+    Main[🎯 Main Agent\nOrchestrator] --> A[🔍 Explore\nanalyze models]
+    Main --> B[🔍 Explore\nanalyze services]
+    Main --> C[🔍 Explore\nscan components]
 
-    subgraph Phase2["Phase 2 (sequential, depends on Phase 1)"]
-        T3["Task 2.1\nFiles: A.razor, C.razor"]
-    end
-
-    Phase1 --> Phase2
+    A -.->|result| Main
+    B -.->|result| Main
+    C -.->|result| Main
 ```
 
-- **No file overlap** between tasks → run in **parallel** (same phase)
-- **File overlap** between tasks → run **sequentially** (different phases)
+### Agent Teams
 
-### 4. Agents execute in parallel within each phase
+A different pattern where peer agents run as **background agents** — long-lived processes that share a task list and coordinate directly. Instead of one boss dispatching work, agents pick up tasks themselves, see each other's progress, and can build on each other's output in real time. There is no central coordinator — the agents collaborate as equals.
 
 ```mermaid
-sequenceDiagram
-    participant U as User
-    participant O as Orchestrator
-    participant P as Planner
-    participant C1 as Coder (Task A)
-    participant C2 as Coder (Task B)
-    participant D as Designer
+flowchart TD
+    Tasks[📋 Shared Task List] <--> Frontend[🖥️ Frontend Agent]
+    Tasks <--> Backend[⚙️ Backend Agent]
+    Tasks <--> Database[🗄️ Database Agent]
 
-    U->>O: "Add dark mode"
-    O->>P: Create implementation plan
-    P-->>O: Plan (3 phases, file assignments)
-
-    par Phase 1
-        O->>D: Design color palette
-        O->>D: Design toggle UI
-    end
-
-    par Phase 2
-        O->>C1: Implement theme context
-        O->>C2: Create toggle component
-    end
-
-    O->>C1: Phase 3 — Apply theme across components
-
-    O-->>U: ✅ Complete
+    Frontend <-.-> Backend
+    Backend <-.-> Database
 ```
 
-### 5. Verify and report
+### Comparison
 
-After all phases complete, the Orchestrator verifies the work and reports results to the user.
+| | Subagents | Agent Teams |
+|---|---|---|
+| **Communication** | Reports back to main agent only | Peer-to-peer + shared context |
+| **Coordination** | Main agent controls everything | Agents coordinate directly |
+| **Cost** | Lower token usage | Higher (2-4x tokens) |
+| **Complexity** | Simple to set up | More moving parts |
+| **Best for** | Focused tasks, research, delegation | Complex multi-component builds requiring collaboration |
 
-## Parallelization Rules
+**Use Subagents** when tasks are independent and only the result matters. **Use Agent Teams** when agents need to build on each other's work in real time.
 
-### Planner (Research Phase)
+### But aren't all subagents the same?
 
-The Planner parallelizes its own research by launching multiple subagents simultaneously:
+Not quite. There are two ways to use subagents:
 
-```mermaid
-flowchart LR
-    subgraph "Batch 1 (parallel)"
-        A1[Agent: Analyze models]
-        A2[Agent: Analyze services]
-        A3[Agent: Find related components]
-    end
+**Plain subagent (no agent system):** You ask the main agent to "use a subagent to add Russian language support." It spins up a generic worker — just another copy of itself with no special rules. That worker can read files, write code, search, design — anything. It gets a task description and figures it out however it wants. You might get one subagent doing everything, or a few, but none of them have a defined role.
 
-    subgraph "Batch 2 (parallel, after Batch 1)"
-        A4[Agent: Check library docs]
-        A5[Agent: Analyze DI setup]
-    end
+**Specialized subagents (this project):** The *mechanism* is identical — they're all synchronous subagent calls that return a result. The difference is that each subagent is **constrained by its agent file**. When the Orchestrator calls the Planner, it calls a subagent loaded with `planner.agent.md` instructions that say "never write code, only research and plan." The Planner *can't* decide to start coding — it's been told not to. Same for the Coder (writes code, doesn't design) and Designer (owns UI, doesn't write business logic).
 
-    A1 & A2 & A3 --> A4 & A5
-```
+**Think of it like hiring:**
 
-### Orchestrator (Execution Phase)
+- **Plain subagent** = hiring a freelancer and saying "build me a house." They do everything — design, plumbing, wiring, painting. Might be great, might be messy.
+- **Specialized subagents** = hiring an architect, an electrician, and a painter — each with a clear job description. A project manager (Orchestrator) tells the architect to draw plans first, then sends the electrician and painter to work in parallel on different rooms. Nobody steps on each other's toes because they each have a defined scope.
 
-| Condition | Execution |
-|-----------|-----------|
-| Tasks touch **different files** | ✅ Parallel |
-| Tasks are in **different domains** (styling vs. logic) | ✅ Parallel |
-| Tasks have **no data dependencies** | ✅ Parallel |
-| Task B **needs output** from Task A | 🔁 Sequential |
-| Tasks **modify the same file** | 🔁 Sequential |
-
-## Agent Details
-
-### Orchestrator
-
-- **Never writes code** — only coordinates
-- Scopes each delegated task to **specific files** to prevent conflicts
-- Tells agents **WHAT** to do, never **HOW**
-- Tools: `read_file`, `agent`, `memory`
-
-### Planner
-
-- **Never writes code** — only creates plans
-- Parallelizes research via subagents and batched tool calls
-- Always verifies external API docs before planning
-- Tools: `vscode`, `execute`, `read`, `agent`, `context7`, `edit`, `search`, `web`, `memory`, `todo`
-
-### Coder
-
-- Follows mandatory coding principles (flat architecture, explicit state, small functions)
-- Always consults `#context7` for up-to-date documentation
-- Prefers full-file rewrites over micro-edits
-- Tools: `vscode`, `execute`, `read`, `agent`, `context7`, `github`, `edit`, `search`, `web`, `memory`, `todo`
-
-### Designer
-
-- Owns all UI/UX decisions — prioritizes user experience over technical constraints
-- Focuses on usability, accessibility, and aesthetics
-- Tools: `vscode`, `execute`, `read`, `agent`, `context7`, `edit`, `search`, `web`, `memory`, `todo`
+The Orchestrator doesn't add any new capability. It's still just subagent calls under the hood. What it adds is **structure** — who does what, in what order, touching which files.
