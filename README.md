@@ -1,6 +1,8 @@
 # Agent System
 
 > **Credit**: This multi-agent architecture is inspired by [Burke Holland's video](https://www.youtube.com/watch?v=-BhfcPseWFQ) and his [agent configuration gist](https://gist.github.com/burkeholland/0e68481f96e94bbb98134fa6efd00436).
+>
+> **Reference**: [VS Code Copilot Subagents documentation](https://code.visualstudio.com/docs/copilot/agents/subagents)
 
 ## Overview
 
