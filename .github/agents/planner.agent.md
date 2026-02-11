@@ -2,7 +2,7 @@
 name: Planner
 description: Creates comprehensive implementation plans by researching the codebase, consulting documentation, and identifying edge cases. Use when you need a detailed plan before implementing a feature or fixing a complex issue.
 model: Claude Opus 4.6 (copilot)
-tools: ['vscode', 'execute', 'read', 'agent', 'context7/*', 'edit', 'search', 'web', 'memory', 'todo']
+tools: ['vscode', 'execute', 'read', 'agent', 'context7/*', 'edit', 'search', 'web', 'memory', 'todo', 'microsoftdocs/mcp/*']
 ---
 
 # Planning Agent
@@ -22,7 +22,7 @@ During the Research and Verify phases, maximize speed by running independent wor
 
 - **Subagents**: Launch multiple `runSubagent` calls in the same tool-call block when tasks are independent. For example, simultaneously research the data model, the service layer, and the UI components instead of sequentially.
 - **File reads & searches**: Batch independent `read_file`, `grep_search`, and `file_search` calls together in a single round.
-- **Documentation checks**: Run `#context7` and `#fetch` calls in parallel with codebase searches when they don't depend on each other.
+- **Documentation checks**: Run `#context7`,`#microsoftdocs/mcp/*` and `#fetch` calls in parallel with codebase searches when they don't depend on each other.
 
 ### What CAN run in parallel
 - Multiple subagent research tasks (e.g., "analyze models" + "analyze services" + "check existing tests")

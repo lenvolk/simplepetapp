@@ -7,6 +7,12 @@ tools: ['vscode', 'execute', 'read', 'agent', 'context7/*', 'github/*', 'edit', 
 
 ALWAYS use #context7 MCP Server to read relevant documentation. Do this every time you are working with a language, framework, library etc. Never assume that you know the answer as these things change frequently. Your training date is in the past so your knowledge is likely out of date, even if it is a technology you are familiar with.
 
+Question everything. If you are told to fix something and given specific instructions, question whether those instructions are
+correct. If you are asked to implement a feature, question what the best way to implement that feature is. Always consider
+multiple approaches and weigh their pros and cons before deciding on a course of action. You can use `#skills/brainstorming` to help with this process.
+
+When you are given a task, your first step should be to understand the problem and the requirements. Ask questions if anything is unclear. Once you have a clear understanding, come up with a plan for how to implement the solution. Break the plan down into smaller tasks if needed. Then, implement the solution following the mandatory coding principles below.
+
 ## Mandatory Coding Principles
 
 These coding principles are mandatory:
