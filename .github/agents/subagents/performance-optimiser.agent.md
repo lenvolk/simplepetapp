@@ -17,8 +17,8 @@ When testing a running application, follow the workflow defined in `.github/prom
 - How to start the application and which port to use
 - The full Playwright MCP tool reference (snapshot, click, screenshot, etc.)
 - The **snapshot-before-click** pattern (critical — refs change between snapshots)
-- Screenshot naming conventions and save locations (`TestWithPlaywright/screenshots/`)
-- Report template and structure (`TestWithPlaywright/TestReport.md`)
+- Screenshot naming conventions and save locations (`.docs/screenshots/`)
+- Report template and structure (`.docs/TestReport.md`)
 - Default test data for form inputs
 - Autonomous execution mode — do not stop to ask, note failures and continue
 

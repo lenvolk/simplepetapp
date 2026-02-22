@@ -19,8 +19,8 @@ Failures trigger alternatives, not questions.
 |--------|----------|
 | **Start app** | Auto-start on localhost:5050 if not running |
 | **Test data** | Use realistic defaults |
-| **Screenshots** | Save to `TestWithPlaywright/screenshots/` |
-| **Report** | Create at `TestWithPlaywright/TestReport.md` |
+| **Screenshots** | Save to `.docs/screenshots/` |
+| **Report** | Create at `.docs/TestReport.md` |
 | **Failures** | Note and continue |
 | **Completion** | Summarize at end |
 
@@ -42,9 +42,9 @@ Failures trigger alternatives, not questions.
 
 ## Testing Workflow
 
-**IMPORTANT:** All test artifacts must be saved in the `TestWithPlaywright` folder:
-- Report: `TestWithPlaywright/TestReport.md`
-- Screenshots: `TestWithPlaywright/screenshots/*.png`
+**IMPORTANT:** All test artifacts must be saved in the `.docs` folder:
+- Report: `.docs/TestReport.md`
+- Screenshots: `.docs/screenshots/*.png`
 
 ### Step 0: Create Memory Checkpoint
 Before testing, update `.docs/memory.md` with:
@@ -92,7 +92,7 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 - **ALWAYS snapshot before clicking** - you need the `ref` attribute
 - Click: `browser_click` with `ref` from snapshot
 - Type: `browser_type` with `ref` and `text`
-- Screenshot: `browser_take_screenshot` with `filename: "TestWithPlaywright/screenshots/[descriptive-name].png"`
+- Screenshot: `browser_take_screenshot` with `filename: ".docs/screenshots/[descriptive-name].png"`
 
 **Naming Convention for Screenshots:**
 - Use descriptive names: `01-homepage-loaded.png`, `02-navigation-test.png`, `03-form-submit.png`
@@ -100,16 +100,16 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 - Keep names clear and concise
 
 ### Step 5: Document Results
-- Take screenshots for visual evidence (save to `TestWithPlaywright/screenshots/`)
+- Take screenshots for visual evidence (save to `.docs/screenshots/`)
 - Check console messages for errors using `browser_console_messages`
 - Note any issues found
 - Document all test results in memory
 
 ### Step 6: Complete Testing
-1. Create `TestWithPlaywright` folder in repository root (if doesn't exist)
-2. Create `TestWithPlaywright/screenshots` subfolder (if doesn't exist)
-3. Verify all screenshots saved to `TestWithPlaywright/screenshots/`
-4. Create comprehensive report at `TestWithPlaywright/TestReport.md`
+1. Create `.docs` folder in repository root (if doesn't exist)
+2. Create `.docs/screenshots` subfolder (if doesn't exist)
+3. Verify all screenshots saved to `.docs/screenshots/`
+4. Create comprehensive report at `.docs/TestReport.md`
 5. Update `.docs/memory.md` → clear checkpoint, note results
 6. Provide user with summary and location of report
 
@@ -124,9 +124,9 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 **Technical Guidelines:**
 - **Snapshot first, click second** - refs change between snapshots
 - **Use `ref` exactly** as shown in snapshot (e.g., `ref="S1E2"`)
-- **Take screenshots** for documentation and save to `TestWithPlaywright/screenshots/`
+- **Take screenshots** for documentation and save to `.docs/screenshots/`
 - **Check console** for JavaScript errors after each major action
-- **Organize output** - All test files go in `TestWithPlaywright` folder
+- **Organize output** - All test files go in `.docs` folder
 - **Use descriptive names** for screenshots (numbered and labeled)
 
 **Default Test Data (use when forms need input):**
@@ -145,26 +145,26 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 2. Wait 10 seconds → let app initialize
 3. Navigate → "http://localhost:5050"
 4. Snapshot → analyze page structure
-5. Screenshot → TestWithPlaywright/screenshots/01-homepage.png
+5. Screenshot → .docs/screenshots/01-homepage.png
 6. Identify workflows → navigation, forms, features
 7. Test Navigation:
    - Snapshot → get nav links
    - Click → ref: "S1E5" (Venues link)
    - Snapshot → verify page changed
-   - Screenshot → TestWithPlaywright/screenshots/02-venues-page.png
+   - Screenshot → .docs/screenshots/02-venues-page.png
 8. Test Search/Filter:
    - Snapshot → get filter elements
    - Select → filter option
-   - Screenshot → TestWithPlaywright/screenshots/03-filtered-results.png
+   - Screenshot → .docs/screenshots/03-filtered-results.png
 9. Test Forms:
    - Snapshot → get form fields
    - Type → realistic test data
    - Click → submit button
-   - Screenshot → TestWithPlaywright/screenshots/04-form-submitted.png
+   - Screenshot → .docs/screenshots/04-form-submitted.png
 10. Continue testing all workflows systematically
 11. Check console → capture any errors
-12. Create folders → TestWithPlaywright/screenshots/
-13. Create report → TestWithPlaywright/TestReport.md
+12. Create folders → .docs/screenshots/
+13. Create report → .docs/TestReport.md
 14. Update memory → note completion
 15. Summarize → tell user where to find results
 ```
@@ -173,7 +173,7 @@ Wait 5-10 seconds for application to start, then proceed to testing.
 
 **Folder Structure:**
 ```
-TestWithPlaywright/
+.docs/
 ├── TestReport.md
 └── screenshots/
     ├── 01-homepage.png
@@ -181,7 +181,7 @@ TestWithPlaywright/
     └── ...
 ```
 
-Save report to: `TestWithPlaywright/TestReport.md`
+Save report to: `.docs/TestReport.md`
 
 ```markdown
 # [Application Name] - Playwright Test Report
@@ -207,7 +207,7 @@ Save report to: `TestWithPlaywright/TestReport.md`
 **Status:** ✅ Pass / ❌ Fail
 
 ## Screenshots
-All screenshots are located in: `TestWithPlaywright/screenshots/`
+All screenshots are located in: `.docs/screenshots/`
 
 **Files:**
 - `01-homepage.png` - [description]
