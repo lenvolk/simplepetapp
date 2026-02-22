@@ -1,7 +1,7 @@
 ---
 name: Designer
 description: Handles all UI/UX design tasks.
-model: Gemini 3 Pro (Preview) (copilot)
+model: Gemini 3.1 Pro (Preview) (copilot)
 tools: ['vscode', 'execute', 'read', 'agent', 'context7/*', 'microsoftdocs/mcp/*', 'edit', 'search', 'web', 'memory', 'todo']
 ---
 
