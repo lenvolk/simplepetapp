@@ -10,8 +10,8 @@
 }
 
 .star.filled {
-    color: #fbbf24;
-    text-shadow: 0 0 8px rgba(251, 191, 36, 0.5);
+    color: #d4a574;
+    text-shadow: none;
 }
 
 .star.half {

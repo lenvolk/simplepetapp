@@ -12,19 +12,23 @@ MyPetVenues is a community-driven platform for discovering, reviewing, and booki
 # Build the application
 dotnet build MyPetVenues/MyPetVenues.csproj
 
-# Run the application (opens on http://localhost:5050)
+# Run the application (opens on http://localhost:5039, HTTPS on https://localhost:7053)
 dotnet run --project MyPetVenues/MyPetVenues.csproj
 
-# Build entire solution
+# Build entire solution (note: sln filename has a typo)
 dotnet build simkplepetapp.sln
 ```
+
+VS Code tasks are defined in `.vscode/tasks.json`: **build (MyPetVenues)** and **run (MyPetVenues)** (background).
+
+No test project exists yet.
 
 ## Architecture
 
 ### Project Structure
 
 ```
-MyPetVenues/              # Main Blazor WebAssembly project
+MyPetVenues/              # Main Blazor WebAssembly project (only active project)
 ├── Components/           # Reusable Razor components (VenueCard, ReviewCard, StarRating, etc.)
 ├── Pages/               # Routable pages (Home, Venues, VenueDetail, Profile, BookVenue)
 ├── Layout/              # Layout components (Header, Footer, MainLayout)
@@ -32,6 +36,8 @@ MyPetVenues/              # Main Blazor WebAssembly project
 ├── Services/            # Business logic services
 ├── wwwroot/             # Static assets (css, images, icons)
 └── Program.cs           # DI registration and app configuration
+MyPetVenues.Api/          # Stub — no .csproj, inactive
+MyPetVenues.Shared/       # Stub — no .csproj, inactive
 ```
 
 ### Tech Stack
@@ -70,7 +76,7 @@ All services are registered in `Program.cs`:
 
 3. **Routable pages** go in `Pages/`:
    - Use `@page "/route"` directive
-   - Main pages: Home, Venues, VenueDetail, Profile, BookVenue
+   - Routes: `/` (Home), `/venues` (Browse), `/venues/{VenueId:int}` (Detail), `/profile`, `/booking`
 
 ### Data Models & Enums
 
@@ -84,8 +90,8 @@ All enums defined in `Models/` alongside their related classes.
 
 1. **CSS Variables** for theming:
    - Defined in `wwwroot/css/app.css`
-   - Supports light/dark mode switching
-   - Primary color: pink gradient (#e91e63 to #c2185b)
+   - Supports light/dark mode via `.dark-mode` class on root element
+   - Primary accent: `#db2777` (light) / `#ec4899` (dark), secondary: `#9333ea`
 
 2. **Scoped CSS**:
    - Every component has its own `.razor.css` file
@@ -143,17 +149,8 @@ Use `@inject IServiceName ServiceName` in Razor components to access services.
 
 ## Product Requirements
 
-See `PRD-v1.md` for complete product specifications including:
-- User stories with acceptance criteria
-- Success metrics
-- Technical architecture details
-- Future roadmap (v2+)
+See `PRD-v1.md` for complete product specifications (user stories, acceptance criteria, success metrics, roadmap).
 
 ## Future Considerations (Out of Scope v1)
 
-- Payment processing
-- Real backend API integration
-- Database persistence (Entity Framework Core)
-- Real authentication/authorization
-- Messaging between users and venues
-- Mobile app (iOS/Android)
+Payment processing, real backend API, database persistence (EF Core), authentication, messaging, mobile app.

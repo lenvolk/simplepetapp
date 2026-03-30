@@ -1,88 +1,82 @@
 /* ========================================
    MyPetVenues - Global Styles
-   Modern Pink Gradient Theme
+   Warm Nature-Inspired Modern Theme
    ======================================== */
 
-/* Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+/* Google Fonts — Distinctive typography */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap');
 
 /* ========================================
    CSS Variables - Light Mode (Default)
    ======================================== */
 :root,
 .light-mode {
-    /* Primary Accent Colors - Dark Pink Hues */
-    --accent-primary: #db2777;
-    --accent-secondary: #9333ea;
-    --accent-tertiary: #ec4899;
-    --accent-glow: rgba(219, 39, 119, 0.3);
-    
+    /* Primary Accent Colors — Forest & Amber */
+    --accent-primary: #2d6a4f;
+    --accent-secondary: #d4a574;
+    --accent-tertiary: #40916c;
+    --accent-glow: rgba(45, 106, 79, 0.15);
+
     /* Background Colors */
-    --bg-primary: #fdf2f8;
+    --bg-primary: #faf8f5;
     --bg-secondary: #ffffff;
-    --bg-gradient: linear-gradient(135deg, #fdf2f8 0%, #fce7f3 50%, #f5d0fe 100%);
-    
+    --bg-gradient: linear-gradient(180deg, #faf8f5 0%, #f5f0eb 100%);
+
     /* Card & Container Colors */
     --card-bg: #ffffff;
-    --card-featured-bg: linear-gradient(135deg, rgba(219, 39, 119, 0.05), rgba(147, 51, 234, 0.05));
-    --header-bg: rgba(255, 255, 255, 0.85);
-    --footer-bg: #fdf2f8;
-    
+    --card-featured-bg: linear-gradient(135deg, rgba(45, 106, 79, 0.04), rgba(212, 165, 116, 0.06));
+    --header-bg: rgba(250, 248, 245, 0.92);
+    --footer-bg: #1b2028;
+
     /* Text Colors */
-    --text-primary: #1f2937;
-    --text-secondary: #4b5563;
-    --text-muted: #9ca3af;
-    
+    --text-primary: #1a1a1a;
+    --text-secondary: #555555;
+    --text-muted: #999999;
+
     /* Border & Shadow */
-    --border-color: rgba(219, 39, 119, 0.15);
-    --shadow-color: rgba(219, 39, 119, 0.1);
-    --shadow-hover: rgba(219, 39, 119, 0.2);
-    
+    --border-color: rgba(0, 0, 0, 0.07);
+    --shadow-color: rgba(0, 0, 0, 0.05);
+    --shadow-hover: rgba(45, 106, 79, 0.12);
+
     /* Input & Button */
     --input-bg: #ffffff;
-    --button-secondary-bg: #fdf2f8;
-    --nav-hover-bg: rgba(219, 39, 119, 0.1);
-    --tag-bg: #fdf2f8;
-    --tag-hover-bg: #fce7f3;
+    --button-secondary-bg: #f5f0eb;
+    --nav-hover-bg: rgba(45, 106, 79, 0.06);
+    --tag-bg: #f0ebe5;
+    --tag-hover-bg: #e8e0d6;
 }
 
 /* ========================================
    CSS Variables - Dark Mode
    ======================================== */
 .dark-mode {
-    /* Primary Accent Colors - Keep vibrant in dark mode */
-    --accent-primary: #ec4899;
-    --accent-secondary: #a855f7;
-    --accent-tertiary: #f472b6;
-    --accent-glow: rgba(236, 72, 153, 0.4);
-    
-    /* Background Colors */
-    --bg-primary: #0f0f1a;
-    --bg-secondary: #1a1a2e;
-    --bg-gradient: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 50%, #16213e 100%);
-    
-    /* Card & Container Colors */
-    --card-bg: #1a1a2e;
-    --card-featured-bg: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(168, 85, 247, 0.1));
-    --header-bg: rgba(15, 15, 26, 0.9);
-    --footer-bg: #0f0f1a;
-    
-    /* Text Colors */
-    --text-primary: #f9fafb;
-    --text-secondary: #d1d5db;
-    --text-muted: #6b7280;
-    
-    /* Border & Shadow */
-    --border-color: rgba(236, 72, 153, 0.2);
+    --accent-primary: #52b788;
+    --accent-secondary: #e0b38a;
+    --accent-tertiary: #74c69d;
+    --accent-glow: rgba(82, 183, 136, 0.2);
+
+    --bg-primary: #0d1117;
+    --bg-secondary: #161b22;
+    --bg-gradient: linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+
+    --card-bg: #161b22;
+    --card-featured-bg: linear-gradient(135deg, rgba(82, 183, 136, 0.06), rgba(224, 179, 138, 0.06));
+    --header-bg: rgba(13, 17, 23, 0.94);
+    --footer-bg: #0d1117;
+
+    --text-primary: #f0f6fc;
+    --text-secondary: #c9d1d9;
+    --text-muted: #6e7681;
+
+    --border-color: rgba(255, 255, 255, 0.08);
     --shadow-color: rgba(0, 0, 0, 0.3);
-    --shadow-hover: rgba(236, 72, 153, 0.3);
-    
-    /* Input & Button */
-    --input-bg: #16213e;
-    --button-secondary-bg: #1a1a2e;
-    --nav-hover-bg: rgba(236, 72, 153, 0.15);
-    --tag-bg: rgba(236, 72, 153, 0.1);
-    --tag-hover-bg: rgba(236, 72, 153, 0.2);
+    --shadow-hover: rgba(82, 183, 136, 0.16);
+
+    --input-bg: #0d1117;
+    --button-secondary-bg: #161b22;
+    --nav-hover-bg: rgba(82, 183, 136, 0.08);
+    --tag-bg: rgba(82, 183, 136, 0.08);
+    --tag-hover-bg: rgba(82, 183, 136, 0.14);
 }
 
 /* ========================================
@@ -105,9 +99,11 @@ html {
 }
 
 body {
-    font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    line-height: 1.6;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    line-height: 1.65;
     min-height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 #app {
@@ -126,9 +122,11 @@ body {
    Typography
    ======================================== */
 h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', sans-serif;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.15;
     color: var(--text-primary);
+    letter-spacing: -0.02em;
 }
 
 h1 { font-size: clamp(2rem, 5vw, 3.5rem); }
@@ -169,13 +167,14 @@ a:hover {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    background: var(--accent-primary);
     color: white;
 }
 
 .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 25px var(--accent-glow);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px var(--accent-glow);
+    filter: brightness(1.08);
 }
 
 .btn-secondary {
@@ -304,7 +303,7 @@ input, select, textarea {
    Utility Classes
    ======================================== */
 .text-gradient {
-    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-tertiary));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

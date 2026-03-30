@@ -1,13 +1,13 @@
 .review-card {
     background: var(--card-bg);
-    border-radius: 16px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 18px;
     border: 1px solid var(--border-color);
     transition: all 0.2s ease;
 }
 
 .review-card:hover {
-    box-shadow: 0 4px 20px var(--shadow-color);
+    box-shadow: 0 3px 14px var(--shadow-color);
 }
 
 .review-header {
@@ -26,11 +26,11 @@
 }
 
 .reviewer-avatar {
-    width: 48px;
-    height: 48px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     object-fit: cover;
-    border: 2px solid var(--accent-primary);
+    border: 2px solid var(--border-color);
 }
 
 .reviewer-details {
