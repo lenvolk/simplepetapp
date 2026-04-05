@@ -23,3 +23,8 @@ Come up with a test plan to test this app and do it every week on Monday at 9 AM
 
 ===
 /playwright-test-report start this application and test the most critical user workflows using Playwright MCP and create report as insructed
+
+
+====
+Video 
+cd c:\Temp\promo-video && npm run dev
