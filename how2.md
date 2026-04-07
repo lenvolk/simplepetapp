@@ -30,3 +30,6 @@ Create Git worktrees inside this repo for branches: background-change, languages
 In the background-change worktree, update the MyPetVenues Blazor WASM app's visual theme to feature an ocean sunset background
 In the languages worktree, add minimal Russian language support to MyPetVenues and show the language picker next to the light/dark mode
 
+cd background-change/MyPetVenues && dotnet run --urls "http://localhost:5050"
+
+cd languages/MyPetVenues && dotnet run --urls "http://localhost:5051"
