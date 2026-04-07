@@ -23,3 +23,10 @@ Come up with a test plan to test this app and do it every week on Monday at 9 AM
 
 ===
 /playwright-test-report start this application and test the most critical user workflows using Playwright MCP and create report as insructed
+
+=== Worktrees
+Create Git worktrees inside this repo for branches: background-change, languages. Add them to .gitignore
+
+In the background-change worktree, update the MyPetVenues Blazor WASM app's visual theme to feature an ocean sunset background
+In the languages worktree, add minimal Russian language support to MyPetVenues and show the language picker next to the light/dark mode
+
