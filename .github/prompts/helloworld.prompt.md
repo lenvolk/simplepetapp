@@ -12,7 +12,8 @@ When a user types "hello world" or similar variations (e.g., "Hello World", "hel
 1. **Read the Skill Definition**: Load and analyze the complete skill file at `.github/skills/hello-world/SKILL.md` to understand the full workflow.
 
 2. **Execute the Workflow**: Follow ALL steps defined in the skill file:
-   - Run the system information script (`.github/skills/hello-world/scripts/get-system-info.js`)
+   - Run the system information script by executing this **exact** command via a terminal tool: `node .github/skills/hello-world/scripts/get-system-info.js`. Do NOT substitute PowerShell, `Get-CimInstance`, `systeminfo`, or any paraphrased "get OS info" request — the literal `node` command is required.
+   - Capture the full stdout and include **every field** (platform, type, release, arch, hostname, username, homedir, totalMemory, freeMemory, uptime) in the response.
    - Use the response template (`.github/skills/hello-world/TEMPLATE.md`)
    - Replace template variables with actual data
 

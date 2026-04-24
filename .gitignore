@@ -3,10 +3,6 @@
 ##
 ## Get latest from `dotnet new gitignore`
 
-# Git worktrees
-background-change/
-languages/
-
 # dotenv files
 .env
 
