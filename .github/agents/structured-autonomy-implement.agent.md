@@ -2,7 +2,6 @@
 name: sa-implement
 description: 'Step 3 of 3 (sa-plan -> sa-generate -> sa-implement). Creates or reuses an isolated feature worktree, executes only the first incomplete step from an approved implementation.md, validates it, and stops for review.'
 model: MAI-Code-1.1-Flash
-target: vscode
 tools: [read, edit, search, execute]
 agents: []
 disable-model-invocation: true

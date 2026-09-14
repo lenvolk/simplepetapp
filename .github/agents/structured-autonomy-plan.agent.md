@@ -2,7 +2,6 @@
 name: sa-plan
 description: 'Step 1 of 3 (sa-plan -> sa-generate -> sa-implement). Researches a feature prompt and writes only plans/{feature-name}/plan.md; never implements product code.'
 model: 'GPT-5.6 Sol (copilot)'
-target: vscode
 tools: [vscode/askQuestions, read, agent, edit, search, web, azure-mcp/search, 'microsoft-learn/*', 'io.github.upstash/context7/*']
 agents: [Explore]
 disable-model-invocation: true

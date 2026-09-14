@@ -2,7 +2,6 @@
 name: sa-generate
 description: 'Step 2 of 3 (sa-plan -> sa-generate -> sa-implement). Expands an explicitly approved plan.md into only its sibling implementation.md; never edits product code.'
 model: 'Claude Opus 5 (copilot)'
-target: vscode
 tools: [read, agent, edit, search, web, azure-mcp/search, 'microsoft-learn/*', 'io.github.upstash/context7/*']
 agents: [Explore]
 disable-model-invocation: true
