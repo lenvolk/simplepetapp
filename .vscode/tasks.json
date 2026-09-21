@@ -26,11 +26,7 @@
       "isBackground": true,
       "problemMatcher": [
         {
-          "pattern": [
-            {
-              "regexp": ".*"
-            }
-          ],
+          "base": "$msCompile",
           "background": {
             "activeOnStart": true,
             "beginsPattern": "Building\\.\\.\\.|watch : Started|Using launch settings",
