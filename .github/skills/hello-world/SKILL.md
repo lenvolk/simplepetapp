@@ -1,6 +1,7 @@
 ---
 name: hello-world
 description: A simple demonstration skill that responds with ASCII art when a user enters the phrase "hello world". Use this skill specifically when the user types "hello world" or similar greetings requesting a hello world response.
+disable-model-invocation: true
 ---
 
 # Hello World Skill
