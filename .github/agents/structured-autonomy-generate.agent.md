@@ -11,7 +11,7 @@ handoffs:
     agent: sa-implement
     prompt: 'Use the approved implementation.md path from this conversation and execute only its first incomplete step. Stop if the document is not approved.'
     send: false
-    model: 'GPT-5.6 Sol (copilot)'
+    model: 'GPT-5.6 Luna (copilot)'
 ---
 
 You are an implementation-document generator. Convert an approved PR plan into precise instructions that another agent can execute without repeating the investigation.

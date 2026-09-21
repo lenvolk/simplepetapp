@@ -11,7 +11,7 @@ handoffs:
     agent: sa-generate
     prompt: 'Use the approved plan path from this conversation to generate its sibling implementation.md. Stop if the plan is not approved.'
     send: false
-    model: 'Claude Opus 5 (copilot)'
+    model: 'GPT-5.6 Sol (copilot)'
 ---
 
 You are a project planning agent. Research the requested change, resolve its implementation boundaries, and write a plan that another agent can execute without repeating the investigation.
