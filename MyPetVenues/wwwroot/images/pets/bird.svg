@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" role="img" aria-labelledby="title desc">
+  <title id="title">Illustrated bird</title>
+  <desc id="desc">A simple blue bird illustration</desc>
+  <rect width="320" height="240" rx="24" fill="#e0f2fe"/>
+  <circle cx="160" cy="122" r="62" fill="#38bdf8"/>
+  <path d="M119 111c-22 7-35 25-37 49 25-9 44-22 53-43z" fill="#0284c7"/>
+  <circle cx="183" cy="105" r="8" fill="#0f172a"/>
+  <path d="m213 120 32 12-32 14z" fill="#f59e0b"/>
+  <path d="M143 171c8 15 19 25 34 31m-2-31c8 15 19 25 34 31" fill="none" stroke="#f59e0b" stroke-linecap="round" stroke-width="7"/>
+</svg>

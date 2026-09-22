@@ -347,8 +347,6 @@
     
     // Add/Edit pet form fields
     private Pet _editingPet = new();
-    private int _nextPetId = 100;
-
     private void SetTabPets() => _activeTab = "pets";
     private void SetTabFavorites() => _activeTab = "favorites";
     private void SetTabBookings() => _activeTab = "bookings";
@@ -438,7 +436,7 @@
     {
         _editingPet = new Pet
         {
-            Id = _nextPetId++,
+            Id = GetNextPetId(),
             Type = PetType.Dog,
             ImageUrl = "images/pets/dog1.png"
         };
@@ -504,11 +502,14 @@
     {
         PetType.Dog => "images/pets/dog1.png",
         PetType.Cat => "images/pets/cat1.jpg",
-        PetType.Bird => "images/pets/bird.jpg",
+        PetType.Bird => "images/pets/bird.svg",
         PetType.Rabbit => "images/pets/bunny.jpg",
         PetType.SmallPet => "images/pets/hedgehog.jpg",
         _ => "images/pets/dog1.png"
     };
+
+    private int GetNextPetId() =>
+        (_user?.Pets.Select(pet => pet.Id).DefaultIfEmpty().Max() ?? 0) + 1;
     
     private void OnPetTypeChanged(ChangeEventArgs e)
     {
