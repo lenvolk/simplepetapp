@@ -82,12 +82,6 @@
         _selectedVenueType.HasValue || 
         _selectedPetType.HasValue;
 
-    protected override async Task OnInitializedAsync()
-    {
-        ParseQueryParameters();
-        await LoadVenues();
-    }
-
     protected override async Task OnParametersSetAsync()
     {
         ParseQueryParameters();
@@ -112,7 +106,6 @@
     private async Task LoadVenues()
     {
         _isLoading = true;
-        StateHasChanged();
 
         await Task.Delay(300); // Simulate network delay
         _venues = await VenueService.SearchVenuesAsync(_searchTerm, _selectedVenueType, _selectedPetType);
@@ -120,14 +113,14 @@
         _isLoading = false;
     }
 
-    private async Task HandleSearch((string? SearchTerm, VenueType? VenueType, PetType? PetType) filters)
+    private Task HandleSearch((string? SearchTerm, VenueType? VenueType, PetType? PetType) filters)
     {
         _searchTerm = filters.SearchTerm;
         _selectedVenueType = filters.VenueType;
         _selectedPetType = filters.PetType;
 
         UpdateUrl();
-        await LoadVenues();
+        return Task.CompletedTask;
     }
 
     private void UpdateUrl()
@@ -145,13 +138,13 @@
         Navigation.NavigateTo($"/venues{query}", replace: true);
     }
 
-    private async Task ClearFilters()
+    private Task ClearFilters()
     {
         _searchTerm = null;
         _selectedVenueType = null;
         _selectedPetType = null;
         Navigation.NavigateTo("/venues", replace: true);
-        await LoadVenues();
+        return Task.CompletedTask;
     }
 
     private void NavigateToVenue(int venueId)

@@ -381,7 +381,9 @@
     {
         _bookingModel.StartTime = TimeSpan.Parse(_selectedStartTime);
         _bookingModel.EndTime = TimeSpan.Parse(_selectedEndTime);
-        _bookingModel.PetNames = _selectedPets.Any() ? _selectedPets : new List<string> { "Pet 1" };
+        _bookingModel.PetNames = _selectedPets.Any()
+            ? _selectedPets.ToList()
+            : new List<string> { "Pet 1" };
         _bookingModel.NumberOfPets = _bookingModel.PetNames.Count;
     }
 
